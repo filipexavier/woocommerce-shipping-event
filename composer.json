@@ -1,0 +1,17 @@
+{
+    "name": "filipexts/woocommerce-shipping_event",
+    "description": "Sets specific shipping events for the user to choose when to pickup or receive delivery",
+    "type": "project",
+    "license": "GPL",
+    "authors": [
+        {
+            "name": "Filipe Xavier",
+            "email": "filipexts@gmail.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {},
+    "autoload": {
+      "psr-4":  { "WCShippingEvent\\": "./includes" }
+    }
+}

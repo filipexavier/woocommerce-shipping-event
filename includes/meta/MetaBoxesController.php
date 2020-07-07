@@ -52,8 +52,6 @@ class MetaBoxesController
 		$product_list     = wc_get_products('');
     ?>
 
-    <h4><?php esc_html_e( 'Shipping Event Settings', 'woocommerce-shipping-event' ); ?></h4>
-
     <p class="form-field">
       <label><?php esc_html_e( 'Enabled', 'woocommerce-shipping-event' ); ?></label>
       <input
@@ -95,107 +93,65 @@ class MetaBoxesController
       />
     </p>
 
-    <div id="shipping_event_product_lis" class="wc-metaboxes-wrapper panel">
-    	<div class="toolbar toolbar-top">
-    		<span class="expand-close">
-    			<a href="#" class="expand_all"><?php esc_html_e( 'Expand', 'woocommerce' ); ?></a> / <a href="#" class="close_all"><?php esc_html_e( 'Close', 'woocommerce' ); ?></a>
-    		</span>
-    		<select name="shipping_event_products" class="shipping_event_products">
-    			<option value=""><?php esc_html_e( 'Custom product attribute', 'woocommerce' ); ?></option>
-    			<?php
-    			global $wc_product_attributes;
-
-    			// Array of defined attribute taxonomies.
-
-    			if ( ! empty( $product_list ) ) {
-    				foreach ( $product_list as $product ) {
-    					echo '<option value="' . esc_attr( $product->get_name() ) . '">' . esc_html( $product->get_name() ) . '</option>';
-    				}
-    			}
-    			?>
-    		</select>
-    		<button type="button" class="button add_attribute"><?php esc_html_e( 'Add', 'woocommerce' ); ?></button>
-    	</div>
-
-    	<div class="shipping_event_products wc-metaboxes">
-    		<!-- <?php
-    		$i          = -1;
-
-    		foreach ( $product_list as $product ) {
-    			$i++;
-
-    			//include 'html-product-attribute.php';
-    		}
-    		?> -->
-    	</div>
-    	<div class="toolbar">
-    		<span class="expand-close">
-    			<a href="#" class="expand_all"><?php esc_html_e( 'Expand', 'woocommerce' ); ?></a> / <a href="#" class="close_all"><?php esc_html_e( 'Close', 'woocommerce' ); ?></a>
-    		</span>
-    		<button type="button" class="button save_attributes button-primary"><?php esc_html_e( 'Save attributes', 'woocommerce' ); ?></button>
-    	</div>
-    </div>
-
     <div id="shipping_event_product_list" class="wc-metaboxes-wrapper panel">
-        <div data-taxonomy="<?php echo esc_attr( $product->get_name() ); ?>" class="woocommerce_attribute wc-metabox taxonomy closed">
-        	<div class="woocommerce_attribute_data wc-metabox-content">
-        		<table class="wp-list-table widefat fixed striped">
-              <thead>
-                <tr>
-                  <td id="cb" class="manage-column column-cb check-column">                  </td>
-                  <th id="product_name" scope="column" class="manage-column column-title column-primary sortable desc">
-                    <label><?php esc_html_e( 'Product Name', 'woocommerce-shipping-event' ); ?></label>
-                  </th>
-                  <th id="stock" scope="column" class="manage-column column-title column-primary sortable desc">
-                    <label><?php esc_html_e( 'Stock', 'woocommerce-shipping-event' ); ?></label>
-                  </th>
-                </tr>
-              </thead>
-        			<tbody>
-                <?php
-                $products_data = get_post_meta($post_id, 'products', true);
+      	<div class="woocommerce_attribute wc-metabox woocommerce_attribute_data wc-metabox-content">
+      		<table class="wp-list-table widefat fixed striped">
+            <thead>
+              <tr>
+                <td id="cb" class="manage-column column-cb check-column">                  </td>
+                <th id="product_name" scope="column" class="manage-column column-title column-primary sortable desc">
+                  <label><?php esc_html_e( 'Product Name', 'woocommerce-shipping-event' ); ?></label>
+                </th>
+                <th id="stock" scope="column" class="manage-column column-title column-primary sortable desc">
+                  <label><?php esc_html_e( 'Stock', 'woocommerce-shipping-event' ); ?></label>
+                </th>
+              </tr>
+            </thead>
+      			<tbody>
+              <?php
+              $products_data = get_post_meta($post_id, 'products', true);
 
-                foreach ( $product_list as $product ) {
-                  $product_id = $product->get_id();
-                  $product_enabled = "no";
-                  $product_stock = '';
-                  if( isset( $products_data ) && array_key_exists( $product_id, $products_data ) ){
-                    $product_event_data = $products_data[$product_id];
+              foreach ( $product_list as $product ) {
+                $product_id = $product->get_id();
+                $product_enabled = "no";
+                $product_stock = '';
+                if( isset( $products_data ) && array_key_exists( $product_id, $products_data ) ){
+                  $product_event_data = $products_data[$product_id];
+                  if( array_key_exists( 'enabled', $product_event_data ) ){
                     $product_enabled = $product_event_data['enabled'];
+                  }
+                  if( array_key_exists( 'stock', $product_event_data ) ){
                     $product_stock = $product_event_data['stock'];
                   }
-                  // echo '<script language="javascript">';
-                  // echo 'alert("stock: ' . $product_stock . 'id: ' . $product_id .'")';
-                  // echo '</script>';
-                  ?>
-          				<tr>
-                    <th scope="row" class="check-column">
-                      <input
-                        type="checkbox"
-                        id="shipping_event_enabled"
-                        name="<?php echo 'products[' . $product_id . '][enabled]' ?>"
-                        value="yes"
-                        <?php checked( $product_enabled, "yes" ); ?>
-                      />
-                    </td>
-          					<td class="attribute_name">
-                      <h3><strong class="attribute_name"><?php echo wc_attribute_label( $product->get_name() ); ?></strong></h3>
-                    </td>
-                    <td>
-                      <input
-                        type="text"
-                        id="shipping_event_product_stock"
-                        name="<?php echo 'products[' . $product_id . '][stock]' ?>"
-                        value="<?php echo $product_stock ?>"
-                        width="10px"
-                      />
-                    </td>
-                  </tr>
-                <?php
-              } ?>
-              </tbody>
-            </table>
-          </div>
+                }
+                ?>
+        				<tr>
+                  <th scope="row" class="check-column">
+                    <input
+                      type="checkbox"
+                      id="shipping_event_enabled"
+                      name="<?php echo 'products[' . $product_id . '][enabled]' ?>"
+                      value="yes"
+                      <?php checked( $product_enabled, "yes" ); ?>
+                    />
+                  </td>
+        					<td class="attribute_name">
+                    <h3><strong class="attribute_name"><?php echo wc_attribute_label( $product->get_name() ); ?></strong></h3>
+                  </td>
+                  <td>
+                    <input
+                      type="text"
+                      id="shipping_event_product_stock"
+                      name="<?php echo 'products[' . $product_id . '][stock]' ?>"
+                      value="<?php echo $product_stock ?>"
+                      width="10px"
+                    />
+                  </td>
+                </tr>
+              <?php
+            } ?>
+            </tbody>
+          </table>
         </div>
     </div> <?php
   }
@@ -218,7 +174,7 @@ class MetaBoxesController
           );
       }
 
-      if (array_key_exists('shipping_event_date', $_POST)) {
+      if (array_key_exists( 'shipping_event_date', $_POST ) ) {
           update_post_meta(
               $post_id,
               'shipping_event_date',
@@ -226,44 +182,25 @@ class MetaBoxesController
           );
       }
 
-      if ( isset( $_POST['shipping_event_enabled'] )) {
-        $enabled = $_POST['shipping_event_enabled'];
-          update_post_meta(
-              $post_id,
-              'shipping_event_enabled',
-              $enabled
-          );
+      if ( array_key_exists( 'shipping_event_enabled', $_POST ) ) {
+        update_post_meta(
+          $post_id,
+          'shipping_event_enabled',
+          $_POST['shipping_event_enabled']
+        );
+      } else {
+        delete_post_meta(
+          $post_id,
+          'shipping_event_enabled');
       }
 
-      // $product_array = $_POST['products'];
-      // $product_post_meta = array();
-      //
-      // foreach( $product_array as $key => $value ) {
-      //   $stock = $value['stock'];
-      //   echo $stock;
-      //   $enabled = $value['enabled'];
-      //   echo $enabled;
-      //   if( $enabled == "yes" ){
-      //     $product_post_meta[$key] = array(
-      //       'stock' => 4,
-      //       'enabled' => "yes"
-      //     );
-      //   }
-      // }
-
-      update_post_meta(
-        $post_id,
-        'products',
-        $_POST['products']
-      );
-
-      var_dump($_POST['products']);
-
-      // echo '<script language="javascript">';
-      // echo 'alert("' . $post_id . '")';
-      // echo '</script>';
-      //debug();
-
+      if (array_key_exists( 'products', $_POST ) ) {
+        update_post_meta(
+          $post_id,
+          'products',
+          $_POST['products']
+        );
+      }
 
   }
 

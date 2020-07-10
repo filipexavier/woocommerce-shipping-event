@@ -5,6 +5,9 @@
 
 namespace WCShippingEvent\CPT;
 
+use DateTime;
+use WCShippingEvent\Base\DateController;
+
 class ShippingEvent {
 
   private static $instance;
@@ -75,5 +78,25 @@ class ShippingEvent {
   	register_post_type( 'shipping_event', $args );
 
   }
+
+  public static function get_shipping_date_simple( $shipping_event ) {
+    $strdate = get_post_meta( $shipping_event->ID, 'shipping_event_date', true );
+    if( empty( $strdate )  || !isset( $strdate ) ) return null;
+    return $strdate;
+  }
+
+  public static function get_shipping_date( $shipping_event ) {
+    $strdate = get_post_meta( $shipping_event->ID, 'shipping_event_date', true );
+    if( empty( $strdate )  || !isset( $strdate ) ) return null;
+    return DateController::get_date_from_string( $strdate );
+  }
+
+  public static function get_shipping_date_alert( $shipping_event ) {
+    $strdate = get_post_meta( $shipping_event->ID, 'shipping_event_date', true );
+    if( empty( $strdate )  || !isset( $strdate ) ) return null;
+    return DateController::format_week( $strdate );
+  }
+
+
 
 }

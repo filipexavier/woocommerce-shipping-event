@@ -9,14 +9,11 @@ use \WCShippingEvent\Base\BaseController;
 use \WCShippingEvent\Cpt\ShippingEvent;
 use \WCShippingEvent\Meta\MetaBoxesController;
 use \WCShippingEvent\Frontend\Controller\ShopController;
+use \WCShippingEvent\Frontend\Controller\ShortcodeController;
 
 final class Init extends BaseController {
 
   private static $instance;
-
-  // function __construct() {
-  //   $base_controller = BaseController->get_instance;
-  // }
 
   public static function get_instance() {
     if( is_null( self::$instance ) ) {
@@ -32,6 +29,7 @@ final class Init extends BaseController {
       ShippingEvent::get_instance()->init();
       MetaBoxesController::get_instance()->init();
       ShopController::get_instance()->init();
+      ShortcodeController::get_instance()->init();
   }
 
   public function add_admin_pages() {
@@ -48,16 +46,5 @@ final class Init extends BaseController {
     wp_enqueue_script( 'mypluginscript', $this->plugin_url . '/assets/js/shipping_event_products.js' );
 		wp_register_script( 'jquery-blockui', WC()->plugin_url() . '/assets/js/jquery-blockui/jquery.blockUI' . '.js', array( 'jquery' ), '2.70', true );
   }
-
-  // function register() {
-
-  // }
-  //
-  //
-  // function generate_post_types(){
-  //   echo("3");
-  //   add_action( 'init', array( 'Wpdpd_Shipping_Event', 'init' ) );
-  // }
-  //
 
 }

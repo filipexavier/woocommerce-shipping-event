@@ -5,6 +5,8 @@
 
 namespace WCShippingEvent\Meta;
 
+use WC_Shipping_Zones;
+
 /**
  *
  */
@@ -23,15 +25,12 @@ class MetaBoxesController
 
   public function init() {
     add_action( 'admin_menu', array( $this, 'add_shipping_event_meta_box' ) );
-    add_action('save_post', array( $this, 'wporg_save_postdata') );
-    // code...
+    add_action('save_post', array( $this, 'shipping_event_settings_save_postdata') );
   }
 
   function add_shipping_event_meta_box() {
-  	$prefix = '';
-
   	$meta_box = array(
-  		'id' => 'shipping_event',
+  		'id' => 'shipping_event_basic_settings',
   		'title' => 'Settings',
   		'page' => 'shipping_event',
   		'context' => 'normal',
@@ -39,10 +38,61 @@ class MetaBoxesController
   		'autosave' => 'false'
   	);
 
-    add_meta_box($meta_box['id'], $meta_box['title'], array( $this, 'output' ), $meta_box['page'], $meta_box['context'], $meta_box['priority']);
+    add_meta_box($meta_box['id'], $meta_box['title'], array( $this, 'shipping_event_basic_settings_output' ), $meta_box['page'], $meta_box['context'], $meta_box['priority']);
+
+  	$meta_box = array(
+  		'id' => 'shipping_event_methods_settings',
+  		'title' => 'Shipping Methods',
+  		'page' => 'shipping_event',
+  		'context' => 'normal',
+  		'priority' => 'default',
+  		'autosave' => 'false'
+  	);
+
+    add_meta_box($meta_box['id'], $meta_box['title'], array( $this, 'shipping_event_methods_settings_output' ), $meta_box['page'], $meta_box['context'], $meta_box['priority']);
+
+
   }
 
-  function output( $post )
+  function shipping_event_methods_settings_output( $post )
+  {
+    ?>
+    <div id="shipping_event_method_list" class="wc-metaboxes-wrapper panel">
+
+      <?php
+        $shipping_zones = WC_Shipping_Zones::get_zones();
+        $selected_shipping_methods= get_post_meta( $post->ID, 'selected_shipping_methods', true);
+
+        foreach ( $shipping_zones as $zone ) {
+          $zone_obj = WC_Shipping_Zones::get_zone($zone['zone_id']);
+          ?><p><?php echo $zone['zone_name'] ?></p><?php
+
+          $shipping_methods = $zone_obj->get_shipping_methods();
+          $method_label = '';
+          foreach ( $shipping_methods as $shipping_method ) {
+            $shipping_method_enabled = "no";
+            if( $shipping_method->method_title != $method_label ) {
+              $method_label = $shipping_method->method_title;
+              ?><p><?php echo $method_label ?></p><?php
+            }
+            if( isset( $selected_shipping_methods ) && array_key_exists( $shipping_method->instance_id, $selected_shipping_methods ) ) {
+              $shipping_method_enabled = $selected_shipping_methods[$shipping_method->instance_id]['enabled'];
+            }
+            ?>
+            <p class="form-field">
+              <input type="checkbox"
+                name="<?php echo 'selected_shipping_methods[' . $shipping_method->instance_id . '][enabled]' ?>"
+                value="yes"
+                <?php checked( $shipping_method_enabled, "yes" ); ?>>
+              <label><?php echo $shipping_method->title ?></label>
+            </p><?php
+          }
+        }
+      ?>
+    </div><?php
+  }
+
+  function shipping_event_basic_settings_output( $post )
   {
     $post_id          = $post->ID;
     $event_enabled    = get_post_meta($post_id, 'shipping_event_enabled', true );
@@ -92,6 +142,9 @@ class MetaBoxesController
         value="<?php echo esc_attr( date_i18n( 'Y-m-d', strtotime( $end_orders_date ) ) ); ?>"
       />
     </p>
+
+    <br />
+    <h3>Enabled Products</h3>
 
     <div id="shipping_event_product_list" class="wc-metaboxes-wrapper panel">
       	<div class="woocommerce_attribute wc-metabox woocommerce_attribute_data wc-metabox-content">
@@ -156,7 +209,7 @@ class MetaBoxesController
     </div> <?php
   }
 
-  function wporg_save_postdata($post_id)
+  function shipping_event_settings_save_postdata($post_id)
   {
       if (array_key_exists('shipping_event_end_orders_date', $_POST)) {
           update_post_meta(
@@ -194,11 +247,21 @@ class MetaBoxesController
           'shipping_event_enabled');
       }
 
+      //Save products
       if (array_key_exists( 'products', $_POST ) ) {
         update_post_meta(
           $post_id,
           'products',
           $_POST['products']
+        );
+      }
+
+      //Save shipping methods
+      if (array_key_exists( 'selected_shipping_methods', $_POST ) ) {
+        update_post_meta(
+          $post_id,
+          'selected_shipping_methods',
+          $_POST['selected_shipping_methods']
         );
       }
 

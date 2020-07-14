@@ -25,8 +25,6 @@ class ShopController {
   public function init() {
     if( !is_admin() ) {
       add_action( 'wp', array( $this, 'select_user_shipping_event' ) );
-      add_action( 'woocommerce_before_cart', array( $this, 'show_shipping_date_on_header' ), 40 );
-      add_action( 'woocommerce_checkout_before_customer_details', array( $this, 'show_shipping_date_on_header' ), 40 );
       add_filter( 'woocommerce_product_is_visible', array( $this, 'override_is_visible' ), 10, 2 );
       add_filter( 'woocommerce_is_purchasable', array($this, 'override_is_purchasable' ), 10, 2);
       add_filter( 'woocommerce_add_to_cart_validation', array($this, 'override_is_visible' ), 1, 2);
@@ -67,6 +65,13 @@ class ShopController {
     return $this->get_shipping_event_product_list( $this->shipping_event );
   }
 
+  public function get_session_shipping_event_method_list() {
+    if( !isset( $this->shipping_event ) )
+      $this->set_session_shipping_event();
+
+    return $this->get_shipping_event_method_list( $this->shipping_event );
+  }
+
   public function get_shipping_event_product_list( $shipping_event ) {
     if ( !isset( $shipping_event ) ) return null;
 
@@ -77,6 +82,20 @@ class ShopController {
 
       if ( !isset( $shipping_event_products ) ) return null;
       return $shipping_event_products;
+    }
+    return null;
+  }
+
+  public function get_shipping_event_method_list( $shipping_event ) {
+    if ( !isset( $shipping_event ) ) return null;
+
+    $shipping_event_id = $shipping_event->ID;
+    $shipping_event_enabled = get_post_meta( $shipping_event_id, 'shipping_event_enabled', true );
+    if ( isset( $shipping_event_enabled ) && $shipping_event_enabled == "yes" ) {
+      $shipping_event_methods = get_post_meta( $shipping_event_id, 'selected_shipping_methods', true );
+
+      if ( !isset( $shipping_event_methods ) ) return null;
+      return $shipping_event_methods;
     }
     return null;
   }
@@ -121,8 +140,8 @@ class ShopController {
    */
   public function override_is_visible($visible, $product_id) {
     if($visible) {
-      $status = $this->get_shipping_event_product_data( $product_id );
-      if( !isset( $status ) ) return false;
+      $product_data = $this->get_shipping_event_product_data( $product_id );
+      if( !isset( $product_data ) ) return false;
     }
     return $visible;
   }
@@ -135,8 +154,8 @@ class ShopController {
 
   public function override_is_purchasable( $is_purchasable, $product ) {
     if( $is_purchasable ) {
-      $status = $this->get_shipping_event_product_data( $product->get_id() );
-      if( !isset( $status ) ) return false;
+      $product_data = $this->get_shipping_event_product_data( $product->get_id() );
+      if( is_null( $product_data ) ) return false;
     }
     return $is_purchasable;
   }
@@ -170,12 +189,8 @@ class ShopController {
     }
   }
 
-  public function show_shipping_date_on_header() {
-    if( !isset( $this->shipping_event ) ) return;
-    $date = ShippingEvent::get_shipping_date_alert( $this->shipping_event );
-    if( !isset( $date ) ) return;
-    wc_add_notice( __("Seu pedido será entregue no dia " .  $date ), 'notice');
+  public function get_shipping_event() {
+    return $this->shipping_event;
   }
-
 
 }

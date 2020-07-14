@@ -10,6 +10,7 @@ use \WCShippingEvent\Cpt\ShippingEvent;
 use \WCShippingEvent\Meta\MetaBoxesController;
 use \WCShippingEvent\Frontend\Controller\ShopController;
 use \WCShippingEvent\Frontend\Controller\ShortcodeController;
+use \WCShippingEvent\Frontend\Controller\CheckoutController;
 
 final class Init extends BaseController {
 
@@ -30,6 +31,7 @@ final class Init extends BaseController {
       MetaBoxesController::get_instance()->init();
       ShopController::get_instance()->init();
       ShortcodeController::get_instance()->init();
+      CheckoutController::get_instance()->init();
   }
 
   public function add_admin_pages() {

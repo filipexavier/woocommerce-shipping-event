@@ -31,7 +31,7 @@ class MetaBoxesController
   function add_shipping_event_meta_box() {
   	$meta_box = array(
   		'id' => 'shipping_event_basic_settings',
-  		'title' => 'Settings',
+  		'title' => 'Basic Settings',
   		'page' => 'shipping_event',
   		'context' => 'normal',
   		'priority' => 'default',
@@ -50,6 +50,17 @@ class MetaBoxesController
   	);
 
     add_meta_box($meta_box['id'], $meta_box['title'], array( $this, 'shipping_event_methods_settings_output' ), $meta_box['page'], $meta_box['context'], $meta_box['priority']);
+
+  	$meta_box = array(
+  		'id' => 'shipping_event_products_settings',
+  		'title' => 'Products',
+  		'page' => 'shipping_event',
+  		'context' => 'normal',
+  		'priority' => 'default',
+  		'autosave' => 'false'
+  	);
+
+    add_meta_box($meta_box['id'], $meta_box['title'], array( $this, 'shipping_event_products_settings_output' ), $meta_box['page'], $meta_box['context'], $meta_box['priority']);
 
 
   }
@@ -99,7 +110,6 @@ class MetaBoxesController
     $date             = get_post_meta($post_id, 'shipping_event_date', true );
     $start_orders_date = get_post_meta($post_id, 'shipping_event_start_orders_date', true );
     $end_orders_date  = get_post_meta($post_id, 'shipping_event_end_orders_date', true );
-		$product_list     = wc_get_products('');
     ?>
 
     <p class="form-field">
@@ -141,11 +151,15 @@ class MetaBoxesController
         name="shipping_event_end_orders_date"
         value="<?php echo esc_attr( date_i18n( 'Y-m-d', strtotime( $end_orders_date ) ) ); ?>"
       />
-    </p>
+    </p><?php
+  }
 
-    <br />
-    <h3>Enabled Products</h3>
+  function shipping_event_products_settings_output( $post )
+  {
+    $post_id          = $post->ID;
+    $product_list     = wc_get_products('');
 
+    ?>
     <div id="shipping_event_product_list" class="wc-metaboxes-wrapper panel">
       	<div class="woocommerce_attribute wc-metabox woocommerce_attribute_data wc-metabox-content">
       		<table class="wp-list-table widefat fixed striped">

@@ -59,7 +59,7 @@ class ShippingEvent {
   		'label'                 => __( 'Shipping Event', 'text_domain' ),
   		'description'           => __( 'Event of a shipping as local pickup or delivery with a preset date', 'text_domain' ),
   		'labels'                => $labels,
-  		'supports'              => array( 'title', 'custom-fields' ),
+  		'supports'              => array( 'title' ),
   		'taxonomies'            => array( 'category', 'post_tag' ),
   		'hierarchical'          => false,
   		'public'                => true,

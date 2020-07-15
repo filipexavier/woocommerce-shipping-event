@@ -54,14 +54,6 @@ class CheckoutController {
       unset($package_rates[$method_id]);
     }
     return $package_rates;
-//     $shipping_methods = WC()->shipping()->load_shipping_methods();
-//     //woocommerce_cart_shipping_method_full_label
-//     get_shipping_method_class_names()
-//     $shipping_methods = array(
-//   'flat_rate'     => 'WC_Shipping_Flat_Rate',
-//   'free_shipping' => 'WC_Shipping_Free_Shipping',
-//   'local_pickup'  => 'WC_Shipping_Local_Pickup',
-// );
   }
 
 }

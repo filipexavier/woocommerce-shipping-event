@@ -23,4 +23,9 @@ class DateController {
     $date = DateController::get_date_from_string( $strdate );
     return strftime('%d - %m (%A)', $date->getTimestamp() );
   }
+
+  public static function now() {
+    DateController::set_locale();
+    return new DateTime('now');
+  }
 }

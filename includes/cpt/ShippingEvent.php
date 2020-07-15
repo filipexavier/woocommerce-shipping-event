@@ -79,6 +79,42 @@ class ShippingEvent {
 
   }
 
+  public static function get_open_order_pending( $shipping_event ) {
+    if( !self::get_shipping_enabled( $shipping_event ) ) return false;
+
+    $shipping_date = self::get_shipping_date( $shipping_event );
+    if( $shipping_date < DateController::now() ) return false;
+
+    $end_order_date = self::get_end_order_date( $shipping_event );
+    if( $end_order_date < DateController::now() ) return false;
+
+    $begin_order_date = self::get_begin_order_date( $shipping_event );
+    if( $begin_order_date <= DateController::now() ) return false;
+
+    return true;
+  }
+
+  public static function get_orderable( $shipping_event ) {
+    if( !self::get_shipping_enabled( $shipping_event ) ) return false;
+
+    $shipping_date = self::get_shipping_date( $shipping_event );
+    if( $shipping_date < DateController::now() ) return false;
+
+    $begin_order_date = self::get_begin_order_date( $shipping_event );
+    if( $begin_order_date > DateController::now() ) return false;
+
+    $end_order_date = self::get_end_order_date( $shipping_event );
+    if( $end_order_date < DateController::now() ) return false;
+
+    return true;
+  }
+
+  public static function get_shipping_enabled( $shipping_event ) {
+    $shipping_event_enabled = get_post_meta( $shipping_event->ID, 'shipping_event_enabled', true );
+    if ( isset( $shipping_event_enabled ) && $shipping_event_enabled == "yes" ) return true;
+    return false;
+  }
+
   public static function get_shipping_date_simple( $shipping_event ) {
     $strdate = get_post_meta( $shipping_event->ID, 'shipping_event_date', true );
     if( empty( $strdate )  || !isset( $strdate ) ) return null;
@@ -87,6 +123,18 @@ class ShippingEvent {
 
   public static function get_shipping_date( $shipping_event ) {
     $strdate = get_post_meta( $shipping_event->ID, 'shipping_event_date', true );
+    if( empty( $strdate )  || !isset( $strdate ) ) return null;
+    return DateController::get_date_from_string( $strdate );
+  }
+
+  public static function get_begin_order_date( $shipping_event ) {
+    $strdate = get_post_meta( $shipping_event->ID, 'shipping_event_start_orders_date', true );
+    if( empty( $strdate )  || !isset( $strdate ) ) return null;
+    return DateController::get_date_from_string( $strdate );
+  }
+
+  public static function get_end_order_date( $shipping_event ) {
+    $strdate = get_post_meta( $shipping_event->ID, 'shipping_event_end_orders_date', true );
     if( empty( $strdate )  || !isset( $strdate ) ) return null;
     return DateController::get_date_from_string( $strdate );
   }

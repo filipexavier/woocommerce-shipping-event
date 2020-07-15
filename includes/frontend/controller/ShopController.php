@@ -55,6 +55,10 @@ class ShopController {
 
     if( isset( $shipping_event_id ) )
       $this->shipping_event = get_post($shipping_event_id);
+      if ( !ShippingEvent::get_orderable( $this->shipping_event ) ) {
+        $this->shipping_event = null;
+        //TODO: REDIRECT TO CHOOSE SHIPPING EVENT AND REMOVE ALL FILTERS
+      }
 
   }
 
@@ -89,10 +93,8 @@ class ShopController {
   public function get_shipping_event_method_list( $shipping_event ) {
     if ( !isset( $shipping_event ) ) return null;
 
-    $shipping_event_id = $shipping_event->ID;
-    $shipping_event_enabled = get_post_meta( $shipping_event_id, 'shipping_event_enabled', true );
-    if ( isset( $shipping_event_enabled ) && $shipping_event_enabled == "yes" ) {
-      $shipping_event_methods = get_post_meta( $shipping_event_id, 'selected_shipping_methods', true );
+    if ( ShippingEvent::get_orderable( $shipping_event ) ) {
+      $shipping_event_methods = get_post_meta( $shipping_event->ID, 'selected_shipping_methods', true );
 
       if ( !isset( $shipping_event_methods ) ) return null;
       return $shipping_event_methods;

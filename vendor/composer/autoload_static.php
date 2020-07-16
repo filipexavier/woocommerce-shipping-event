@@ -20,11 +20,24 @@ class ComposerStaticInit85e8cde181b9ff7ae33d1a22bbc37486
         ),
     );
 
+    public static $classMap = array (
+        'WCShippingEvent\\Base\\Activate' => __DIR__ . '/../..' . '/includes/base/Activate.php',
+        'WCShippingEvent\\Base\\BaseController' => __DIR__ . '/../..' . '/includes/base/BaseController.php',
+        'WCShippingEvent\\Base\\DateController' => __DIR__ . '/../..' . '/includes/base/DateController.php',
+        'WCShippingEvent\\Cpt\\ShippingEvent' => __DIR__ . '/../..' . '/includes/cpt/ShippingEvent.php',
+        'WCShippingEvent\\Frontend\\Controller\\CheckoutController' => __DIR__ . '/../..' . '/includes/frontend/controller/CheckoutController.php',
+        'WCShippingEvent\\Frontend\\Controller\\ShopController' => __DIR__ . '/../..' . '/includes/frontend/controller/ShopController.php',
+        'WCShippingEvent\\Frontend\\Controller\\ShortcodeController' => __DIR__ . '/../..' . '/includes/frontend/controller/ShortcodeController.php',
+        'WCShippingEvent\\Init' => __DIR__ . '/../..' . '/includes/Init.php',
+        'WCShippingEvent\\Meta\\MetaBoxesController' => __DIR__ . '/../..' . '/includes/meta/MetaBoxesController.php',
+    );
+
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
             $loader->prefixLengthsPsr4 = ComposerStaticInit85e8cde181b9ff7ae33d1a22bbc37486::$prefixLengthsPsr4;
             $loader->prefixDirsPsr4 = ComposerStaticInit85e8cde181b9ff7ae33d1a22bbc37486::$prefixDirsPsr4;
+            $loader->classMap = ComposerStaticInit85e8cde181b9ff7ae33d1a22bbc37486::$classMap;
 
         }, null, ClassLoader::class);
     }

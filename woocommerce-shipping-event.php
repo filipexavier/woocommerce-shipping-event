@@ -4,7 +4,7 @@
   Description: This plugin allows the customer to pick up the order themselves by selecting pickup location during order placement, and also select the date of delivery, from a list of preset dates set by the administrator.
   Version: 0.0.1
   Author: Filipe Xavier
-  Text Domain: woocommerce-shipping_event
+  Text Domain: woocommerce-shipping-event
   Copyright 2020 filipexts
  */
 
@@ -13,8 +13,8 @@
  use WCShippingEvent\Init;
  use WCShippingEvent\Base\Activate;
 
- if( file_exists( dirname( __FILE__) . '/vendor/autoload.php' ) ) {
-   require_once( dirname( __FILE__) . '/vendor/autoload.php' );
+ if( file_exists( dirname( __FILE__ ) . '/vendor/autoload.php' ) ) {
+   require_once( dirname( __FILE__ ) . '/vendor/autoload.php' );
  }
 
  function activate_wc_shipping_event_plugin() {

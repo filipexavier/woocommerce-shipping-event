@@ -1,5 +1,5 @@
 {
-    "name": "filipexts/woocommerce-shipping_event",
+    "name": "filipexts/woocommerce-shipping-event",
     "description": "Sets specific shipping events for the user to choose when to pickup or receive delivery",
     "type": "project",
     "license": "GPL",

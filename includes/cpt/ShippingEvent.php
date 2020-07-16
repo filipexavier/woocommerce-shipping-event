@@ -3,7 +3,7 @@
  * @package WoocommerceShippingEvent
 */
 
-namespace WCShippingEvent\CPT;
+namespace WCShippingEvent\Cpt;
 
 use DateTime;
 use WCShippingEvent\Base\DateController;

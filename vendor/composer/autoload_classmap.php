@@ -6,4 +6,13 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
+    'WCShippingEvent\\Base\\Activate' => $baseDir . '/includes/base/Activate.php',
+    'WCShippingEvent\\Base\\BaseController' => $baseDir . '/includes/base/BaseController.php',
+    'WCShippingEvent\\Base\\DateController' => $baseDir . '/includes/base/DateController.php',
+    'WCShippingEvent\\Cpt\\ShippingEvent' => $baseDir . '/includes/cpt/ShippingEvent.php',
+    'WCShippingEvent\\Frontend\\Controller\\CheckoutController' => $baseDir . '/includes/frontend/controller/CheckoutController.php',
+    'WCShippingEvent\\Frontend\\Controller\\ShopController' => $baseDir . '/includes/frontend/controller/ShopController.php',
+    'WCShippingEvent\\Frontend\\Controller\\ShortcodeController' => $baseDir . '/includes/frontend/controller/ShortcodeController.php',
+    'WCShippingEvent\\Init' => $baseDir . '/includes/Init.php',
+    'WCShippingEvent\\Meta\\MetaBoxesController' => $baseDir . '/includes/meta/MetaBoxesController.php',
 );

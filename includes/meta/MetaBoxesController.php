@@ -86,7 +86,7 @@ class MetaBoxesController
               $method_label = $shipping_method->method_title;
               ?><p><?php echo $method_label ?></p><?php
             }
-            if( isset( $selected_shipping_methods ) && array_key_exists( $shipping_method->instance_id, $selected_shipping_methods ) ) {
+            if( !empty( $selected_shipping_methods ) && array_key_exists( $shipping_method->instance_id, $selected_shipping_methods ) ) {
               $shipping_method_enabled = $selected_shipping_methods[$shipping_method->instance_id]['enabled'];
             }
             ?>
@@ -182,7 +182,7 @@ class MetaBoxesController
                 $product_id = $product->get_id();
                 $product_enabled = "no";
                 $product_stock = '';
-                if( isset( $products_data ) && array_key_exists( $product_id, $products_data ) ){
+                if( !empty( $products_data ) && array_key_exists( $product_id, $products_data ) ){
                   $product_event_data = $products_data[$product_id];
                   if( array_key_exists( 'enabled', $product_event_data ) ){
                     $product_enabled = $product_event_data['enabled'];

@@ -24,7 +24,7 @@ class ShopController {
 
   public function init() {
     if( !is_admin() ) {
-      add_action( 'wp', array( $this, 'select_user_shipping_event' ) );
+      add_action( 'woocommerce_init', array( $this, 'set_session_shipping_event' ) );
       add_filter( 'woocommerce_product_is_visible', array( $this, 'override_is_visible' ), 10, 2 );
       add_filter( 'woocommerce_is_purchasable', array($this, 'override_is_purchasable' ), 10, 2);
       add_filter( 'woocommerce_add_to_cart_validation', array($this, 'override_is_visible' ), 1, 2);
@@ -35,44 +35,43 @@ class ShopController {
   }
 
   public function set_session_shipping_event() {
-    if( !isset( WC()->session ) ){
-      WC()->session = new $session_class();
-      WC()->session->init();
+    //Start keepping unlogged user data
+    if ( !WC()->session->has_session() ) {
+      WC()->session->set_customer_session_cookie( true );
     }
 
-    $session_shipping_event_id = WC()->session->get('shipping_event');
     $shipping_event_id = null;
+    if( !empty( $this->shipping_event ) ) $shipping_event_id = $this->shipping_event->ID;
+    else $shipping_event_id = WC()->session->get('shipping_event');
 
-    if( array_key_exists( 'chosen_shipping_event_id', $_POST ) ) {
-      $chosen_shipping_event_id = $_POST['chosen_shipping_event_id'];
-      if( isset( $session_shipping_event_id ) ) {
-        if( $chosen_shipping_event_id != $session_shipping_event_id ) {
-          //TODO: REDIRECT TO CHOOSE SHIPPING EVENT AND REMOVE ALL FILTERS
-          $shipping_event_id = $chosen_shipping_event_id;
-        } else $shipping_event_id = $session_shipping_event_id;
-      } else $shipping_event_id = $chosen_shipping_event_id;
-    } else if( isset( $session_shipping_event_id ) ) $shipping_event_id = $session_shipping_event_id;
-
-    if( isset( $shipping_event_id ) )
-      $this->shipping_event = get_post($shipping_event_id);
-      if ( !ShippingEvent::get_orderable( $this->shipping_event ) ) {
-        $this->shipping_event = null;
+    //Change Chosen Shipping Event
+    if( array_key_exists( 'chosen_shipping_event_id', $_POST ) &&
+        !empty( $_POST['chosen_shipping_event_id'] ) &&
+        $_POST['chosen_shipping_event_id'] != $shipping_event_id )
         //TODO: REDIRECT TO CHOOSE SHIPPING EVENT AND REMOVE ALL FILTERS
-      }
+      $shipping_event_id = $_POST['chosen_shipping_event_id'];
+
+    //Set this shipping_event property
+    if( !empty( $shipping_event_id ) &&
+      ( empty( $this->shipping_event ) ||
+        $shipping_event_id != $this->shipping_event->ID ) ) {
+      $this->shipping_event = get_post($shipping_event_id);
+      WC()->session->set('shipping_event', $shipping_event_id);
+    }
+    //Check shipping_event valid
+    if ( !ShippingEvent::get_orderable( $this->shipping_event ) ) {
+      $this->shipping_event = null;
+      WC()->session->__unset('shipping_event');
+      //TODO: REDIRECT TO CHOOSE SHIPPING EVENT AND REMOVE ALL FILTERS
+    }
 
   }
 
   public function get_session_shipping_event_product_list() {
-    if( !isset( $this->shipping_event ) )
-      $this->set_session_shipping_event();
-
     return $this->get_shipping_event_product_list( $this->shipping_event );
   }
 
   public function get_session_shipping_event_method_list() {
-    if( !isset( $this->shipping_event ) )
-      $this->set_session_shipping_event();
-
     return $this->get_shipping_event_method_list( $this->shipping_event );
   }
 
@@ -172,23 +171,6 @@ class ShopController {
     $stock = $this->get_shipping_event_product_stock( $product->get_id() );
     if( isset( $stock) ) $manage_stock = true;
     return $manage_stock;
-  }
-
-  public function select_user_shipping_event()
-  {
-    //TODO: Confirm change if previously set
-
-    $this->set_session_shipping_event();
-    if ( isset( $this->shipping_event ) ) {
-      $shipping_event_id = $this->shipping_event->ID;
-      $user = wp_get_current_user();
-      $user_id = is_user_logged_in() ? get_current_user_id() : 0;
-      if ( isset( $user ) && isset( $user->ID ) && $user->ID != 0 ) {
-        update_user_meta( $user->ID, 'shipping_event', $shipping_event_id);
-      } else {
-        WC()->session->set('shipping_event', $shipping_event_id);
-      }
-    }
   }
 
   public function get_shipping_event() {

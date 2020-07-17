@@ -110,8 +110,9 @@ class ShippingEvent {
   }
 
   public static function get_shipping_enabled( $shipping_event ) {
+    if( is_null( $shipping_event ) ) return false;
     $shipping_event_enabled = get_post_meta( $shipping_event->ID, 'shipping_event_enabled', true );
-    if ( isset( $shipping_event_enabled ) && $shipping_event_enabled == "yes" ) return true;
+    if ( !empty( $shipping_event_enabled ) && $shipping_event_enabled == "yes" ) return true;
     return false;
   }
 

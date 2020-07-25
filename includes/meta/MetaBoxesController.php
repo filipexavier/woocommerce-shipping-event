@@ -6,6 +6,7 @@
 namespace WCShippingEvent\Meta;
 
 use WC_Shipping_Zones;
+use \WCShippingEvent\Meta\LocalPickupDetailsMetabox;
 
 /**
  *
@@ -24,6 +25,7 @@ class MetaBoxesController
   }
 
   public function init() {
+    LocalPickupDetailsMetabox::get_instance()->init();
     add_action( 'admin_menu', array( $this, 'add_shipping_event_meta_box' ) );
     add_action('save_post', array( $this, 'shipping_event_settings_save_postdata') );
   }

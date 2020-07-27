@@ -6,6 +6,7 @@ jQuery(document).ready(function($){
       $details_div = $(this).children('.shipping_method_details')[0];
       $label.appendChild($details_div);
       $details_div.prepend($label.firstChild);
+      $details_div.hidden = false;
     });
   }
   $(document.body).on('updated_shipping_method', addShippingDetails);

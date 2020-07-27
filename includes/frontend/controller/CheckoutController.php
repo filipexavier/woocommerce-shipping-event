@@ -25,7 +25,7 @@ class CheckoutController {
       add_action( 'woocommerce_before_cart', array( $this, 'show_shipping_date_on_header' ), 1 );
       add_action( 'woocommerce_checkout_before_customer_details', array( $this, 'show_shipping_date_on_header' ), 1 );
       add_filter( 'woocommerce_package_rates', array( $this, 'filter_shipping_methods' ) );
-      //add_filter( 'woocommerce_shipping_rate_enabled' , array( $this, 'filter_shipping_methods' ), 10, 2 );
+      add_action( 'woocommerce_after_shipping_rate' , array( $this, 'add_local_pickup_details' ), 10, 2 );
     }
   }
 
@@ -54,6 +54,16 @@ class CheckoutController {
       unset($package_rates[$method_id]);
     }
     return $package_rates;
+  }
+
+  public function add_local_pickup_details( $shipping_method, $index ) {
+    ?>
+    <div class="shipping_method_details" hidden>
+      <span class="shipping_method_address">
+        <?php echo get_post_meta( $shipping_method->instance_id, 'local_pickup_details_address', true ) ?>
+      </span>
+    </div>
+    <?php
   }
 
 }

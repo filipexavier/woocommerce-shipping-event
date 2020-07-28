@@ -4,6 +4,11 @@
   margin-bottom: 10px !important;
 }
 
+.shipping_method_title {
+  font-size: 1em;
+  font-weight: bold;
+}
+
 .shipping_method_address {
   display: block;
   font-weight: normal;
@@ -23,7 +28,7 @@
 	 align-items: center;
 	 padding: 10px 10px !important;
 	 border-radius: 6px;
-	 border: 1.2px solid transparent;
+	 border: 1.5px solid transparent;
 	 background-color: transparent;
 	 transition: all 300ms ease-in;
    box-shadow: 0px 1px 2px 1px #ccc;
@@ -40,6 +45,10 @@
 .shipping__list_item [type="radio"]:checked ~ label {
   color: black;
   border-color: #009739;
+}
+
+.shipping__list_item .woocommerce-Price-amount {
+  color: red !important;
 }
 
 /* .wc_payment_method {

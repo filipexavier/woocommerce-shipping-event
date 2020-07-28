@@ -59,6 +59,7 @@ class CheckoutController {
   public function add_local_pickup_details( $shipping_method, $index ) {
     ?>
     <div class="shipping_method_details" hidden>
+      <span class="shipping_method_title"></span>
       <span class="shipping_method_address">
         <?php echo get_post_meta( $shipping_method->instance_id, 'local_pickup_details_address', true ) ?>
       </span>

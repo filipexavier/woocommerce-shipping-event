@@ -9,6 +9,7 @@ return array(
     'WCShippingEvent\\Base\\Activate' => $baseDir . '/includes/base/Activate.php',
     'WCShippingEvent\\Base\\BaseController' => $baseDir . '/includes/base/BaseController.php',
     'WCShippingEvent\\Base\\DateController' => $baseDir . '/includes/base/DateController.php',
+    'WCShippingEvent\\Base\\ShippingEventController' => $baseDir . '/includes/base/ShippingEventController.php',
     'WCShippingEvent\\Cpt\\LocalPickupDetails' => $baseDir . '/includes/cpt/LocalPickupDetails.php',
     'WCShippingEvent\\Cpt\\ShippingEvent' => $baseDir . '/includes/cpt/ShippingEvent.php',
     'WCShippingEvent\\Frontend\\Controller\\CheckoutController' => $baseDir . '/includes/frontend/controller/CheckoutController.php',

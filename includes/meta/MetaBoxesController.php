@@ -7,6 +7,8 @@ namespace WCShippingEvent\Meta;
 
 use WC_Shipping_Zones;
 use \WCShippingEvent\Meta\LocalPickupDetailsMetabox;
+use \WCShippingEvent\Cpt\ShippingEvent;
+use \WCShippingEvent\Base\DateController;
 
 /**
  *
@@ -108,10 +110,7 @@ class MetaBoxesController
   function shipping_event_basic_settings_output( $post )
   {
     $post_id          = $post->ID;
-    $event_enabled    = get_post_meta($post_id, 'shipping_event_enabled', true );
-    $date             = get_post_meta($post_id, 'shipping_event_date', true );
-    $start_orders_date = get_post_meta($post_id, 'shipping_event_start_orders_date', true );
-    $end_orders_date  = get_post_meta($post_id, 'shipping_event_end_orders_date', true );
+    $shipping_event = new ShippingEvent( $post_id );
     ?>
 
     <p class="form-field">
@@ -121,7 +120,7 @@ class MetaBoxesController
         id="shipping_event_enabled"
         name="shipping_event_enabled"
         value="yes"
-        <?php checked( $event_enabled, "yes" ); ?>
+        <?php checked( $shipping_event->get_enabled(), true ); ?>
       />
     </p>
 
@@ -131,7 +130,7 @@ class MetaBoxesController
        type="date"
        id="shipping_event_date"
        name="shipping_event_date"
-       value="<?php echo esc_attr( date_i18n( 'Y-m-d', strtotime( $date ) ) ); ?>"
+       value="<?php echo DateController::date_to_str( $shipping_event->get_shipping_date() ) ?>"
       />
     </p>
 
@@ -141,7 +140,7 @@ class MetaBoxesController
        type="date"
        id="shipping_event_start_orders_date"
        name="shipping_event_start_orders_date"
-       value="<?php echo esc_attr( date_i18n( 'Y-m-d', strtotime( $start_orders_date ) ) ); ?>"
+       value="<?php echo DateController::date_to_str( $shipping_event->get_begin_order_date() ) ?>"
       />
     </p>
 
@@ -151,7 +150,7 @@ class MetaBoxesController
         type="date"
         id="shipping_event_end_orders_date"
         name="shipping_event_end_orders_date"
-        value="<?php echo esc_attr( date_i18n( 'Y-m-d', strtotime( $end_orders_date ) ) ); ?>"
+        value="<?php echo DateController::date_to_str( $shipping_event->get_end_order_date() ) ?>"
       />
     </p><?php
   }
@@ -231,7 +230,7 @@ class MetaBoxesController
           update_post_meta(
               $post_id,
               'shipping_event_end_orders_date',
-              $_POST['shipping_event_end_orders_date']
+              get_gmt_from_date( $_POST['shipping_event_end_orders_date'] )
           );
       }
 
@@ -239,7 +238,7 @@ class MetaBoxesController
           update_post_meta(
               $post_id,
               'shipping_event_start_orders_date',
-              $_POST['shipping_event_start_orders_date']
+              get_gmt_from_date( $_POST['shipping_event_start_orders_date'] )
           );
       }
 
@@ -247,7 +246,7 @@ class MetaBoxesController
           update_post_meta(
               $post_id,
               'shipping_event_date',
-              $_POST['shipping_event_date']
+              get_gmt_from_date( $_POST['shipping_event_date'] )
           );
       }
 

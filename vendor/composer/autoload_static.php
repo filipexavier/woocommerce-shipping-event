@@ -24,6 +24,7 @@ class ComposerStaticInit85e8cde181b9ff7ae33d1a22bbc37486
         'WCShippingEvent\\Base\\Activate' => __DIR__ . '/../..' . '/includes/base/Activate.php',
         'WCShippingEvent\\Base\\BaseController' => __DIR__ . '/../..' . '/includes/base/BaseController.php',
         'WCShippingEvent\\Base\\DateController' => __DIR__ . '/../..' . '/includes/base/DateController.php',
+        'WCShippingEvent\\Base\\ShippingEventController' => __DIR__ . '/../..' . '/includes/base/ShippingEventController.php',
         'WCShippingEvent\\Cpt\\LocalPickupDetails' => __DIR__ . '/../..' . '/includes/cpt/LocalPickupDetails.php',
         'WCShippingEvent\\Cpt\\ShippingEvent' => __DIR__ . '/../..' . '/includes/cpt/ShippingEvent.php',
         'WCShippingEvent\\Frontend\\Controller\\CheckoutController' => __DIR__ . '/../..' . '/includes/frontend/controller/CheckoutController.php',

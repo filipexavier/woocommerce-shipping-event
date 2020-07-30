@@ -7,145 +7,96 @@ namespace WCShippingEvent\Cpt;
 
 use DateTime;
 use WCShippingEvent\Base\DateController;
+use WCShippingEvent\Base\ShippingEventController;
 
 class ShippingEvent {
 
-  private static $instance;
+  private $id;
 
-  public static function get_instance() {
-    if( is_null( self::$instance ) ) {
-      self::$instance = new self();
-    }
+  private $title;
 
-    return self::$instance;
+  private $enabled;
+
+  private $shipping_date;
+
+  private $begin_order_date;
+
+  private $end_order_date;
+
+  private $shipping_methods;
+
+  private static $meta_keys = array (
+    'begin_order_date' => 'shipping_event_start_orders_date',
+    'shipping_date' => 'shipping_event_date',
+    'end_order_date' => 'shipping_event_end_orders_date',
+    'enabled' => 'shipping_event_enabled',
+    'shipping_methods' => 'selected_shipping_methods'
+  );
+
+  public function __construct( $shipping_event_id ) {
+    $shipping_event_post = ShippingEventController::get_instance()->get_post_by_id( $shipping_event_id );
+    $this->id = $shipping_event_id;
+    $this->enabled = ShippingEventController::get_instance()->get_post_enabled( $shipping_event_id, ShippingEvent::get_meta_key( 'enabled' ) );
+    $this->shipping_date = DateController::get_post_date( $shipping_event_id, ShippingEvent::get_meta_key( 'shipping_date' ) );
+    $this->title = $shipping_event_post->post_title;
+    $this->begin_order_date = DateController::get_post_date( $shipping_event_id, ShippingEvent::get_meta_key( 'begin_order_date' ) );
+    $this->end_order_date = DateController::get_post_date( $shipping_event_id, ShippingEvent::get_meta_key( 'end_order_date' ) );
   }
 
-	public function init() {
-    add_action( 'init', array( $this, 'install_post_type' ), 0 );
-  }
-
-  public static function install_post_type() {
-
-    $labels = array(
-  		'name'                  => _x( 'Shipping Events', 'Post Type General Name', 'text_domain' ),
-  		'singular_name'         => _x( 'Shipping Event', 'Post Type Singular Name', 'text_domain' ),
-  		'menu_name'             => __( 'Shipping Events', 'text_domain' ),
-  		'name_admin_bar'        => __( 'Shipping Event', 'text_domain' ),
-  		'archives'              => __( 'Item Archives', 'text_domain' ),
-  		'attributes'            => __( 'Item Attributes', 'text_domain' ),
-  		'parent_item_colon'     => __( 'Parent Item:', 'text_domain' ),
-  		'all_items'             => __( 'All Items', 'text_domain' ),
-  		'add_new_item'          => __( 'Add New Item', 'text_domain' ),
-  		'add_new'               => __( 'Add New', 'text_domain' ),
-  		'new_item'              => __( 'New Item', 'text_domain' ),
-  		'edit_item'             => __( 'Edit Item', 'text_domain' ),
-  		'update_item'           => __( 'Update Item', 'text_domain' ),
-  		'view_item'             => __( 'View Item', 'text_domain' ),
-  		'view_items'            => __( 'View Items', 'text_domain' ),
-  		'search_items'          => __( 'Search Item', 'text_domain' ),
-  		'not_found'             => __( 'Not found', 'text_domain' ),
-  		'not_found_in_trash'    => __( 'Not found in Trash', 'text_domain' ),
-  		'featured_image'        => __( 'Featured Image', 'text_domain' ),
-  		'set_featured_image'    => __( 'Set featured image', 'text_domain' ),
-  		'remove_featured_image' => __( 'Remove featured image', 'text_domain' ),
-  		'use_featured_image'    => __( 'Use as featured image', 'text_domain' ),
-  		'insert_into_item'      => __( 'Insert into item', 'text_domain' ),
-  		'uploaded_to_this_item' => __( 'Uploaded to this item', 'text_domain' ),
-  		'items_list'            => __( 'Items list', 'text_domain' ),
-  		'items_list_navigation' => __( 'Items list navigation', 'text_domain' ),
-  		'filter_items_list'     => __( 'Filter items list', 'text_domain' ),
-  	);
-  	$args = array(
-  		'label'                 => __( 'Shipping Event', 'text_domain' ),
-  		'description'           => __( 'Event of a shipping as local pickup or delivery with a preset date', 'text_domain' ),
-  		'labels'                => $labels,
-  		'supports'              => array( 'title' ),
-  		'taxonomies'            => array( 'category', 'post_tag' ),
-  		'hierarchical'          => false,
-  		'public'                => true,
-  		'show_ui'               => true,
-  		'show_in_menu'          => true,
-  		'menu_position'         => 5,
-  		'menu_icon'             => 'dashicons-cart',
-  		'show_in_admin_bar'     => true,
-  		'show_in_nav_menus'     => true,
-  		'can_export'            => true,
-  		'has_archive'           => true,
-  		'exclude_from_search'   => true,
-  		'publicly_queryable'    => true,
-  		'capability_type'       => 'page',
-  	);
-  	register_post_type( 'shipping_event', $args );
-
-  }
-
-  public static function get_open_order_pending( $shipping_event ) {
-    if( !self::get_shipping_enabled( $shipping_event ) ) return false;
-
-    $shipping_date = self::get_shipping_date( $shipping_event );
-    if( $shipping_date < DateController::now() ) return false;
-
-    $end_order_date = self::get_end_order_date( $shipping_event );
-    if( $end_order_date < DateController::now() ) return false;
-
-    $begin_order_date = self::get_begin_order_date( $shipping_event );
-    if( $begin_order_date <= DateController::now() ) return false;
+  /**
+   * Returns true if the shipping event is still not open for orders; false if is already opened or closed
+   * @return boolean
+  */
+  public function open_order_pending() {
+    if( !$this->get_enabled() ) return false;
+    if( $this->get_shipping_date() < DateController::now() ) return false;
+    if( $this->get_end_order_date() < DateController::now() ) return false;
+    if( $this->get_begin_order_date() <= DateController::now() ) return false;
 
     return true;
   }
 
-  public static function get_orderable( $shipping_event ) {
-    if( !self::get_shipping_enabled( $shipping_event ) ) return false;
-
-    $shipping_date = self::get_shipping_date( $shipping_event );
-    if( $shipping_date < DateController::now() ) return false;
-
-    $begin_order_date = self::get_begin_order_date( $shipping_event );
-    if( $begin_order_date > DateController::now() ) return false;
-
-    $end_order_date = self::get_end_order_date( $shipping_event );
-    if( $end_order_date < DateController::now() ) return false;
+  public function orders_enabled() {
+    if( !$this->get_enabled() ) return false;
+    if( $this->get_shipping_date() < DateController::now() ) return false;
+    if( $this->get_begin_order_date() > DateController::now() ) return false;
+    if( $this->get_end_order_date() < DateController::now() ) return false;
 
     return true;
   }
 
-  public static function get_shipping_enabled( $shipping_event ) {
-    if( is_null( $shipping_event ) ) return false;
-    $shipping_event_enabled = get_post_meta( $shipping_event->ID, 'shipping_event_enabled', true );
-    if ( !empty( $shipping_event_enabled ) && $shipping_event_enabled == "yes" ) return true;
-    return false;
+
+  public function get_id() {
+    return $this->id;
   }
 
-  public static function get_shipping_date_simple( $shipping_event ) {
-    $strdate = get_post_meta( $shipping_event->ID, 'shipping_event_date', true );
-    if( empty( $strdate )  || !isset( $strdate ) ) return null;
-    return $strdate;
+  public function get_enabled() {
+    return $this->enabled;
   }
 
-  public static function get_shipping_date( $shipping_event ) {
-    $strdate = get_post_meta( $shipping_event->ID, 'shipping_event_date', true );
-    if( empty( $strdate )  || !isset( $strdate ) ) return null;
-    return DateController::get_date_from_string( $strdate );
+  public function get_title() {
+    return $this->title;
   }
 
-  public static function get_begin_order_date( $shipping_event ) {
-    $strdate = get_post_meta( $shipping_event->ID, 'shipping_event_start_orders_date', true );
-    if( empty( $strdate )  || !isset( $strdate ) ) return null;
-    return DateController::get_date_from_string( $strdate );
+  public function get_shipping_date() {
+    return $this->shipping_date;
   }
 
-  public static function get_end_order_date( $shipping_event ) {
-    $strdate = get_post_meta( $shipping_event->ID, 'shipping_event_end_orders_date', true );
-    if( empty( $strdate )  || !isset( $strdate ) ) return null;
-    return DateController::get_date_from_string( $strdate );
+  public function get_begin_order_date() {
+    return $this->begin_order_date;
   }
 
-  public static function get_shipping_date_alert( $shipping_event ) {
-    $strdate = get_post_meta( $shipping_event->ID, 'shipping_event_date', true );
-    if( empty( $strdate )  || !isset( $strdate ) ) return null;
-    return DateController::format_week( $strdate );
+  public function get_end_order_date() {
+    return $this->end_order_date;
   }
 
+  public static function get_meta_keys() {
+    return $self::meta_keys;
+  }
 
+  public static function get_meta_key( $key ) {
+    if( !array_key_exists( $key, self::$meta_keys ) ) return '';
+    return self::$meta_keys[ $key ];
+  }
 
 }

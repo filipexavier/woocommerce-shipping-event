@@ -6,7 +6,7 @@
 namespace WCShippingEvent;
 
 use \WCShippingEvent\Base\BaseController;
-use \WCShippingEvent\Cpt\ShippingEvent;
+use \WCShippingEvent\Base\ShippingEventController;
 use \WCShippingEvent\Cpt\LocalPickupDetails;
 use \WCShippingEvent\Meta\MetaBoxesController;
 use \WCShippingEvent\Frontend\Controller\ShopController;
@@ -29,7 +29,7 @@ final class Init extends BaseController {
       add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin' ) );
       add_action( 'wp_enqueue_scripts', array( $this, 'enqueue' ) );
       add_action( 'admin_menu', array( $this, 'add_admin_pages' ) );
-      ShippingEvent::get_instance()->init();
+      ShippingEventController::get_instance()->init();
       LocalPickupDetails::get_instance()->init();
       MetaBoxesController::get_instance()->init();
       ShopController::get_instance()->init();

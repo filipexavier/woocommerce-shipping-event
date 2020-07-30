@@ -6,6 +6,7 @@
 namespace WCShippingEvent\Frontend\Controller;
 
 use \WCShippingEvent\Cpt\ShippingEvent;
+use \WCShippingEvent\Base\ShippingEventController;
 
 class ShopController {
 
@@ -31,6 +32,7 @@ class ShopController {
       add_filter( 'woocommerce_product_is_in_stock', array( $this, 'override_is_in_stock' ), 10, 2 );
       add_filter( 'woocommerce_product_get_stock_quantity' , array( $this, 'override_stock_quantity' ), 10, 2 );
       add_filter( 'woocommerce_product_get_manage_stock' , array( $this, 'override_manage_stock' ), 10, 2 );
+      add_filter( 'woocommerce_product_set_stock_quantity' , array( $this, 'override_set_stock' ), 10, 2 );
     }
   }
 
@@ -54,17 +56,17 @@ class ShopController {
     //Set this shipping_event property
     if( !empty( $shipping_event_id ) &&
       ( empty( $this->shipping_event ) ||
-        $shipping_event_id != $this->shipping_event->ID ) ) {
-      $this->shipping_event = get_post($shipping_event_id);
+        $shipping_event_id != $this->shipping_event->get_id() ) ) {
+      $this->shipping_event = new ShippingEvent( $shipping_event_id );
       WC()->session->set('shipping_event', $shipping_event_id);
     }
+
     //Check shipping_event valid
-    if ( !ShippingEvent::get_orderable( $this->shipping_event ) ) {
+    if ( empty( $this->shipping_event ) || !$this->shipping_event->orders_enabled() ) {
       $this->shipping_event = null;
       WC()->session->__unset('shipping_event');
       //TODO: REDIRECT TO CHOOSE SHIPPING EVENT AND REMOVE ALL FILTERS
     }
-
   }
 
   public function get_session_shipping_event_product_list() {
@@ -76,13 +78,8 @@ class ShopController {
   }
 
   public function get_shipping_event_product_list( $shipping_event ) {
-    if ( !isset( $shipping_event ) ) return null;
-
-    $shipping_event_id = $shipping_event->ID;
-    $shipping_event_enabled = get_post_meta( $shipping_event_id, 'shipping_event_enabled', true );
-    if ( isset( $shipping_event_enabled ) && $shipping_event_enabled == "yes" ) {
-      $shipping_event_products = get_post_meta( $shipping_event_id, 'products', true );
-
+    if ( !empty( $shipping_event ) && $shipping_event->get_enabled() ) {
+      $shipping_event_products = get_post_meta( $shipping_event->get_id(), 'products', true );
       if ( !isset( $shipping_event_products ) ) return null;
       return $shipping_event_products;
     }
@@ -90,10 +87,8 @@ class ShopController {
   }
 
   public function get_shipping_event_method_list( $shipping_event ) {
-    if ( !isset( $shipping_event ) ) return null;
-
-    if ( ShippingEvent::get_orderable( $shipping_event ) ) {
-      $shipping_event_methods = get_post_meta( $shipping_event->ID, 'selected_shipping_methods', true );
+    if ( !empty( $shipping_event ) && $shipping_event->get_orders_enabled() ) {
+      $shipping_event_methods = get_post_meta( $shipping_event->get_id(), 'selected_shipping_methods', true );
 
       if ( !isset( $shipping_event_methods ) ) return null;
       return $shipping_event_methods;
@@ -159,6 +154,10 @@ class ShopController {
       if( is_null( $product_data ) ) return false;
     }
     return $is_purchasable;
+  }
+
+  public function override_set_stock( $stock_num, $product ) {
+
   }
 
   public function override_stock_quantity( $stock_num, $product ) {

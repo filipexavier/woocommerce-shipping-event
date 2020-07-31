@@ -25,22 +25,39 @@ class ShippingEvent {
 
   private $shipping_methods;
 
+  private $products;
+
   private static $meta_keys = array (
     'begin_order_date' => 'shipping_event_start_orders_date',
     'shipping_date' => 'shipping_event_date',
     'end_order_date' => 'shipping_event_end_orders_date',
     'enabled' => 'shipping_event_enabled',
-    'shipping_methods' => 'selected_shipping_methods'
+    'shipping_methods' => 'selected_shipping_methods',
+    'products' => 'products'
   );
 
-  public function __construct( $shipping_event_id ) {
-    $shipping_event_post = ShippingEventController::get_instance()->get_post_by_id( $shipping_event_id );
+  private static $product_keys = array (
+    'enabled' => 'enabled',
+    'stock' => 'stock'
+  );
+
+  public function __construct( $post ) {
+    $shipping_event_post = null;
+    if( is_a( $post, 'WP_Post' ) ) {
+      $shipping_event_post = $post;
+    } else {//in case argument is a post id
+      $shipping_event_post = ShippingEventController::get_instance()->get_post_by_id( $post );
+    }
+
+    $shipping_event_id = $shipping_event_post->ID;
     $this->id = $shipping_event_id;
-    $this->enabled = ShippingEventController::get_instance()->get_post_enabled( $shipping_event_id, ShippingEvent::get_meta_key( 'enabled' ) );
+    $this->enabled = ShippingEventController::get_instance()->is_post_enabled( $shipping_event_id, ShippingEvent::get_meta_key( 'enabled' ) );
     $this->shipping_date = DateController::get_post_date( $shipping_event_id, ShippingEvent::get_meta_key( 'shipping_date' ) );
     $this->title = $shipping_event_post->post_title;
     $this->begin_order_date = DateController::get_post_date( $shipping_event_id, ShippingEvent::get_meta_key( 'begin_order_date' ) );
     $this->end_order_date = DateController::get_post_date( $shipping_event_id, ShippingEvent::get_meta_key( 'end_order_date' ) );
+    $this->products = ShippingEventController::get_instance()->get_shipping_event_product_list( $shipping_event_id );
+    $this->shipping_methods = ShippingEventController::get_instance()->get_shipping_event_shipping_methods_list( $shipping_event_id );
   }
 
   /**
@@ -90,6 +107,24 @@ class ShippingEvent {
     return $this->end_order_date;
   }
 
+  public function get_products() {
+    return $this->products;
+  }
+
+  public function save_products() {
+    return update_post_meta( $this->id, ShippingEvent::get_meta_key( 'products' ), $this->products );
+  }
+
+  public function set_products( $products, $save ) {
+    $this->products = $products;
+    if( !$save ) return true;
+    return $this->save_products();
+  }
+
+  public function get_shipping_methods() {
+    return $this->shipping_methods;
+  }
+
   public static function get_meta_keys() {
     return $self::meta_keys;
   }
@@ -98,5 +133,53 @@ class ShippingEvent {
     if( !array_key_exists( $key, self::$meta_keys ) ) return '';
     return self::$meta_keys[ $key ];
   }
+
+  public static function get_product_key( $key ) {
+    if( !array_key_exists( $key, self::$product_keys ) ) return '';
+    return self::$product_keys[ $key ];
+  }
+
+
+  public function get_product_data( $product_id ) {
+    if ( !isset( $this->products ) ) return null;
+    if ( !array_key_exists( $product_id, $this->products ) ) return null;
+    $product_data = $this->products[$product_id];
+
+    if ( !ShippingEventController::get_instance()->is_product_enabled( $product_data ) ) return null;
+    return $product_data;
+  }
+
+  public function get_product_stock_quantity( $product_id ) {
+    $product_data = $this->get_product_data( $product_id );
+    return ShippingEventController::get_instance()->safe_data_access( $product_data, $this->get_product_key( 'stock' ) );
+  }
+
+  public function is_product_in_stock( $product_id ) {
+    $stock = $this->get_product_stock_quantity( $product_id );
+    if( empty( $stock ) || !is_numeric( $stock ) ) return null;
+
+    return $stock > 0;
+  }
+
+  public function update_product_data( $product_id, $meta_key, $meta_value ) {
+    if( !array_key_exists( $product_id, $this->products ) ) return false;
+    $this->products[$product_id][$meta_key] = $meta_value;
+    return true;
+  }
+
+  public function update_product_stock( $product, $qty, $action, $save ) {
+    if( $action != 'reduce' && $action != 'increase' ) return false;
+
+    $multiplier = 1;
+    if( $action == 'reduce')  $multiplier = -1;
+
+    $current_amount = $this->get_product_stock_quantity( $product->get_id() );
+    $new_qty = $current_amount + ( $multiplier * $qty );
+
+    if( !$this->update_product_data( $product->get_id(), $this->get_product_key( 'stock' ), $new_qty ) ) return false;
+    if( $save && !$this->save_products() ) return false;
+    return $new_qty;
+  }
+
 
 }

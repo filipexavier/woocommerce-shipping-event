@@ -141,8 +141,8 @@ class CheckoutController {
   }
 
   function add_shipping_details_to_email( $order, $sent_to_admin, $plain_text, $email ) {
-    $address = get_post_meta( $order->id, 'local_pickup_details_address', true );
-    $shipping_event_id = get_post_meta( $order->id, 'shipping_event', true );
+    $address = get_post_meta( $order->get_id(), 'local_pickup_details_address', true );
+    $shipping_event_id = get_post_meta( $order->get_id(), 'shipping_event', true );
     if( empty( $shipping_event_id ) ) return;
 
     $shipping_event = new ShippingEvent( $shipping_event_id );
@@ -163,7 +163,7 @@ class CheckoutController {
   }
 
   function add_shipping_event_to_email_subject( $subject, $order ) {
-    $shipping_event_id = get_post_meta( $order->id, 'shipping_event', true );
+    $shipping_event_id = get_post_meta( $order->get_id(), 'shipping_event', true );
     if( empty( $shipping_event_id ) ) return $subject;
     $shipping_event = new ShippingEvent( $shipping_event_id );
     $subject_append = "[" . __('Data de entrega') . ": " . DateController::format_date( $shipping_event->get_shipping_date() ) . "]";

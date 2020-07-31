@@ -27,16 +27,18 @@ class ShopController {
     if( !is_admin() ) {
       add_action( 'woocommerce_init', array( $this, 'set_session_shipping_event' ) );
       add_filter( 'woocommerce_product_is_visible', array( $this, 'override_is_visible' ), 10, 2 );
-      add_filter( 'woocommerce_is_purchasable', array($this, 'override_is_purchasable' ), 10, 2);
-      add_filter( 'woocommerce_add_to_cart_validation', array($this, 'override_is_visible' ), 1, 2);
+      add_filter( 'woocommerce_is_purchasable', array($this, 'override_is_purchasable' ), 10, 2 );
+      add_filter( 'woocommerce_add_to_cart_validation', array($this, 'override_is_visible' ), 1, 2 );
       add_filter( 'woocommerce_product_is_in_stock', array( $this, 'override_is_in_stock' ), 10, 2 );
       add_filter( 'woocommerce_product_get_stock_quantity' , array( $this, 'override_stock_quantity' ), 10, 2 );
       add_filter( 'woocommerce_product_get_manage_stock' , array( $this, 'override_manage_stock' ), 10, 2 );
-      add_filter( 'woocommerce_product_set_stock_quantity' , array( $this, 'override_set_stock' ), 10, 2 );
+      add_filter( 'woocommerce_can_reduce_order_stock', array( $this, 'reduce_shipping_event_stock' ), 1, 2 );
     }
   }
 
   public function set_session_shipping_event() {
+
+    if( !WC()->session ) return;
     //Start keepping unlogged user data
     if ( !WC()->session->has_session() ) {
       WC()->session->set_customer_session_cookie( true );
@@ -87,7 +89,7 @@ class ShopController {
   }
 
   public function get_shipping_event_method_list( $shipping_event ) {
-    if ( !empty( $shipping_event ) && $shipping_event->get_orders_enabled() ) {
+    if ( !empty( $shipping_event ) && $shipping_event->orders_enabled() ) {
       $shipping_event_methods = get_post_meta( $shipping_event->get_id(), 'selected_shipping_methods', true );
 
       if ( !isset( $shipping_event_methods ) ) return null;
@@ -156,8 +158,60 @@ class ShopController {
     return $is_purchasable;
   }
 
-  public function override_set_stock( $stock_num, $product ) {
+  /**
+   * Changed copy from wc_reduce_stock_levels() in wc-stock-functions.php (woocommerce plugin)
+  */
+  function mimic_default_reduce_stock_behavior( $order ) {
+    $changes = array();
 
+  	// Loop over all items.
+  	foreach ( $order->get_items() as $item ) {
+  		if ( ! $item->is_type( 'line_item' ) ) {
+  			continue;
+  		}
+
+  		// Only reduce stock once for each item.
+  		$product            = $item->get_product();
+  		$item_stock_reduced = $item->get_meta( '_reduced_stock', true );
+
+      //Ignore if the product is managing stock. Shipping Event overrides this setting
+  		if ( $item_stock_reduced || ! $product ) {
+  			continue;
+  		}
+
+  		$qty       = $item->get_quantity();//Ignore original apply_filters
+  		$item_name = $product->get_formatted_name();
+      //override default call to wc_update_product_stock()
+  		$new_stock = $this->shipping_event->update_product_stock( $product, $qty, 'reduce', true );
+      error_log($item_name . " - " . $new_stock);
+  		if ( is_wp_error( $new_stock ) || !$new_stock ) {
+
+  			/* translators: %s item name. */
+  			$order->add_order_note( sprintf( __( 'Unable to reduce stock for item %s.', 'woocommerce' ), $item_name ) . "Motive: " . $new_stock );
+  			continue;
+  		}
+
+  		$item->add_meta_data( '_reduced_stock', $qty, true );
+  		$item->save();
+
+  		$changes[] = array(
+  			'product' => $product,
+  			'from'    => $new_stock + $qty,
+  			'to'      => $new_stock,
+  		);
+  	}
+
+  	wc_trigger_stock_change_notifications( $order, $changes );
+
+  	do_action( 'woocommerce_reduce_order_stock', $order );
+  }
+
+  function reduce_shipping_event_stock( $can_reduce_stock, $order ) {
+    if( !$this->shipping_event ) return $can_reduce_stock;
+    $this->mimic_default_reduce_stock_behavior( $order );
+
+    //Stops default reducing process
+    return false;
   }
 
   public function override_stock_quantity( $stock_num, $product ) {

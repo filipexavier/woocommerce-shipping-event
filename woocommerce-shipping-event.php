@@ -28,4 +28,5 @@
  register_activation_hook( __FILE__, 'activate_wc_shipping_event_plugin' );
  register_deactivation_hook( __FILE__, 'deactivate_wc_shipping_event_plugin' );
 
+ Init::get_instance()->setup();
  Init::get_instance()->register_services();

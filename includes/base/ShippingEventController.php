@@ -131,12 +131,14 @@ class ShippingEventController {
   }
 
   public function is_product_enabled( $product_data ) {
-    if ( !array_key_exists( 'enabled', $product_data ) || $product_data['enabled'] != "yes" ) return false;
-    return true;
+    return ( array_key_exists( 'enabled', $product_data ) && $product_data['enabled'] == "yes" );
   }
 
   public function safe_data_access( $data_array, $data_key ) {
-    if ( isset( $data_array ) && array_key_exists( $data_key, $data_array ) && !empty( $data_array[$data_key] ) )
+    if ( isset( $data_array )
+      && array_key_exists( $data_key, $data_array )
+      && isset( $data_array[$data_key] )
+      && $data_array[$data_key] != '' )
       return $data_array[$data_key];
 
     return null;

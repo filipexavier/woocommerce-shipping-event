@@ -139,6 +139,9 @@ class ShippingEvent {
     return self::$product_keys[ $key ];
   }
 
+  public function is_product_enabled( $product_id ) {
+    return !empty( $this->get_product_data( $product_id ) );
+  }
 
   public function get_product_data( $product_id ) {
     if ( !isset( $this->products ) ) return null;
@@ -149,15 +152,29 @@ class ShippingEvent {
     return $product_data;
   }
 
+  /**
+   * @return bool if shipping_event is set to override stock to this product
+  */
+  public function get_product_manage_stock( $product_id ) {
+    return !is_null( $this->get_product_stock_quantity( $product_id ) );
+  }
+
+  /**
+   * @return int Stock quantity for this product, if product is enabled in this shipping Event
+   * Returns null if product is not enabled or stock quantity is not set
+  */
   public function get_product_stock_quantity( $product_id ) {
-    $product_data = $this->get_product_data( $product_id );
+    $product_data = $this->get_product_data( $product_id ); //Already considers is enabled
     return ShippingEventController::get_instance()->safe_data_access( $product_data, $this->get_product_key( 'stock' ) );
   }
 
+  /**
+   * @return bool if product stock quantity is > 0
+   * Returns null if product is not enabled or stock quantity is not set
+  */
   public function is_product_in_stock( $product_id ) {
-    $stock = $this->get_product_stock_quantity( $product_id );
-    if( empty( $stock ) || !is_numeric( $stock ) ) return null;
-
+    $stock = $this->get_product_stock_quantity( $product_id );//Already considers is enabled
+    if( is_null( $stock ) || !is_numeric( $stock ) ) return null;
     return $stock > 0;
   }
 

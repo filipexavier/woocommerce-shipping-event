@@ -37,6 +37,10 @@ final class Init extends BaseController {
       CheckoutController::get_instance()->init();
   }
 
+  public function setup() {
+    $this->disable_hold_stock();
+  }
+
   public function add_admin_pages() {
     add_menu_page('Meu menu', 'Blabla', 'manage_options', 'woocommerce_shipping_event', array( $this, 'admin_index' ), 'dashicons-store', 10 );
   }
@@ -53,6 +57,13 @@ final class Init extends BaseController {
     if( is_checkout()  || is_cart() ) {
       wp_enqueue_style( 'wcse_shipping_methods', $this->plugin_url . '/assets/css/wcse_shipping_methods.css', array(), rand(111,9999), 'all' );
       wp_enqueue_script( 'wcse_shipping_methods', $this->plugin_url . '/assets/js/wcse_shipping_methods.js', array( 'jquery' ), rand(111,9999), 'all' );
+    }
+  }
+
+  public function disable_hold_stock() {
+    $hold_stock = get_option( 'woocommerce_hold_stock_minutes' );
+    if ( $hold_stock !== '' ) {
+      update_option( 'woocommerce_hold_stock_minutes', '' );
     }
   }
 

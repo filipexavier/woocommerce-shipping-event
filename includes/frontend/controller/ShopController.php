@@ -37,9 +37,8 @@ class ShopController {
   }
 
   public function set_session_shipping_event() {
-
     if( !WC()->session ) return;
-    //Start keepping unlogged user data
+
     if ( !WC()->session->has_session() ) {
       WC()->session->set_customer_session_cookie( true );
     }
@@ -71,91 +70,30 @@ class ShopController {
     }
   }
 
-  public function get_session_shipping_event_product_list() {
-    return $this->get_shipping_event_product_list( $this->shipping_event );
-  }
-
-  public function get_session_shipping_event_method_list() {
-    return $this->get_shipping_event_method_list( $this->shipping_event );
-  }
-
-  public function get_shipping_event_product_list( $shipping_event ) {
-    if ( !empty( $shipping_event ) && $shipping_event->get_enabled() ) {
-      $shipping_event_products = get_post_meta( $shipping_event->get_id(), 'products', true );
-      if ( !isset( $shipping_event_products ) ) return null;
-      return $shipping_event_products;
-    }
-    return null;
-  }
-
-  public function get_shipping_event_method_list( $shipping_event ) {
-    if ( !empty( $shipping_event ) && $shipping_event->orders_enabled() ) {
-      $shipping_event_methods = get_post_meta( $shipping_event->get_id(), 'selected_shipping_methods', true );
-
-      if ( !isset( $shipping_event_methods ) ) return null;
-      return $shipping_event_methods;
-    }
-    return null;
-  }
-
-  public function get_shipping_event_product_data( $product_id ) {
-    $shipping_event_products = $this->get_session_shipping_event_product_list();
-    if ( !isset( $shipping_event_products ) ) return null;
-    if ( !array_key_exists( $product_id, $shipping_event_products ) ) return null;
-    $product_data = $shipping_event_products[$product_id];
-
-    if ( !array_key_exists( 'enabled', $product_data ) || $product_data['enabled'] != "yes" ) return null;
-    return $product_data;
-  }
-
-  public function get_shipping_event_product_stock( $product_id ) {
-    $product_data = $this->get_shipping_event_product_data( $product_id );
-    if ( !isset( $product_data ) || !array_key_exists( 'stock', $product_data ) || $product_data['stock'] == '' ) return null;
-    return $product_data['stock'];
-  }
-
-  public function get_shipping_event_product_stock_quantity( $product_id ) {
-    return $this->get_shipping_event_product_stock( $product_id );
-  }
-
-  public function get_shipping_event_product_stock_status( $product_id ) {
-    $stock = $this->get_shipping_event_product_stock( $product_id );
-    if( isset( $stock ) ) {
-      if( $stock > 0 ) {
-        return true;
-      } else {
-        return false;
-      }
-    } else {
-      return null;
-    }
-  }
-
   /**
    * @param bool $bool Return either true/false
    * @param int $id ID of the product
    * @return bool it return either true or false
    */
-  public function override_is_visible($visible, $product_id) {
-    if($visible) {
-      $product_data = $this->get_shipping_event_product_data( $product_id );
-      if( !isset( $product_data ) ) return false;
-    }
-    return $visible;
+  public function override_is_visible( $visible, $product_id ) {
+    //respects if item is not visible by default settings of woocommerce
+    if( !$visible || is_null( $this->get_shipping_event() ) ) return $visible;
+    return $this->shipping_event->is_product_enabled( $product_id );
   }
 
   public function override_is_in_stock( $stock_status, $product ) {
-    $status = $this->get_shipping_event_product_stock_status( $product->get_id() );
-    if( isset( $status ) ) return $status;
+    if( $this->get_shipping_event() ) {
+      $in_stock = $this->shipping_event->is_product_in_stock( $product->get_id() );
+      //Ignore if null because it means that stock is not set, so lets consider default behavior of woocommerce
+      if( !is_null( $in_stock ) ) return $in_stock;
+    }
     return $stock_status;
   }
 
   public function override_is_purchasable( $is_purchasable, $product ) {
-    if( $is_purchasable ) {
-      $product_data = $this->get_shipping_event_product_data( $product->get_id() );
-      if( is_null( $product_data ) ) return false;
-    }
-    return $is_purchasable;
+    //respects if item is not visible by default settings of woocommerce
+    if( !$is_purchasable || is_null( $this->get_shipping_event() ) ) return $is_purchasable;
+    return $this->shipping_event->is_product_enabled( $product->get_id() );
   }
 
   /**
@@ -183,7 +121,7 @@ class ShopController {
   		$item_name = $product->get_formatted_name();
       //override default call to wc_update_product_stock()
   		$new_stock = $this->shipping_event->update_product_stock( $product, $qty, 'reduce', true );
-      error_log($item_name . " - " . $new_stock);
+      error_log($item_name . " new stock - " . $new_stock);
   		if ( is_wp_error( $new_stock ) || !$new_stock ) {
 
   			/* translators: %s item name. */
@@ -215,18 +153,21 @@ class ShopController {
   }
 
   public function override_stock_quantity( $stock_num, $product ) {
-    $stock = $this->get_shipping_event_product_stock_quantity( $product->get_id() );
-    if( isset( $stock ) ) return $stock;
+    if( $this->get_shipping_event() ) {
+      $stock = $this->shipping_event->get_product_stock_quantity( $product->get_id() );
+      if( $stock ) return $stock;
+    }
     return $stock_num;
   }
 
   public function override_manage_stock( $manage_stock, $product ) {
-    $stock = $this->get_shipping_event_product_stock( $product->get_id() );
-    if( isset( $stock) ) $manage_stock = true;
+    if( $this->shipping_event && $this->shipping_event->get_product_manage_stock( $product->get_id() ) )
+      return true;
     return $manage_stock;
   }
 
   public function get_shipping_event() {
+    if( is_null( $this->shipping_event ) ) $this->set_session_shipping_event();
     return $this->shipping_event;
   }
 

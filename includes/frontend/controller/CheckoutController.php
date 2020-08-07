@@ -48,21 +48,23 @@ class CheckoutController {
   }
 
   public function filter_shipping_methods( $package_rates ) {
-    $selected_shipping_methods = ShopController::get_instance()->get_session_shipping_event_method_list();
-    if( !isset( $selected_shipping_methods ) ) {
-      //TODO: Abort checkout
-      return array();
-    }
-    $unset_list = array();
-    foreach( $package_rates as $available_shipping_method ){
-      $method_id = $available_shipping_method->instance_id;
-      if( !array_key_exists( $method_id, $selected_shipping_methods ) ) {
-        array_push( $unset_list, $available_shipping_method->id );
+    if( ShopController::get_instance()->get_shipping_event() ) {
+      $selected_shipping_methods = ShopController::get_instance()->get_shipping_event()->get_shipping_methods();
+      if( !isset( $selected_shipping_methods ) ) {
+        //TODO: Abort checkout
+        return array();
       }
-    }
+      $unset_list = array();
+      foreach( $package_rates as $available_shipping_method ){
+        $method_id = $available_shipping_method->instance_id;
+        if( !array_key_exists( $method_id, $selected_shipping_methods ) ) {
+          array_push( $unset_list, $available_shipping_method->id );
+        }
+      }
 
-    foreach( $unset_list as $method_id ) {
-      unset($package_rates[$method_id]);
+      foreach( $unset_list as $method_id ) {
+        unset($package_rates[$method_id]);
+      }
     }
     return $package_rates;
   }

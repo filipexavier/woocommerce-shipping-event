@@ -23,6 +23,8 @@ class ShippingEvent {
 
   private $end_order_date;
 
+  private $disable_backorder;
+
   private $shipping_methods;
 
   private $products;
@@ -31,6 +33,7 @@ class ShippingEvent {
     'begin_order_date' => 'shipping_event_start_orders_date',
     'shipping_date' => 'shipping_event_date',
     'end_order_date' => 'shipping_event_end_orders_date',
+    'disable_backorder' => 'shipping_event_disable_backorder',
     'enabled' => 'shipping_event_enabled',
     'shipping_methods' => 'selected_shipping_methods',
     'products' => 'products'
@@ -51,7 +54,8 @@ class ShippingEvent {
 
     $shipping_event_id = $shipping_event_post->ID;
     $this->id = $shipping_event_id;
-    $this->enabled = ShippingEventController::get_instance()->is_post_enabled( $shipping_event_id, ShippingEvent::get_meta_key( 'enabled' ) );
+    $this->enabled = ShippingEventController::get_instance()->is_post_meta_enabled( $shipping_event_id, ShippingEvent::get_meta_key( 'enabled' ) );
+    $this->disable_backorder = ShippingEventController::get_instance()->is_post_meta_enabled( $shipping_event_id, ShippingEvent::get_meta_key( 'disable_backorder' ) );
     $this->shipping_date = DateController::get_post_date( $shipping_event_id, ShippingEvent::get_meta_key( 'shipping_date' ) );
     $this->title = $shipping_event_post->post_title;
     $this->begin_order_date = DateController::get_post_date( $shipping_event_id, ShippingEvent::get_meta_key( 'begin_order_date' ) );
@@ -105,6 +109,10 @@ class ShippingEvent {
 
   public function get_end_order_date() {
     return $this->end_order_date;
+  }
+
+  public function get_disable_backorder() {
+    return $this->disable_backorder;
   }
 
   public function get_products() {
@@ -166,6 +174,20 @@ class ShippingEvent {
   public function get_product_stock_quantity( $product_id ) {
     $product_data = $this->get_product_data( $product_id ); //Already considers is enabled
     return ShippingEventController::get_instance()->safe_data_access( $product_data, $this->get_product_key( 'stock' ) );
+  }
+
+  /**
+   * @return string stock status ['onbackorder', 'instock', 'outofstock']
+   * Returns outofstock if product is not enabled,stock quantity is not set or 0. And returns onbackorder if p
+  */
+  public function get_product_stock_status( $product_id ) {
+    $product = wc_get_product( $product_id );
+    $stock = $this->get_product_stock_quantity( $product_id );//Already considers is enabled
+    if( is_null( $stock ) || !is_numeric( $stock )
+      || ( $product->get_stock_status() == 'onbackorder' && $stock <= 0 && !$this->get_disable_backorder() ) )
+      return $product->get_stock_status();
+
+    return $stock > 0 ? 'instock' : 'outofstock';
   }
 
   /**

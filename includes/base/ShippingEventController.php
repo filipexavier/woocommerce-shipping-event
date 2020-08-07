@@ -108,7 +108,7 @@ class ShippingEventController {
     return null;
   }
 
-  public function is_post_enabled( $shipping_event_id, $meta_key ) {
+  public function is_post_meta_enabled( $shipping_event_id, $meta_key ) {
     $shipping_event_enabled = get_post_meta( $shipping_event_id, $meta_key, true );
     if ( !empty( $shipping_event_enabled ) && $shipping_event_enabled == "yes" ) return true;
     return false;

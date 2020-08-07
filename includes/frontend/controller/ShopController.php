@@ -31,6 +31,8 @@ class ShopController {
       add_filter( 'woocommerce_add_to_cart_validation', array($this, 'override_is_visible' ), 1, 2 );
       add_filter( 'woocommerce_product_is_in_stock', array( $this, 'override_is_in_stock' ), 10, 2 );
       add_filter( 'woocommerce_product_get_stock_quantity' , array( $this, 'override_stock_quantity' ), 10, 2 );
+      add_filter( 'woocommerce_product_get_stock_status' , array( $this, 'override_stock_status' ), 10, 2 );
+      add_filter( 'woocommerce_product_backorders_allowed' , array( $this, 'override_allow_backorders' ), 10, 2 );
       add_filter( 'woocommerce_product_get_manage_stock' , array( $this, 'override_manage_stock' ), 10, 2 );
       add_filter( 'woocommerce_can_reduce_order_stock', array( $this, 'reduce_shipping_event_stock' ), 1, 2 );
     }
@@ -81,13 +83,11 @@ class ShopController {
     return $this->shipping_event->is_product_enabled( $product_id );
   }
 
-  public function override_is_in_stock( $stock_status, $product ) {
+  public function override_is_in_stock( $not_out_of_stock, $product ) {
     if( $this->get_shipping_event() ) {
-      $in_stock = $this->shipping_event->is_product_in_stock( $product->get_id() );
-      //Ignore if null because it means that stock is not set, so lets consider default behavior of woocommerce
-      if( !is_null( $in_stock ) ) return $in_stock;
+      return 'outofstock' !== $this->shipping_event->get_product_stock_status( $product->get_id() );
     }
-    return $stock_status;
+    return $not_out_of_stock;
   }
 
   public function override_is_purchasable( $is_purchasable, $product ) {
@@ -152,12 +152,28 @@ class ShopController {
     return false;
   }
 
+  public function override_allow_backorders( $allow_backorders, $product ) {
+    if( $allow_backorders && $this->get_shipping_event() && $this->shipping_event->get_disable_backorder() )
+      return false;
+
+    return $allow_backorders;
+  }
+
   public function override_stock_quantity( $stock_num, $product ) {
     if( $this->get_shipping_event() ) {
       $stock = $this->shipping_event->get_product_stock_quantity( $product->get_id() );
       if( $stock ) return $stock;
     }
     return $stock_num;
+  }
+
+  public function override_stock_status( $stock_status, $product ) {
+    if( $this->get_shipping_event()
+      && $stock_status == 'onbackorder'
+      && $this->shipping_event->get_disable_backorder() )
+      return 'outofstock';
+
+    return $stock_status;
   }
 
   public function override_manage_stock( $manage_stock, $product ) {

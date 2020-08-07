@@ -33,4 +33,4 @@ Configuration
 Stock
 * Automatically disables held stock option
 * Respects global woocommerce manage stock option
-* If enables backorder on product, enable checkout of sold out products
+* If enables backorder on product, enable checkout of sold out products, you can ignore backorder by enabling the option "Disable backorder on all products" for each shipping event.

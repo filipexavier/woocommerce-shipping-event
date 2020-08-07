@@ -152,7 +152,19 @@ class MetaBoxesController
         name="shipping_event_end_orders_date"
         value="<?php echo DateController::date_to_str( $shipping_event->get_end_order_date() ) ?>"
       />
-    </p><?php
+    </p>
+
+    <p class="form-field">
+      <label><?php esc_html_e( 'Disable Back Order for all products', 'woocommerce-shipping-event' ); ?></label>
+      <input
+        type="checkbox"
+        id="shipping_event_disable_backorder"
+        name="shipping_event_disable_backorder"
+        value="yes"
+        <?php checked( $shipping_event->get_disable_backorder(), true ); ?>
+      />
+    </p>
+    <?php
   }
 
   function shipping_event_products_settings_output( $post )
@@ -260,6 +272,18 @@ class MetaBoxesController
         delete_post_meta(
           $post_id,
           'shipping_event_enabled');
+      }
+
+      if ( array_key_exists( 'shipping_event_disable_backorder', $_POST ) ) {
+        update_post_meta(
+          $post_id,
+          'shipping_event_disable_backorder',
+          $_POST['shipping_event_disable_backorder']
+        );
+      } else {
+        delete_post_meta(
+          $post_id,
+          'shipping_event_disable_backorder');
       }
 
       //Save products

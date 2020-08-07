@@ -25,3 +25,9 @@ Obs: Doesn\'t support held stock feature of woocommerce
 1. Disable held stock feature of woocommerce (not supported)
 2. Create a Shipping Event, and select dates, products and shipping methods.
 3. Create a Local Pickup Details, to add an address to a specific local pickup shipping method.
+
+[Behavior]
+Stock
+* Automatically disables held stock option
+* Respects global woocommerce manage stock option
+* If enables backorder on product, enable checkout of sold out products, you can ignore backorder by enabling the option "Disable backorder on all products" for each shipping event.

@@ -84,9 +84,23 @@ class ShippingEventController {
    * @param int post_id of the post type shipping event
    * @return ShippingEvent
   */
+  public function get_shipping_event( $shipping_event_id ) {
+    if( is_a( $shipping_event_id, 'ShippingEvent' ) ) return $shipping_event_id;
+    $shipping_event_post = $this->get_post_by_id( $shipping_event_id );
+    try {
+      return new ShippingEvent( $shipping_event_post );
+    } catch ( Exception $e ) {
+      return null;
+    }
+  }
+
+  /**
+   * @param int post_id of the post type shipping event
+   * @return WP_Post
+  */
   public function get_post_by_id( $shipping_event_id ) {
     if( is_a( $shipping_event_id, 'WP_Post' ) ) return $shipping_event_id;
-    $shipping_event_post = get_post($shipping_event_id);
+    $shipping_event_post = get_post( $shipping_event_id );
     if( $shipping_event_post->post_type == 'shipping_event' ) return $shipping_event_post;
     return null;
   }

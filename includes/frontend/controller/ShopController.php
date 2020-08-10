@@ -34,8 +34,9 @@ class ShopController {
       add_filter( 'woocommerce_product_get_stock_status' , array( $this, 'override_stock_status' ), 10, 2 );
       add_filter( 'woocommerce_product_backorders_allowed' , array( $this, 'override_allow_backorders' ), 10, 2 );
       add_filter( 'woocommerce_product_get_manage_stock' , array( $this, 'override_manage_stock' ), 10, 2 );
-      add_filter( 'woocommerce_can_reduce_order_stock', array( $this, 'reduce_shipping_event_stock' ), 1, 2 );
     }
+    add_filter( 'woocommerce_can_reduce_order_stock', array( $this, 'reduce_shipping_event_stock' ), 1, 2 );
+    add_filter( 'woocommerce_can_restore_order_stock', array( $this, 'restore_shipping_event_stock' ), 1, 2 );
   }
 
   public function set_session_shipping_event() {
@@ -97,9 +98,66 @@ class ShopController {
   }
 
   /**
+   * Changed copy from wc_restore_stock_levels() in wc-stock-functions.php (woocommerce plugin)
+  */
+  function mimic_default_restore_stock_behavior( $order, $shipping_event ) {
+    $changes = array();
+
+  	// Loop over all items.
+  	foreach ( $order->get_items() as $item ) {
+  		if ( ! $item->is_type( 'line_item' ) ) {
+  			continue;
+  		}
+
+  		// Only reduce stock once for each item.
+  		$product            = $item->get_product();
+  		$item_stock_reduced = $item->get_meta( '_reduced_stock', true );
+
+      //Ignore if the product is managing stock. Shipping Event overrides this setting
+  		if ( !$item_stock_reduced || ! $product ) {
+  			continue;
+  		}
+
+  		$item_name = $product->get_formatted_name();
+      //override default call to wc_update_product_stock()
+  		$new_stock = $shipping_event->update_product_stock( $product, $item_stock_reduced, 'increase', true );
+      error_log($item_name . " new stock - " . $new_stock);
+  		if ( is_wp_error( $new_stock ) || !$new_stock ) {
+
+  			/* translators: %s item name. */
+  			$order->add_order_note( sprintf( __( 'Unable to restore stock for item %s.', 'woocommerce' ), $item_name ) . __( "Motive: " ) . $new_stock );
+  			continue;
+  		}
+
+  		$item->delete_meta_data( '_reduced_stock' );
+  		$item->save();
+
+      $changes[] = $item_name . ' ' . ( $new_stock - $item_stock_reduced ) . '&rarr;' . $new_stock;
+  	}
+
+    if ( $changes ) {
+  		$order->add_order_note( __( 'Stock levels increased:', 'woocommerce' ) . ' ' . implode( ', ', $changes ) );
+  	}
+
+  	do_action( 'woocommerce_restore_order_stock', $order );
+  }
+
+  function restore_shipping_event_stock( $can_restore_stock, $order ) {
+    $shipping_event_id = get_post_meta( $order->get_id(), 'shipping_event', true );
+    if( empty( $shipping_event_id ) ) return $can_restore_stock;
+    $shipping_event = ShippingEventController::get_instance()->get_shipping_event( $shipping_event_id );
+    if( is_null( $shipping_event ) ) return $can_restore_stock;
+
+    $this->mimic_default_restore_stock_behavior( $order, $shipping_event );
+
+    //Stops default restoring process
+    return false;
+  }
+
+  /**
    * Changed copy from wc_reduce_stock_levels() in wc-stock-functions.php (woocommerce plugin)
   */
-  function mimic_default_reduce_stock_behavior( $order ) {
+  function mimic_default_reduce_stock_behavior( $order, $shipping_event ) {
     $changes = array();
 
   	// Loop over all items.
@@ -120,12 +178,12 @@ class ShopController {
   		$qty       = $item->get_quantity();//Ignore original apply_filters
   		$item_name = $product->get_formatted_name();
       //override default call to wc_update_product_stock()
-  		$new_stock = $this->shipping_event->update_product_stock( $product, $qty, 'reduce', true );
+  		$new_stock = $shipping_event->update_product_stock( $product, $qty, 'reduce', true );
       error_log($item_name . " new stock - " . $new_stock);
   		if ( is_wp_error( $new_stock ) || !$new_stock ) {
 
   			/* translators: %s item name. */
-  			$order->add_order_note( sprintf( __( 'Unable to reduce stock for item %s.', 'woocommerce' ), $item_name ) . "Motive: " . $new_stock );
+  			$order->add_order_note( sprintf( __( 'Unable to reduce stock for item %s.', 'woocommerce' ), $item_name ) . __( "Motive: " ) . $new_stock );
   			continue;
   		}
 
@@ -145,8 +203,14 @@ class ShopController {
   }
 
   function reduce_shipping_event_stock( $can_reduce_stock, $order ) {
-    if( !$this->shipping_event ) return $can_reduce_stock;
-    $this->mimic_default_reduce_stock_behavior( $order );
+    $shipping_event = $this->shipping_event;
+    if( !$this->shipping_event ) {
+      $shipping_event_id = get_post_meta( $order->get_id(), 'shipping_event', true );
+      if( empty( $shipping_event_id ) ) return $can_restore_stock;
+      $shipping_event = ShippingEventController::get_instance()->get_shipping_event( $shipping_event_id );
+      if( is_null( $shipping_event ) ) return $can_restore_stock;
+    }
+    $this->mimic_default_reduce_stock_behavior( $order, $shipping_event );
 
     //Stops default reducing process
     return false;

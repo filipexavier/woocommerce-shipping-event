@@ -18,4 +18,5 @@ return array(
     'WCShippingEvent\\Init' => $baseDir . '/includes/Init.php',
     'WCShippingEvent\\Meta\\LocalPickupDetailsMetabox' => $baseDir . '/includes/meta/LocalPickupDetailsMetabox.php',
     'WCShippingEvent\\Meta\\MetaBoxesController' => $baseDir . '/includes/meta/MetaBoxesController.php',
+    'WCShippingEvent\\Meta\\ShippingEventMetabox' => $baseDir . '/includes/meta/ShippingEventMetabox.php',
 );

@@ -33,6 +33,7 @@ class ComposerStaticInit85e8cde181b9ff7ae33d1a22bbc37486
         'WCShippingEvent\\Init' => __DIR__ . '/../..' . '/includes/Init.php',
         'WCShippingEvent\\Meta\\LocalPickupDetailsMetabox' => __DIR__ . '/../..' . '/includes/meta/LocalPickupDetailsMetabox.php',
         'WCShippingEvent\\Meta\\MetaBoxesController' => __DIR__ . '/../..' . '/includes/meta/MetaBoxesController.php',
+        'WCShippingEvent\\Meta\\ShippingEventMetabox' => __DIR__ . '/../..' . '/includes/meta/ShippingEventMetabox.php',
     );
 
     public static function getInitializer(ClassLoader $loader)

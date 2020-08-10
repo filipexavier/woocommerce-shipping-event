@@ -45,7 +45,6 @@ class ShopController {
     if ( !WC()->session->has_session() ) {
       WC()->session->set_customer_session_cookie( true );
     }
-
     $shipping_event_id = null;
     if( !empty( $this->shipping_event ) ) $shipping_event_id = $this->shipping_event->ID;
     else $shipping_event_id = WC()->session->get('shipping_event');
@@ -53,15 +52,16 @@ class ShopController {
     //Change Chosen Shipping Event
     if( array_key_exists( 'chosen_shipping_event_id', $_POST ) &&
         !empty( $_POST['chosen_shipping_event_id'] ) &&
-        $_POST['chosen_shipping_event_id'] != $shipping_event_id )
-        //TODO: REDIRECT TO CHOOSE SHIPPING EVENT AND REMOVE ALL FILTERS
+        $_POST['chosen_shipping_event_id'] != $shipping_event_id ) {
+      if( $shipping_event_id ) $this->confirm_change_shipping_event();
       $shipping_event_id = $_POST['chosen_shipping_event_id'];
+    }
 
     //Set this shipping_event property
     if( !empty( $shipping_event_id ) &&
       ( empty( $this->shipping_event ) ||
         $shipping_event_id != $this->shipping_event->get_id() ) ) {
-      $this->shipping_event = new ShippingEvent( $shipping_event_id );
+      $this->shipping_event = ShippingEventController::get_instance()->get_shipping_event( $shipping_event_id );
       WC()->session->set('shipping_event', $shipping_event_id);
     }
 
@@ -69,8 +69,31 @@ class ShopController {
     if ( empty( $this->shipping_event ) || !$this->shipping_event->orders_enabled() ) {
       $this->shipping_event = null;
       WC()->session->__unset('shipping_event');
-      //TODO: REDIRECT TO CHOOSE SHIPPING EVENT AND REMOVE ALL FILTERS
+      $this->redirect_no_shipping_event();
     }
+  }
+
+  public function confirm_change_shipping_event() {
+    ?>
+    <script type="text/javascript">
+      var confirmation = confirm( "<?php echo __( "Are you sure you want to change the date? If you continue, some items of your cart may be deleted.", 'woocommerce-shipping-event' ) ?>" );
+      if(confirmation == false) {
+        location="<?php echo get_permalink( get_page_by_title( 'Pedidos' ) ) ?>";
+      }
+    </script>
+     <?php
+  }
+
+  public function redirect_no_shipping_event() {
+    if( !is_checkout() && !is_cart() && !is_woocommerce() ) return;
+    ?>
+    <script type="text/javascript">
+      alert( "<?php echo __( "Please choose a date before shopping. If you already chosen, it's probably not available anymore.", 'woocommerce-shipping-event' ) ?>" );
+      location="<?php echo get_permalink( get_page_by_title( 'Pedidos' ) ) ?>";
+    </script>
+     <?php
+    // wp_safe_redirect( get_permalink( get_page_by_title( 'Pedidos' ) ) );
+    // exit;
   }
 
   /**

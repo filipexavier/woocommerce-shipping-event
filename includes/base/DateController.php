@@ -19,6 +19,7 @@ class DateController {
   }
 
   public static function date_to_str( $date ) {
+    if( is_null( $date ) ) return null;
     return $date->format('Y-m-d');
   }
 

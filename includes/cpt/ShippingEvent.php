@@ -17,6 +17,9 @@ class ShippingEvent {
 
   private $enabled;
 
+  /** @var WP_Post of ShippingEventType */
+  private $event_type;
+
   private $shipping_date;
 
   private $begin_order_date;
@@ -29,14 +32,15 @@ class ShippingEvent {
 
   private $products;
 
-  private static $meta_keys = array (
+  private const META_KEYS = array (
     'begin_order_date' => 'shipping_event_start_orders_date',
     'shipping_date' => 'shipping_event_date',
     'end_order_date' => 'shipping_event_end_orders_date',
     'disable_backorder' => 'shipping_event_disable_backorder',
     'enabled' => 'shipping_event_enabled',
     'shipping_methods' => 'selected_shipping_methods',
-    'products' => 'products'
+    'products' => 'products',
+    'event_type' => 'shipping_event_type'
   );
 
   private static $product_keys = array (
@@ -55,6 +59,7 @@ class ShippingEvent {
     $shipping_event_id = $shipping_event_post->ID;
     $this->id = $shipping_event_id;
     $this->enabled = ShippingEventController::get_instance()->is_post_meta_enabled( $shipping_event_id, ShippingEvent::get_meta_key( 'enabled' ) );
+    $this->event_type = get_post( get_post_meta( $shipping_event_id, ShippingEvent::get_meta_key( 'event_type' ), true ) );
     $this->disable_backorder = ShippingEventController::get_instance()->is_post_meta_enabled( $shipping_event_id, ShippingEvent::get_meta_key( 'disable_backorder' ) );
     $this->shipping_date = DateController::get_post_date( $shipping_event_id, ShippingEvent::get_meta_key( 'shipping_date' ) );
     $this->title = $shipping_event_post->post_title;
@@ -93,6 +98,15 @@ class ShippingEvent {
 
   public function get_enabled() {
     return $this->enabled;
+  }
+
+  public function get_event_type() {
+    return $this->event_type;
+  }
+
+  public function get_event_type_id() {
+    if( is_null( $this->event_type ) ) return 0;
+    return $this->event_type->ID;
   }
 
   public function get_title() {
@@ -134,12 +148,12 @@ class ShippingEvent {
   }
 
   public static function get_meta_keys() {
-    return $self::meta_keys;
+    return $self::META_KEYS;
   }
 
   public static function get_meta_key( $key ) {
-    if( !array_key_exists( $key, self::$meta_keys ) ) return '';
-    return self::$meta_keys[ $key ];
+    if( !array_key_exists( $key, self::META_KEYS ) ) return '';
+    return self::META_KEYS[ $key ];
   }
 
   public static function get_product_key( $key ) {

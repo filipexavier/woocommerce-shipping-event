@@ -7,10 +7,13 @@ namespace WCShippingEvent\Frontend\Controller;
 
 use \WCShippingEvent\Cpt\ShippingEvent;
 use \WCShippingEvent\Base\ShippingEventController;
+use \WCShippingEvent\Base\SettingsController;
 
 class ShopController {
 
   private static $instance;
+
+  public const CHOSEN_ARG_CODE = 'chosen_shipping_event_id';
 
   /** @var ShippingEvent */
   private $shipping_event;
@@ -50,11 +53,11 @@ class ShopController {
     else $shipping_event_id = WC()->session->get('shipping_event');
 
     //Change Chosen Shipping Event
-    if( array_key_exists( 'chosen_shipping_event_id', $_POST ) &&
-        !empty( $_POST['chosen_shipping_event_id'] ) &&
-        $_POST['chosen_shipping_event_id'] != $shipping_event_id ) {
+    if( array_key_exists( self::CHOSEN_ARG_CODE, $_GET ) &&
+        !empty( $_GET[self::CHOSEN_ARG_CODE] ) &&
+        $_GET[self::CHOSEN_ARG_CODE] != $shipping_event_id ) {
       if( $shipping_event_id ) $this->confirm_change_shipping_event();
-      $shipping_event_id = $_POST['chosen_shipping_event_id'];
+      $shipping_event_id = $_GET[self::CHOSEN_ARG_CODE];
     }
 
     //Set this shipping_event property
@@ -78,7 +81,7 @@ class ShopController {
     <script type="text/javascript">
       var confirmation = confirm( "<?php echo __( "Are you sure you want to change the date? If you continue, some items of your cart may be deleted.", 'woocommerce-shipping-event' ) ?>" );
       if(confirmation == false) {
-        location="<?php echo get_permalink( get_page_by_title( 'Pedidos' ) ) ?>";
+        location="<?php echo SettingsController::get_instance()->get_choose_event_page_url() ?>";
       }
     </script>
      <?php
@@ -89,11 +92,9 @@ class ShopController {
     ?>
     <script type="text/javascript">
       alert( "<?php echo __( "Please choose a date before shopping. If you already chosen, it's probably not available anymore.", 'woocommerce-shipping-event' ) ?>" );
-      location="<?php echo get_permalink( get_page_by_title( 'Pedidos' ) ) ?>";
+      location="<?php echo SettingsController::get_instance()->get_choose_event_page_url() ?>";
     </script>
      <?php
-    // wp_safe_redirect( get_permalink( get_page_by_title( 'Pedidos' ) ) );
-    // exit;
   }
 
   /**

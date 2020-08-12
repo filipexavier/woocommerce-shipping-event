@@ -163,6 +163,25 @@ class ShippingEventMetabox
         <?php checked( $shipping_event->get_disable_backorder(), true ); ?>
       />
     </p>
+
+
+    <p class="form-field">
+      <label><?php esc_html_e( 'Event Type:', 'woocommerce-shipping-event' ); ?></label>
+      <?php
+      echo(
+        wp_dropdown_pages(
+          array(
+            'post_type'         => 'shipping_event_type',
+            'name'              => 'shipping_event_type',
+            'echo'              => 0,
+            'show_option_none'  => __( '&mdash; Select &mdash;' ),
+            'option_none_value' => '0',
+            'selected'          => $shipping_event->get_event_type_id(),
+          )
+        )
+      );
+      ?>
+    </p>
     <?php
   }
 
@@ -258,6 +277,14 @@ class ShippingEventMetabox
               $post_id,
               'shipping_event_date',
               get_gmt_from_date( $_POST['shipping_event_date'] )
+          );
+      }
+
+      if (array_key_exists( 'shipping_event_type', $_POST ) ) {
+          update_post_meta(
+              $post_id,
+              'shipping_event_type',
+              $_POST['shipping_event_type']
           );
       }
 

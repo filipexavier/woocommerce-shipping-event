@@ -11,7 +11,11 @@ class DateController {
 
 
   public static function format_date( $date ) {
-    return $date->format( 'd/m/Y' ) . " (" . ucfirst( __( $date->format( 'l' ) ) ) . ")";
+    return $date->format( 'd/m/Y' ) . " (" . self::day_of_week( $date ) . ")";
+  }
+
+  public static function day_of_week( $date ) {
+    return ucfirst( __( $date->format( 'l' ) ) );
   }
 
   public static function now() {
@@ -30,4 +34,6 @@ class DateController {
     //Convert to local time
     return date_create( get_date_from_gmt( $strdate ), wp_timezone() );
   }
+
+
 }

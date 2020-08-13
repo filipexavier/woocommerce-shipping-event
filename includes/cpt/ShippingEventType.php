@@ -10,11 +10,11 @@ use WCShippingEvent\Base\DateController;
 class ShippingEventType {
 
   public const AVAILABLE_ARGS = array(
-    '[TITLE]',
-    '[EVENT_DATE]',
-    '[BEGIN_ORDERS_DATE]',
-    '[END_ORDERS_DATE]',
-    '[SELECT_EVENT]'
+    '#TITLE#',
+    '#EVENT_DATE#',
+    '#BEGIN_ORDERS_DATE#',
+    '#END_ORDERS_DATE#',
+    '#SELECT_EVENT#'
   );
 
   public const DATE_ARGS = array(
@@ -42,7 +42,7 @@ class ShippingEventType {
 
   public static function customize_date_format( $date, $option_key ) {
     $format = get_option( $option_key );
-    if( empty( $format ) ) return DateController::format_date( $date );
+    if( empty( $format ) ) return date_i18n( wc_date_format(), $date->timestamp );
     return self::apply_args_date( $date, $format );
   }
 

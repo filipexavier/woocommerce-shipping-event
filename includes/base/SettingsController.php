@@ -7,6 +7,8 @@
 namespace WCShippingEvent\Base;
 
 use \WCShippingEvent\Init;
+use \WCShippingEvent\Base\DateController;
+use \WCShippingEvent\Cpt\ShippingEventType;
 
 class SettingsController {
 
@@ -14,7 +16,10 @@ class SettingsController {
 
   public const OPTION_CODES = array(
     'wcse_choose_shipping_event_page',
-    'wcse_shipping_event_page'
+    'wcse_shipping_event_page',
+    'wcse_event_type_event_date_format',
+    'wcse_event_type_open_orders_format',
+    'wcse_event_type_close_orders_format'
   );
 
   public static function get_instance() {
@@ -64,8 +69,6 @@ class SettingsController {
 
       submit_button();
 
-      var_dump(is_page('shipping-event-settings'));
-      var_dump($page_id);
       echo '</form></div>';
   }
 
@@ -76,6 +79,13 @@ class SettingsController {
           'general_settings_section', // ID
           __( 'General Settings', 'woocommerce_shipping_event' ), // Title
           array( $this, 'general_settings_intro_output' ), // Callback
+          'shipping_event_settings_page' // Page
+          );
+
+      add_settings_section(
+          'date_format_section', // ID
+          __( 'Date Format', 'woocommerce_shipping_event' ), // Title
+          array( $this, 'date_format_intro_output' ), // Callback
           'shipping_event_settings_page' // Page
           );
 
@@ -93,6 +103,18 @@ class SettingsController {
       register_setting(
           'shipping_event_settings_group', // Option group
           'wcse_shipping_event_page'  // Option name
+      );
+      register_setting(
+          'shipping_event_settings_group', // Option group
+          'wcse_event_type_event_date_format'  // Option name
+      );
+      register_setting(
+          'shipping_event_settings_group', // Option group
+          'wcse_event_type_open_orders_format'  // Option name
+      );
+      register_setting(
+          'shipping_event_settings_group', // Option group
+          'wcse_event_type_close_orders_format'  // Option name
       );
   }
 
@@ -112,9 +134,84 @@ class SettingsController {
           'shipping_event_settings_page', // Page
           'general_settings_section' // Section
           );
+
+      add_settings_field(
+          'event_type_event_date_format', // ID
+          __('Event Date Format', 'woocommerce_shipping_event' ), // Title
+          array( $this, 'type_event_date_format_field_output' ), // Callback
+          'shipping_event_settings_page', // Page
+          'date_format_section' // Section
+          );
+
+      add_settings_field(
+          'event_type_begin_orders_format', // ID
+          __('Open Orders Date Format', 'woocommerce_shipping_event' ), // Title
+          array( $this, 'type_open_orders_format_field_output' ), // Callback
+          'shipping_event_settings_page', // Page
+          'date_format_section' // Section
+          );
+
+      add_settings_field(
+          'event_type_close_orders_format', // ID
+          __('Close Orders Date Format', 'woocommerce_shipping_event' ), // Title
+          array( $this, 'type_close_orders_format_field_output' ), // Callback
+          'shipping_event_settings_page', // Page
+          'date_format_section' // Section
+          );
   }
 
   public function general_settings_intro_output() {}
+
+  public function date_format_intro_output() {
+    echo __( 'Use the following expressions/codes to represent the way you want to show each date on your shipping event list. The date will appear as you set here each time you use it in the shipping event type. ','woocommerce_shipping_event' );
+    echo __( 'Example: <code>[DAY_OF_WEEK], [DAY]/[MONTH]</code> will become ', 'woocommerce_shipping_event' ) . '<code>' . ShippingEventType::apply_args_date( DateController::now(),'[DAY_OF_WEEK], [DAY]/[MONTH]' ) . '</code><br /><br />';
+    echo __('Expressions available: ', 'woocommerce_shipping_event' ) . '<code>' . implode( ", ", ShippingEventType::DATE_ARGS ) . '</code>';
+  }
+
+  public function type_event_date_format_field_output() {
+    $format = get_option( 'wcse_event_type_event_date_format' );
+    ?>
+      <input
+       type="text"
+       id="event_type_event_date_format"
+       name="wcse_event_type_event_date_format"
+       size="50"
+       placeholder="[DAY]/[MONTH] ([DAY_OF_WEEK])"
+       value="<?php echo $format ?>"
+      />
+    <?php
+    echo '<strong>' . __('Simulation: ', 'woocommerce_shipping_event' ) . '</strong>' . ShippingEventType::apply_args_date( DateController::now(), $format ? $format : '[DAY]/[MONTH] ([DAY_OF_WEEK])' );
+  }
+
+  public function type_open_orders_format_field_output() {
+    $format = get_option( 'wcse_event_type_open_orders_format' );
+    ?>
+      <input
+       type="text"
+       id="event_type_begin_orders_format"
+       name="wcse_event_type_open_orders_format"
+       size="50"
+       placeholder="[DAY]/[MONTH] ([DAY_OF_WEEK])"
+       value="<?php echo $format ?>"
+      />
+    <?php
+    echo '<strong>' . __('Simulation: ', 'woocommerce_shipping_event' ) . '</strong>' . ShippingEventType::apply_args_date( DateController::now(), $format ? $format : '[DAY]/[MONTH] ([DAY_OF_WEEK])' );
+  }
+
+  public function type_close_orders_format_field_output() {
+    $format = get_option( 'wcse_event_type_close_orders_format' );
+    ?>
+      <input
+       type="text"
+       id="event_type_close_orders_format"
+       name="wcse_event_type_close_orders_format"
+       size="50"
+       placeholder="[DAY]/[MONTH] ([DAY_OF_WEEK])"
+       value="<?php echo $format ?>"
+      />
+    <?php
+    echo '<strong>' . __('Simulation: ', 'woocommerce_shipping_event' ) . '</strong>' . ShippingEventType::apply_args_date( DateController::now(), $format ? $format : '[DAY]/[MONTH] ([DAY_OF_WEEK])' );
+  }
 
   public function choose_shipping_event_page_field_output() {
     echo(

@@ -9,6 +9,7 @@ use WC_Shipping_Zones;
 use \WCShippingEvent\Meta\LocalPickupDetailsMetabox;
 use \WCShippingEvent\Cpt\ShippingEvent;
 use \WCShippingEvent\Base\DateController;
+use \WCShippingEvent\Base\ShippingEventController;
 
 /**
  *
@@ -109,7 +110,7 @@ class ShippingEventMetabox
   function shipping_event_basic_settings_output( $post )
   {
     $post_id          = $post->ID;
-    $shipping_event = new ShippingEvent( $post_id );
+    $shipping_event = ShippingEventController::get_instance()->get_shipping_event( $post );
     ?>
 
     <p class="form-field">

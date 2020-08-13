@@ -8,9 +8,7 @@
   foreach( $shipping_event_list as $shipping_event_post ) {
     $shipping_event = ShippingEventController::get_instance()->get_shipping_event( $shipping_event_post );
     $order_pending = $shipping_event->open_order_pending();
-    error_log("xx" . $shipping_event->get_title() . $shipping_event->orders_enabled());
     if( !$order_pending && !$shipping_event->orders_enabled() ) continue;
-
     $num_enabled++;
     if( $shipping_event->get_event_type() ) {
       $html_event = $shipping_event->get_event_type()->post_content;

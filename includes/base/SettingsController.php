@@ -17,6 +17,8 @@ class SettingsController {
   public const OPTION_CODES = array(
     'wcse_choose_shipping_event_page',
     'wcse_shipping_event_page',
+    'wcse_shortcode_label_button_unavailable',
+    'wcse_shortcode_target_button_unavailable',
     'wcse_event_type_event_date_format',
     'wcse_event_type_open_orders_format',
     'wcse_event_type_close_orders_format'
@@ -61,8 +63,34 @@ class SettingsController {
 
       printf( '<h1>%s</h1>', __( 'Shipping Event Plugin Settings', 'woocommerce_shipping_event' ) );
 
-      echo '<form method="post" action="options.php">';
+      printf( '<h3>%s</h3>', __( 'Instructions:', 'woocommerce_shipping_event' ) );
+      printf( __( 'With this plugin the user will have to choose a delivery/pickup date before accessing the shop/store page.', 'woocommerce_shipping_event' ) );
+      printf( '<br />'. __( 'For this to work you will need to setup a few things:', 'woocommerce_shipping_event' ) );
 
+      ?>
+      <p>
+        <li><?php echo __( 'Create a Shipping Event and setup the proper dates, products and shipping methods', 'woocommerce_shipping_event' ) ?></li>
+        <li><?php echo __( 'Create a new page and a link for the user to select the date and start purchasing', 'woocommerce_shipping_event' ) ?></li>
+        <li><?php echo __( 'Select that page in the setting bellow', 'woocommerce_shipping_event' ) ?></li>
+        <li><?php echo __( 'Create a Shipping Event Type to define how the shipping event option will be shown in that page', 'woocommerce_shipping_event' ) ?>
+          <p style="margin-left:20px">
+            <dd>
+              <?php
+                echo __( 'You can use a few tags (exactly as described) in your Event Type to show information of the shipping event:', 'woocommerce_shipping_event' );
+                foreach( ShippingEventType::EVENT_TAGS as $tag => $description ) {
+                  printf( '<p><code>%s</code> - %s</p>', $tag, __( $description ) );
+                }
+               ?>
+            </dd>
+          </p>
+        </li>
+        <li><?php echo __( 'Fill out the rest of the settings bellow', 'woocommerce_shipping_event' ) ?></li>
+      </p>
+      <br />
+
+      <form method="post" action="options.php">
+
+      <?php
       settings_fields( 'shipping_event_settings_group' );
 
       do_settings_sections( 'shipping_event_settings_page' );
@@ -81,6 +109,13 @@ class SettingsController {
           array( $this, 'general_settings_intro_output' ), // Callback
           'shipping_event_settings_page' // Page
           );
+
+      add_settings_section(
+        'shortcode_settings_section', // ID
+        __( 'Choose Delivery/Pickup Page (Shortcode)', 'woocommerce_shipping_event' ), // Title
+        array( $this, 'shortcode_intro_output' ), // Callback
+        'shipping_event_settings_page' // Page
+      );
 
       add_settings_section(
           'date_format_section', // ID
@@ -106,6 +141,14 @@ class SettingsController {
       );
       register_setting(
           'shipping_event_settings_group', // Option group
+          'wcse_shortcode_label_button_unavailable'  // Option name
+      );
+      register_setting(
+          'shipping_event_settings_group', // Option group
+          'wcse_shortcode_target_button_unavailable'  // Option name
+      );
+      register_setting(
+          'shipping_event_settings_group', // Option group
           'wcse_event_type_event_date_format'  // Option name
       );
       register_setting(
@@ -128,12 +171,28 @@ class SettingsController {
           );
 
       add_settings_field(
-          'shipping_event_page_id', // ID
-          __('Shipping Event Page', 'woocommerce_shipping_event' ), // Title
-          array( $this, 'shipping_event_page_field_output' ), // Callback
-          'shipping_event_settings_page', // Page
-          'general_settings_section' // Section
-          );
+        'shipping_event_page_id', // ID
+        __('Shipping Event Page', 'woocommerce_shipping_event' ), // Title
+        array( $this, 'shipping_event_page_field_output' ), // Callback
+        'shipping_event_settings_page', // Page
+        'shortcode_settings_section' // Section
+      );
+
+      add_settings_field(
+        'shortcode_label_button_unavailable', // ID
+        __('Label - orders unavailable', 'woocommerce_shipping_event' ), // Title
+        array( $this, 'shortcode_label_button_unavailable_field_output' ), // Callback
+        'shipping_event_settings_page', // Page
+        'shortcode_settings_section' // Section
+      );
+
+      add_settings_field(
+        'shortcode_target_button_unavailable', // ID
+        __('Target - orders unavailable', 'woocommerce_shipping_event' ), // Title
+        array( $this, 'shortcode_target_button_unavailable_field_output' ), // Callback
+        'shipping_event_settings_page', // Page
+        'shortcode_settings_section' // Section
+      );
 
       add_settings_field(
           'event_type_event_date_format', // ID
@@ -158,14 +217,21 @@ class SettingsController {
           'shipping_event_settings_page', // Page
           'date_format_section' // Section
           );
+
   }
 
-  public function general_settings_intro_output() {}
+  public function general_settings_intro_output() {
+
+  }
+
+  public function shortcode_intro_output() {
+
+  }
 
   public function date_format_intro_output() {
     echo __( 'Use the following expressions/codes to represent the way you want to show each date on your shipping event list. The date will appear as you set here each time you use it in the shipping event type. ','woocommerce_shipping_event' );
-    echo __( 'Example: <code>[DAY_OF_WEEK], [DAY]/[MONTH]</code> will become ', 'woocommerce_shipping_event' ) . '<code>' . ShippingEventType::apply_args_date( DateController::now(),'[DAY_OF_WEEK], [DAY]/[MONTH]' ) . '</code><br /><br />';
-    echo __('Expressions available: ', 'woocommerce_shipping_event' ) . '<code>' . implode( ", ", ShippingEventType::DATE_ARGS ) . '</code>';
+    echo __( 'Example: <code>[DAY_OF_WEEK], [DAY]/[MONTH]</code> will become ', 'woocommerce_shipping_event' ) . '<code>' . ShippingEventType::translate_date_tags( DateController::now(),'[DAY_OF_WEEK], [DAY]/[MONTH]' ) . '</code><br /><br />';
+    echo __('Expressions available: ', 'woocommerce_shipping_event' ) . '<code>' . implode( ", ", ShippingEventType::DATE_TAGS ) . '</code>';
   }
 
   public function type_event_date_format_field_output() {
@@ -180,7 +246,42 @@ class SettingsController {
        value="<?php echo $format ?>"
       />
     <?php
-    echo '<strong>' . __('Simulation: ', 'woocommerce_shipping_event' ) . '</strong>' . ShippingEventType::apply_args_date( DateController::now(), $format ? $format : '[DAY]/[MONTH] ([DAY_OF_WEEK])' );
+    echo '<strong>' . __('Simulation: ', 'woocommerce_shipping_event' ) . '</strong>' . ShippingEventType::translate_date_tags( DateController::now(), $format ? $format : '[DAY]/[MONTH] ([DAY_OF_WEEK])' );
+  }
+
+  public function shortcode_label_button_unavailable_field_output() {
+    ?>
+      <input
+       type="text"
+       id="shortcode_label_button_unavailable"
+       name="wcse_shortcode_label_button_unavailable"
+       size="30"
+       placeholder="<?php echo __( 'Shop' ) ?>"
+       value="<?php echo get_option( 'wcse_shortcode_label_button_unavailable' ) ?>"
+      />
+      <p class="description">
+        <?php echo __( 'This label/text will be shown inside the button configured to select the delivery/pickup date (#SELECT_EVENT#) for the events which the orders and not opened yet.', 'woocommerce_shipping_event' ) ?>
+      </p>
+    <?php
+  }
+
+  public function shortcode_target_button_unavailable_field_output() {
+    echo(
+      wp_dropdown_pages(
+        array(
+          'name'              => 'wcse_shortcode_target_button_unavailable',
+          'echo'              => 0,
+          'show_option_none'  => __( '&mdash; Select &mdash;' ),
+          'option_none_value' => '0',
+          'selected'          => get_option( 'wcse_shortcode_target_button_unavailable' ),
+        )
+      )
+    );
+    ?>
+      <p class="description">
+      <?php echo __( 'Select the page you want the users to be redirect to when they click the button configured to select the delivery/pickup date (#SELECT_EVENT#) for the events which the orders and not opened yet. If not selected, the button will be disabled', 'woocommerce_shipping_event' ) ?>
+      </p>
+    <?php
   }
 
   public function type_open_orders_format_field_output() {
@@ -195,7 +296,7 @@ class SettingsController {
        value="<?php echo $format ?>"
       />
     <?php
-    echo '<strong>' . __('Simulation: ', 'woocommerce_shipping_event' ) . '</strong>' . ShippingEventType::apply_args_date( DateController::now(), $format ? $format : '[DAY]/[MONTH] ([DAY_OF_WEEK])' );
+    echo '<strong>' . __('Simulation: ', 'woocommerce_shipping_event' ) . '</strong>' . ShippingEventType::translate_date_tags( DateController::now(), $format ? $format : '[DAY]/[MONTH] ([DAY_OF_WEEK])' );
   }
 
   public function type_close_orders_format_field_output() {
@@ -210,7 +311,7 @@ class SettingsController {
        value="<?php echo $format ?>"
       />
     <?php
-    echo '<strong>' . __('Simulation: ', 'woocommerce_shipping_event' ) . '</strong>' . ShippingEventType::apply_args_date( DateController::now(), $format ? $format : '[DAY]/[MONTH] ([DAY_OF_WEEK])' );
+    echo '<strong>' . __('Simulation: ', 'woocommerce_shipping_event' ) . '</strong>' . ShippingEventType::translate_date_tags( DateController::now(), $format ? $format : '[DAY]/[MONTH] ([DAY_OF_WEEK])' );
   }
 
   public function choose_shipping_event_page_field_output() {
@@ -251,6 +352,18 @@ class SettingsController {
 
   public function get_shipping_event_page_url() {
     return get_permalink( $this->get_shipping_event_page() );
+  }
+
+  public function get_unavailable_target_page() {
+    $page = get_option( 'wcse_shortcode_target_button_unavailable' );
+    if( $page ) return get_post( $page );
+    return '';
+  }
+
+  public function get_unavailable_target_page_url() {
+    $page = $this->get_unavailable_target_page();
+    if( $page ) return get_permalink( $this->get_unavailable_target_page() );
+    return '';
   }
 
   /**

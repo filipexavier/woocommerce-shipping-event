@@ -31,4 +31,5 @@ class ShortcodeController {
     $content = ob_get_clean();
     return $content;
   }
+
 }

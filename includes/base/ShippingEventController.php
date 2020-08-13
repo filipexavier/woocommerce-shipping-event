@@ -120,11 +120,18 @@ class ShippingEventController {
       $date_b = DateController::get_post_date( $b->ID, ShippingEvent::get_meta_key( 'shipping_date' ) );
     } else if( $this->is_a_shipping_event( $a ) ) {
       $date_a = $a->get_shipping_date();
+      $orders_opened_a = $a->orders_enabled();
       $date_b = $b->get_shipping_date();
+      $orders_opened_b = $b->orders_enabled();
     } else return 0;
 
-    if ( $date_a == $date_b ) return 0;
-    return ( $date_a < $date_b ) ? -1 : 1;
+    if( $orders_opened_a == $orders_opened_b ) return $this->basic_comparator( $date_a, $date_b );
+    return $this->basic_comparator( $orders_opened_b, $orders_opened_a ); //invert because true > false, but opened shoud be above closed
+  }
+
+  public function basic_comparator( $a, $b ) {
+    if( $a == $b ) return 0;
+    return ( $a < $b ) ? -1 : 1;
   }
 
 }

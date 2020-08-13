@@ -21,6 +21,10 @@ class ShippingEventController {
     return self::$instance;
   }
 
+  public function is_a_shipping_event( $obj ) {
+    return is_a( $obj, 'WCShippingEvent\Cpt\ShippingEvent' );
+  }
+
   /**
    * @param int post_id of the post type shipping event
    * @return WP_Post
@@ -37,7 +41,7 @@ class ShippingEventController {
    * @return ShippingEvent
   */
   public function get_shipping_event( $shipping_event_id ) {
-    if( is_a( $shipping_event_id, 'ShippingEvent' ) ) return $shipping_event_id;
+    if( $this->is_a_shipping_event( $shipping_event_id ) ) return $shipping_event_id;
     $shipping_event_post = null;
     if( is_a( $shipping_event_id, 'WP_Post' ) ) {
       $shipping_event_post = $shipping_event_id;
@@ -88,6 +92,39 @@ class ShippingEventController {
       return $data_array[$data_key];
 
     return null;
+  }
+
+  public function posts_to_shipping_events( $posts ) {
+    $shipping_event_list = array();
+    foreach( $posts as $post ) {
+      array_push( $shipping_event_list, $this->get_shipping_event( $post ) );
+    }
+    return $shipping_event_list;
+  }
+
+  /**
+   * @param 'Array as key => value ( ShippingEvent or WP_Post )'
+   * @return Array(ShippingEvent)
+  */
+  public function order_by_date( $posts ) {
+    $shipping_event_list = $this-> posts_to_shipping_events( $posts );
+    usort( $shipping_event_list, array( $this, 'event_date_comparator') );
+    return $shipping_event_list;
+  }
+
+  public function event_date_comparator( $a, $b ) {
+    $date_a = null;
+    $date_b = null;
+    if ( is_a( $a, 'WP_Post' ) ) {
+      $date_a = DateController::get_post_date( $a->ID, ShippingEvent::get_meta_key( 'shipping_date' ) );
+      $date_b = DateController::get_post_date( $b->ID, ShippingEvent::get_meta_key( 'shipping_date' ) );
+    } else if( $this->is_a_shipping_event( $a ) ) {
+      $date_a = $a->get_shipping_date();
+      $date_b = $b->get_shipping_date();
+    } else return 0;
+
+    if ( $date_a == $date_b ) return 0;
+    return ( $date_a < $date_b ) ? -1 : 1;
   }
 
 }

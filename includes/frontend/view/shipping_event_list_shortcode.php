@@ -3,10 +3,9 @@
   use \WCShippingEvent\Base\ShippingEventController;
   use \WCShippingEvent\Cpt\ShippingEventType;
 
-  $shipping_event_list = get_posts( array( 'post_type' => 'shipping_event' ) );
+  $shipping_event_list = ShippingEventController::get_instance()->order_by_date( get_posts( array( 'post_type' => 'shipping_event' ) ) );
   $num_enabled = 0;
-  foreach( $shipping_event_list as $shipping_event_post ) {
-    $shipping_event = ShippingEventController::get_instance()->get_shipping_event( $shipping_event_post );
+  foreach( $shipping_event_list as $shipping_event ) {
     $order_pending = $shipping_event->open_order_pending();
     if( !$order_pending && !$shipping_event->orders_enabled() ) continue;
     $num_enabled++;

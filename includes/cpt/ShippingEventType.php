@@ -42,7 +42,7 @@ class ShippingEventType {
 
   public static function customize_date_format( $date, $option_key ) {
     $format = get_option( $option_key );
-    if( empty( $format ) ) return date_i18n( wc_date_format(), $date->timestamp );
+    if( empty( $format ) ) return date_i18n( wc_date_format(), $date->getTimestamp() );
     return self::apply_args_date( $date, $format );
   }
 

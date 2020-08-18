@@ -55,8 +55,14 @@ final class Init extends BaseController {
       wp_enqueue_script( 'wcse_shipping_methods', $this->plugin_url . '/assets/js/wcse_shipping_methods.js', array( 'jquery' ), rand(111,9999), 'all' );
     }
 
+    if( is_checkout() || is_cart() || is_woocommerce() ) {
+      wp_enqueue_style( 'wcse_popup', $this->plugin_url . '/assets/css/wcse_popup.css', array(), rand(111,9999), 'all' );
+    }
+
     if( SettingsController::get_instance()->is_choose_event() ) {
-      wp_enqueue_script( 'wcse_choose_shipping_event', $this->plugin_url . '/assets/js/wcse_choose_shipping_event.js', array( 'jquery' ), rand(111,9999), 'all' );
+      wp_enqueue_style( 'wcse_popup', $this->plugin_url . '/assets/css/wcse_popup.css', array(), rand(111,9999), 'all' );
+
+      wp_enqueue_script( 'wcse_choose_shipping_event', $this->plugin_url . '/assets/js/wcse_choose_shipping_event.js', array( 'jquery', 'jquery-ui-core', 'jquery-ui-dialog' ), rand(111,9999), 'all' );
       $data = array(
           'chosen_event_param' => ShopController::CHOSEN_ARG_CODE,
           'shipping_id_code' => ShippingEventType::SHIPPING_ID_CODE,
@@ -64,6 +70,7 @@ final class Init extends BaseController {
           'button_target' => SettingsController::get_instance()->get_shipping_event_page_url(),
           'orders_closed_button_target' => SettingsController::get_instance()->get_unavailable_target_page_url(),
           'orders_closed_button_label' => get_option( 'wcse_shortcode_label_button_unavailable' ),
+          'chosen_shipping_event_id' => ShopController::get_instance()->get_shipping_event_id()
       );
       wp_localize_script( 'wcse_choose_shipping_event', 'php_vars', $data );
     }

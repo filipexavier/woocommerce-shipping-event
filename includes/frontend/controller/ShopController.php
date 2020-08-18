@@ -8,6 +8,7 @@ namespace WCShippingEvent\Frontend\Controller;
 use \WCShippingEvent\Cpt\ShippingEvent;
 use \WCShippingEvent\Base\ShippingEventController;
 use \WCShippingEvent\Base\SettingsController;
+use \WCShippingEvent\Init;
 
 class ShopController {
 
@@ -37,6 +38,12 @@ class ShopController {
       add_filter( 'woocommerce_product_get_stock_status' , array( $this, 'override_stock_status' ), 10, 2 );
       add_filter( 'woocommerce_product_backorders_allowed' , array( $this, 'override_allow_backorders' ), 10, 2 );
       add_filter( 'woocommerce_product_get_manage_stock' , array( $this, 'override_manage_stock' ), 10, 2 );
+
+      //Maybe show popup in All pages of woocommerce
+      add_action( 'woocommerce_before_cart', array($this, 'block_access_when_no_event'), 10 );
+      add_action( 'woocommerce_before_single_product', array($this, 'block_access_when_no_event'), 10 );
+      add_action( 'woocommerce_before_main_content', array($this, 'block_access_when_no_event'), 10 );
+      add_action( 'woocommerce_before_checkout_form', array($this, 'block_access_when_no_event'), 10 );
     }
     add_filter( 'woocommerce_can_reduce_order_stock', array( $this, 'reduce_shipping_event_stock' ), 1, 2 );
     add_filter( 'woocommerce_can_restore_order_stock', array( $this, 'restore_shipping_event_stock' ), 1, 2 );
@@ -56,7 +63,6 @@ class ShopController {
     if( array_key_exists( self::CHOSEN_ARG_CODE, $_GET ) &&
         !empty( $_GET[self::CHOSEN_ARG_CODE] ) &&
         $_GET[self::CHOSEN_ARG_CODE] != $shipping_event_id ) {
-      if( $shipping_event_id ) $this->confirm_change_shipping_event();
       $shipping_event_id = $_GET[self::CHOSEN_ARG_CODE];
     }
 
@@ -72,29 +78,26 @@ class ShopController {
     if ( empty( $this->shipping_event ) || !$this->shipping_event->orders_enabled() ) {
       $this->shipping_event = null;
       WC()->session->__unset('shipping_event');
-      $this->redirect_no_shipping_event();
     }
   }
 
-  public function confirm_change_shipping_event() {
-    ?>
-    <script type="text/javascript">
-      var confirmation = confirm( "<?php echo __( "Are you sure you want to change the date? If you continue, some items of your cart may be deleted.", 'woocommerce-shipping-event' ) ?>" );
-      if(confirmation == false) {
-        location="<?php echo SettingsController::get_instance()->get_choose_event_page_url() ?>";
-      }
-    </script>
-     <?php
+  public function has_chosen_valid_shipping_event() {
+    //Check shipping_event valid
+    return $this->shipping_event && $this->shipping_event->orders_enabled();
   }
 
-  public function redirect_no_shipping_event() {
-    if( !is_checkout() && !is_cart() && !is_woocommerce() ) return;
-    ?>
-    <script type="text/javascript">
-      alert( "<?php echo __( "Please choose a date before shopping. If you already chosen, it's probably not available anymore.", 'woocommerce-shipping-event' ) ?>" );
-      location="<?php echo SettingsController::get_instance()->get_choose_event_page_url() ?>";
-    </script>
-     <?php
+  public function block_access_when_no_event() {
+    if( $this->has_chosen_valid_shipping_event() ) return;
+    $ok_btn_target = $close_btn_target = SettingsController::get_instance()->get_choose_event_page_url();
+    $title = __("Choose date");
+    $active = "true";
+    $cancel_btn = "false";
+    $msg = __( "Please choose a date before shopping. If you already chosen, it's probably not available anymore.", 'woocommerce-shipping-event' );
+    $this->show_popup( $active, $title, $msg, $cancel_btn, $ok_btn_target, $close_btn_target );
+  }
+
+  public function show_popup( $active, $title, $msg, $cancel_btn, $ok_btn_target, $close_btn_target ) {
+    include Init::get_instance()->plugin_path . 'includes/frontend/view/shipping_event_popup.php';
   }
 
   /**
@@ -268,6 +271,11 @@ class ShopController {
     if( $this->shipping_event && $this->shipping_event->get_product_manage_stock( $product->get_id() ) )
       return true;
     return $manage_stock;
+  }
+
+  public function get_shipping_event_id() {
+    if( $this->get_shipping_event() ) return $this->shipping_event->get_id();
+    return null;
   }
 
   public function get_shipping_event() {

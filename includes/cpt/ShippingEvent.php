@@ -129,6 +129,10 @@ class ShippingEvent {
     return $this->disable_backorder;
   }
 
+  public function set_disable_backorder( $disable_backorder ) {
+    return $this->disable_backorder = $disable_backorder ? true : false;
+  }
+
   public function get_products() {
     return $this->products;
   }

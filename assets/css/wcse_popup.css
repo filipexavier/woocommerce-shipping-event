@@ -1,0 +1,75 @@
+.overlay-shipping-event {
+  z-index: 9999;
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(0, 0, 0, 0.7);
+  transition: opacity 500ms;
+  visibility: visible;
+  /* display:none; */
+  opacity: 1;
+}
+
+.overlay-shipping-event:target {
+  visibility: visible;
+  opacity: 1;
+}
+
+.popup {
+  margin: 70px auto;
+  padding: 15px;
+  background: #fff;
+  border-radius: 5px;
+  width: 30%;
+  position: relative;
+  transition: all 3s ease-in-out;
+}
+
+.popup .close-btn {
+  position: absolute;
+  top: 5px;
+  right: 20px;
+  transition: all 200ms;
+  font-size: 30px;
+  font-weight: bold;
+  text-decoration: none;
+  color: #333;
+}
+.popup .close-btn:hover {
+  color: gray;
+}
+.popup .content {
+  max-height: 30%;
+  padding-left: 5px;
+  padding-bottom: 5px;
+  overflow: auto;
+  text-align: center;
+}
+
+.screen-fade {
+  z-index: 9998;
+  background-color: black;
+  opacity: 0.6;
+  position: fixed;
+  left: 0px;
+  top: 0px;
+  width: 100%;
+  height: 100%;
+}
+
+.buttonset {
+  justify-content: center;
+  display: flex;
+  margin-top: 20px;
+}
+
+.buttonset .button {
+  margin-bottom: auto;
+  margin-left: 1em;
+}
+
+.center {
+  text-align: center;
+}

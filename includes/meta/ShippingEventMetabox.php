@@ -111,6 +111,9 @@ class ShippingEventMetabox
   {
     $post_id          = $post->ID;
     $shipping_event = ShippingEventController::get_instance()->get_shipping_event( $post );
+    global $pagenow;
+    //DEFAULT VALUES
+    if( $pagenow == 'post-new.php' ) $shipping_event->set_disable_backorder(true);
     ?>
 
     <p class="form-field">
@@ -295,10 +298,6 @@ class ShippingEventMetabox
           'shipping_event_enabled',
           $_POST['shipping_event_enabled']
         );
-      } else {
-        delete_post_meta(
-          $post_id,
-          'shipping_event_enabled');
       }
 
       if ( array_key_exists( 'shipping_event_disable_backorder', $_POST ) ) {

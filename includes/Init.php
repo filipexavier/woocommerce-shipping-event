@@ -69,8 +69,7 @@ final class Init extends BaseController {
           'orders_closed_code' => ShippingEventType::ORDERS_CLOSED_CODE,
           'button_target' => SettingsController::get_instance()->get_shipping_event_page_url(),
           'orders_closed_button_target' => SettingsController::get_instance()->get_unavailable_target_page_url(),
-          'orders_closed_button_label' => get_option( 'wcse_shortcode_label_button_unavailable' ),
-          'chosen_shipping_event_id' => ShopController::get_instance()->get_shipping_event_id()
+          'orders_closed_button_label' => get_option( 'wcse_shortcode_label_button_unavailable' )
       );
       wp_localize_script( 'wcse_choose_shipping_event', 'php_vars', $data );
     }

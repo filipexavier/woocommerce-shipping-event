@@ -3,7 +3,13 @@
   use \WCShippingEvent\Base\ShippingEventController;
   use \WCShippingEvent\Init;
   use \WCShippingEvent\Cpt\ShippingEventType;
+  use \WCShippingEvent\Frontend\Controller\ShopController;
 
+  ?>
+  <input id="chosen_shipping_event_id" type="hidden"
+    value="<?php echo ShopController::get_instance()->get_shipping_event_id() ?>">
+  </input>
+  <?php
   $shipping_event_list = ShippingEventController::get_instance()->order_by_date( get_posts( array( 'post_type' => 'shipping_event' ) ) );
   $num_enabled = 0;
   foreach( $shipping_event_list as $shipping_event ) {

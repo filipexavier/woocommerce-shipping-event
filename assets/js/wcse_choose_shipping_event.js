@@ -16,6 +16,10 @@ jQuery(document).ready(function($){
     });
   };
 
+  var get_chosen_shipping_event = function() {
+    return $('#' + php_vars.chosen_event_param).val();
+  }
+
   var get_shipping_event_id = function( fullText ) {
     return fullText.split("_").pop().replace("/", "");
   }
@@ -28,7 +32,10 @@ jQuery(document).ready(function($){
     //Available orders
     $('a[href*="' + php_vars.shipping_id_code + '"]').each(function() {
       var shipping_event_id = get_shipping_event_id( $(this).prop("href") );
-      if(php_vars.chosen_shipping_event_id != null && shipping_event_id != php_vars.chosen_shipping_event_id) {
+      var chosen_shipping_event_id = get_chosen_shipping_event();
+      if(chosen_shipping_event_id != null &&
+         chosen_shipping_event_id != "" &&
+         shipping_event_id != chosen_shipping_event_id) {
         $(this).removeAttr('href');
         $(this).prop("id", shipping_event_id);
         $(this).click(addPopup);

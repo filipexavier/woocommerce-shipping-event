@@ -28,7 +28,7 @@ jQuery(document).ready(function($){
     //Available orders
     $('a[href*="' + php_vars.shipping_id_code + '"]').each(function() {
       var shipping_event_id = get_shipping_event_id( $(this).prop("href") );
-      if(shipping_event_id != php_vars.chosen_shipping_event_id) {
+      if(php_vars.chosen_shipping_event_id != null && shipping_event_id != php_vars.chosen_shipping_event_id) {
         $(this).removeAttr('href');
         $(this).prop("id", shipping_event_id);
         $(this).click(addPopup);

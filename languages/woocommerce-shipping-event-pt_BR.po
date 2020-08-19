@@ -1,0 +1,250 @@
+# Copyright (C) 2020 Filipe Xavier
+# This file is distributed under the same license as the Woocommerce Shipping Event plugin.
+msgid ""
+msgstr ""
+"Project-Id-Version: Woocommerce Shipping Event 0.0.1\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/woocommerce-"
+"shipping-event\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2020-08-19T01:03:37+00:00\n"
+"PO-Revision-Date: 2020-08-18 23:09-0300\n"
+"X-Generator: Poedit 2.4.1\n"
+"X-Domain: woocommerce-shipping-event\n"
+"Language-Team: \n"
+"Last-Translator: \n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Language: pt_BR\n"
+
+#. Plugin Name of the plugin
+msgid "Woocommerce Shipping Event"
+msgstr "Woocommerce Shipping Event"
+
+#. Description of the plugin
+msgid ""
+"This plugin allows the customer to pick up the order themselves by selecting "
+"pickup location during order placement, and also select the date of "
+"delivery, from a list of preset dates set by the administrator."
+msgstr ""
+"Este plugin permite que o cliente pegue o pedido sozinho selecionando o "
+"local de coleta durante a colocação do pedido, e também selecionar a data de "
+"entrega, a partir de uma lista de datas predefinidas definida pelo "
+"administrador."
+
+#. Author of the plugin
+msgid "Filipe Xavier"
+msgstr "Filipe Xavier"
+
+#: includes/base/SettingsController.php:44
+#: includes/base/SettingsController.php:45
+msgid "Settings"
+msgstr "Configurações"
+
+#: includes/base/SettingsController.php:64
+msgid "Shipping Event Plugin Settings"
+msgstr "Configurações do plugin"
+
+#: includes/base/SettingsController.php:66
+msgid "Instructions:"
+msgstr "Instruções:"
+
+#: includes/base/SettingsController.php:67
+msgid ""
+"With this plugin the user will have to choose a delivery/pickup date before "
+"accessing the shop/store page."
+msgstr ""
+"Com este plugin, o usuário terá que escolher uma data de entrega/retirada "
+"antes de acessar a página da loja/loja."
+
+#: includes/base/SettingsController.php:68
+msgid "For this to work you will need to setup a few things:"
+msgstr "Para que isso funcione, você precisará configurar algumas coisas:"
+
+#: includes/base/SettingsController.php:72
+msgid ""
+"Create a Shipping Event and setup the proper dates, products and shipping "
+"methods"
+msgstr "Crie um evento e configure as datas produtos e métodos de entrega"
+
+#: includes/base/SettingsController.php:73
+msgid ""
+"Create a new page and a link for the user to select the date and start "
+"purchasing"
+msgstr ""
+"Crie uma nova página e um link para ela, para que o usuário selecione a data "
+"e inicie as compras"
+
+#: includes/base/SettingsController.php:74
+msgid "Select that page in the setting bellow"
+msgstr "Selecione esta página na configuração abaixo"
+
+#: includes/base/SettingsController.php:75
+msgid ""
+"Create a Shipping Event Type to define how the shipping event option will be "
+"shown in that page"
+msgstr ""
+"Crie um Tipo de evento para definir como a opção de Data de entrega  será "
+"exibida na página"
+
+#: includes/base/SettingsController.php:79
+msgid ""
+"You can use a few tags (exactly as described) in your Event Type to show "
+"information of the shipping event:"
+msgstr ""
+"Você pode usar algumas expressões/tags (copie e cole) no seu Tipo de evento "
+"para mostrar as informações do evento de entrega:"
+
+#: includes/base/SettingsController.php:87
+msgid "Fill out the rest of the settings bellow"
+msgstr "Preencha as configurações restantes abaixo"
+
+#: includes/base/SettingsController.php:108
+msgid "General Settings"
+msgstr "Configurações gerais"
+
+#: includes/base/SettingsController.php:115
+msgid "Choose Delivery/Pickup Page (Shortcode)"
+msgstr "Página de escolha da data de entrega (Shortcode)"
+
+#: includes/base/SettingsController.php:122
+msgid "Date Format"
+msgstr "Formato da data"
+
+#: includes/base/SettingsController.php:167
+msgid "Choose Shipping Event Page"
+msgstr "Página de escolha da data/evento de entrega"
+
+#: includes/base/SettingsController.php:175
+msgid "Shipping Event Page"
+msgstr "Página da entrega (loja)"
+
+#: includes/base/SettingsController.php:183
+msgid "Label - orders unavailable"
+msgstr "Texto do botão - encomendas fechadas"
+
+#: includes/base/SettingsController.php:191
+msgid "Target - orders unavailable"
+msgstr "Destino do botão - ncomendas fechadas"
+
+#: includes/base/SettingsController.php:199
+msgid "Event Date Format"
+msgstr "Formato da data da entrega"
+
+#: includes/base/SettingsController.php:207
+msgid "Open Orders Date Format"
+msgstr "Formato da data de abertura dos pedidos"
+
+#: includes/base/SettingsController.php:215
+msgid "Close Orders Date Format"
+msgstr "Formato da data de encerramento dos pedidos"
+
+#: includes/base/SettingsController.php:233
+msgid "Example: <code>[DAY_OF_WEEK], [DAY]/[MONTH]</code> will become "
+msgstr "Examplo: <code>[DAY_OF_WEEK], [DAY]/[MONTH]</code> se tornaram"
+
+#: includes/base/SettingsController.php:234
+msgid "Expressions available: "
+msgstr "Expressões disponíveis:"
+
+#: includes/base/SettingsController.php:249
+#: includes/base/SettingsController.php:299
+#: includes/base/SettingsController.php:314
+msgid "Simulation: "
+msgstr "Visualização:"
+
+#: includes/base/SettingsController.php:263
+msgid ""
+"This label/text will be shown inside the button configured to select the "
+"delivery/pickup date (#SELECT_EVENT#) for the events which the orders and "
+"not opened yet."
+msgstr ""
+"Este texto será exibido dentro do botão configurado para escolha da data de "
+"entrega (#SELECT_EVENT#) para os eventos em que os pedidos ainda não foram "
+"abertos."
+
+#: includes/base/SettingsController.php:282
+msgid ""
+"Select the page you want the users to be redirect to when they click the "
+"button configured to select the delivery/pickup date (#SELECT_EVENT#) for "
+"the events which the orders and not opened yet. If not selected, the button "
+"will be disabled"
+msgstr ""
+"Selecione a página para a qual você deseja que os usuários sejam "
+"direcionados quando clicarem  no botão configurado para selecionar a data de "
+"entrega (#SELECT_EVENT#) para os eventos em que os pedidos ainda não foram "
+"abertos. Se não for selecionado, o botão será desabilitado. "
+
+#: includes/cpt/CustomPostTypeController.php:37
+msgid "Event Types"
+msgstr "Tipos de evento"
+
+#: includes/cpt/CustomPostTypeController.php:38
+msgid "Shipping Event Types"
+msgstr "Tipos de evento"
+
+#: includes/frontend/controller/CheckoutController.php:110
+msgid "Local Pickup Address"
+msgstr "Endereço para retirada"
+
+#: includes/frontend/controller/CheckoutController.php:121
+msgid "Lembre-se:"
+msgstr "Lembre-se:"
+
+#: includes/frontend/controller/ShopController.php:95
+msgid ""
+"Please choose a date before shopping. If you already chosen, it's probably "
+"not available anymore."
+msgstr ""
+"Por favor, escolha a data de entrega antes de entrar na loja. Se já "
+"escolheu, provavelmente os pedidos para esta data foram encerrados. Confira "
+"as próximas entregas."
+
+#: includes/frontend/view/shipping_event_list_shortcode.php:37
+msgid ""
+"Are you sure you want to change the date? If you continue, some items of "
+"your cart may be deleted."
+msgstr ""
+"Tem certeza que deseja mudar a data de entrega selecionada anteriormente? Se "
+"confirmar, alguns itens da sua cesta podem ser removidos."
+
+#: includes/meta/LocalPickupDetailsMetabox.php:55
+msgid "Local pickup"
+msgstr "Retirar no local"
+
+#: includes/meta/LocalPickupDetailsMetabox.php:81
+msgid "Address"
+msgstr "Endereço"
+
+#: includes/meta/ShippingEventMetabox.php:120
+msgid "Enabled"
+msgstr "Habilitado"
+
+#: includes/meta/ShippingEventMetabox.php:131
+#: includes/meta/ShippingEventTypeMetabox.php:48
+msgid "Date of shipping/Delivery:"
+msgstr "Data da entrega:"
+
+#: includes/meta/ShippingEventMetabox.php:141
+msgid "Start accepting orders:"
+msgstr "Aceitar pedidos à partir de:"
+
+#: includes/meta/ShippingEventMetabox.php:151
+msgid "Accepting orders until:"
+msgstr "Aceitar pedidos até:"
+
+#: includes/meta/ShippingEventMetabox.php:161
+msgid "Disable Back Order for all products"
+msgstr "Desabilitar ‘sob encomenda’ para todos os produtos"
+
+#: includes/meta/ShippingEventMetabox.php:173
+msgid "Event Type:"
+msgstr "Tipo do Evento:"
+
+#: includes/meta/ShippingEventMetabox.php:205
+msgid "Product Name"
+msgstr "Nome do produto"
+
+#: includes/meta/ShippingEventMetabox.php:208
+msgid "Stock"
+msgstr "Estoque"

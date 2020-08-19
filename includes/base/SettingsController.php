@@ -78,7 +78,7 @@ class SettingsController {
               <?php
                 echo __( 'You can use a few tags (exactly as described) in your Event Type to show information of the shipping event:', 'woocommerce-shipping-event' );
                 foreach( ShippingEventType::EVENT_TAGS as $tag => $description ) {
-                  printf( '<p><code>%s</code> - %s</p>', $tag, __( $description ) );
+                  printf( '<p><code>%s</code> - %s</p>', $tag, __( $description, 'woocommerce-shipping-event' ) );
                 }
                ?>
             </dd>

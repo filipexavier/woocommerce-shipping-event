@@ -34,8 +34,8 @@ class CustomPostTypeController {
     //Shipping event type submenu - admin
     add_submenu_page(
         'edit.php?post_type=shipping_event',
-        __( 'Event Types', 'woocommerce_shipping_event' ),
-        __( 'Shipping Event Types', 'woocommerce_shipping_event' ),
+        __( 'Event Types', 'woocommerce-shipping-event' ),
+        __( 'Shipping Event Types', 'woocommerce-shipping-event' ),
         'manage_options',
         'edit.php?post_type=shipping_event_type'
     );

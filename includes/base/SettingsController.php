@@ -41,8 +41,8 @@ class SettingsController {
     //Plugin general settings submenu - admin
     add_submenu_page(
         'edit.php?post_type=shipping_event',
-        __('Settings', 'woocommerce_shipping_event' ),
-        __('Settings', 'woocommerce_shipping_event' ),
+        __('Settings', 'woocommerce-shipping-event' ),
+        __('Settings', 'woocommerce-shipping-event' ),
         'manage_options',
         'shipping-event-settings',
         array( $this, 'settings_page_output' )
@@ -61,22 +61,22 @@ class SettingsController {
 
       echo '<div class="wrap">';
 
-      printf( '<h1>%s</h1>', __( 'Shipping Event Plugin Settings', 'woocommerce_shipping_event' ) );
+      printf( '<h1>%s</h1>', __( 'Shipping Event Plugin Settings', 'woocommerce-shipping-event' ) );
 
-      printf( '<h3>%s</h3>', __( 'Instructions:', 'woocommerce_shipping_event' ) );
-      printf( __( 'With this plugin the user will have to choose a delivery/pickup date before accessing the shop/store page.', 'woocommerce_shipping_event' ) );
-      printf( '<br />'. __( 'For this to work you will need to setup a few things:', 'woocommerce_shipping_event' ) );
+      printf( '<h3>%s</h3>', __( 'Instructions:', 'woocommerce-shipping-event' ) );
+      printf( __( 'With this plugin the user will have to choose a delivery/pickup date before accessing the shop/store page.', 'woocommerce-shipping-event' ) );
+      printf( '<br />'. __( 'For this to work you will need to setup a few things:', 'woocommerce-shipping-event' ) );
 
       ?>
       <p>
-        <li><?php echo __( 'Create a Shipping Event and setup the proper dates, products and shipping methods', 'woocommerce_shipping_event' ) ?></li>
-        <li><?php echo __( 'Create a new page and a link for the user to select the date and start purchasing', 'woocommerce_shipping_event' ) ?></li>
-        <li><?php echo __( 'Select that page in the setting bellow', 'woocommerce_shipping_event' ) ?></li>
-        <li><?php echo __( 'Create a Shipping Event Type to define how the shipping event option will be shown in that page', 'woocommerce_shipping_event' ) ?>
+        <li><?php echo __( 'Create a Shipping Event and setup the proper dates, products and shipping methods', 'woocommerce-shipping-event' ) ?></li>
+        <li><?php echo __( 'Create a new page and a link for the user to select the date and start purchasing', 'woocommerce-shipping-event' ) ?></li>
+        <li><?php echo __( 'Select that page in the setting bellow', 'woocommerce-shipping-event' ) ?></li>
+        <li><?php echo __( 'Create a Shipping Event Type to define how the shipping event option will be shown in that page', 'woocommerce-shipping-event' ) ?>
           <p style="margin-left:20px">
             <dd>
               <?php
-                echo __( 'You can use a few tags (exactly as described) in your Event Type to show information of the shipping event:', 'woocommerce_shipping_event' );
+                echo __( 'You can use a few tags (exactly as described) in your Event Type to show information of the shipping event:', 'woocommerce-shipping-event' );
                 foreach( ShippingEventType::EVENT_TAGS as $tag => $description ) {
                   printf( '<p><code>%s</code> - %s</p>', $tag, __( $description ) );
                 }
@@ -84,7 +84,7 @@ class SettingsController {
             </dd>
           </p>
         </li>
-        <li><?php echo __( 'Fill out the rest of the settings bellow', 'woocommerce_shipping_event' ) ?></li>
+        <li><?php echo __( 'Fill out the rest of the settings bellow', 'woocommerce-shipping-event' ) ?></li>
       </p>
       <br />
 
@@ -105,21 +105,21 @@ class SettingsController {
       //Main Setting session
       add_settings_section(
           'general_settings_section', // ID
-          __( 'General Settings', 'woocommerce_shipping_event' ), // Title
+          __( 'General Settings', 'woocommerce-shipping-event' ), // Title
           array( $this, 'general_settings_intro_output' ), // Callback
           'shipping_event_settings_page' // Page
           );
 
       add_settings_section(
         'shortcode_settings_section', // ID
-        __( 'Choose Delivery/Pickup Page (Shortcode)', 'woocommerce_shipping_event' ), // Title
+        __( 'Choose Delivery/Pickup Page (Shortcode)', 'woocommerce-shipping-event' ), // Title
         array( $this, 'shortcode_intro_output' ), // Callback
         'shipping_event_settings_page' // Page
       );
 
       add_settings_section(
           'date_format_section', // ID
-          __( 'Date Format', 'woocommerce_shipping_event' ), // Title
+          __( 'Date Format', 'woocommerce-shipping-event' ), // Title
           array( $this, 'date_format_intro_output' ), // Callback
           'shipping_event_settings_page' // Page
           );
@@ -164,7 +164,7 @@ class SettingsController {
   public function register_fields() {
       add_settings_field(
           'choose_shipping_event_page_id', // ID
-          __('Choose Shipping Event Page', 'woocommerce_shipping_event' ), // Title
+          __('Choose Shipping Event Page', 'woocommerce-shipping-event' ), // Title
           array( $this, 'choose_shipping_event_page_field_output' ), // Callback
           'shipping_event_settings_page', // Page
           'general_settings_section' // Section
@@ -172,7 +172,7 @@ class SettingsController {
 
       add_settings_field(
         'shipping_event_page_id', // ID
-        __('Shipping Event Page', 'woocommerce_shipping_event' ), // Title
+        __('Shipping Event Page', 'woocommerce-shipping-event' ), // Title
         array( $this, 'shipping_event_page_field_output' ), // Callback
         'shipping_event_settings_page', // Page
         'shortcode_settings_section' // Section
@@ -180,7 +180,7 @@ class SettingsController {
 
       add_settings_field(
         'shortcode_label_button_unavailable', // ID
-        __('Label - orders unavailable', 'woocommerce_shipping_event' ), // Title
+        __('Label - orders unavailable', 'woocommerce-shipping-event' ), // Title
         array( $this, 'shortcode_label_button_unavailable_field_output' ), // Callback
         'shipping_event_settings_page', // Page
         'shortcode_settings_section' // Section
@@ -188,7 +188,7 @@ class SettingsController {
 
       add_settings_field(
         'shortcode_target_button_unavailable', // ID
-        __('Target - orders unavailable', 'woocommerce_shipping_event' ), // Title
+        __('Target - orders unavailable', 'woocommerce-shipping-event' ), // Title
         array( $this, 'shortcode_target_button_unavailable_field_output' ), // Callback
         'shipping_event_settings_page', // Page
         'shortcode_settings_section' // Section
@@ -196,7 +196,7 @@ class SettingsController {
 
       add_settings_field(
           'event_type_event_date_format', // ID
-          __('Event Date Format', 'woocommerce_shipping_event' ), // Title
+          __('Event Date Format', 'woocommerce-shipping-event' ), // Title
           array( $this, 'type_event_date_format_field_output' ), // Callback
           'shipping_event_settings_page', // Page
           'date_format_section' // Section
@@ -204,7 +204,7 @@ class SettingsController {
 
       add_settings_field(
           'event_type_begin_orders_format', // ID
-          __('Open Orders Date Format', 'woocommerce_shipping_event' ), // Title
+          __('Open Orders Date Format', 'woocommerce-shipping-event' ), // Title
           array( $this, 'type_open_orders_format_field_output' ), // Callback
           'shipping_event_settings_page', // Page
           'date_format_section' // Section
@@ -212,7 +212,7 @@ class SettingsController {
 
       add_settings_field(
           'event_type_close_orders_format', // ID
-          __('Close Orders Date Format', 'woocommerce_shipping_event' ), // Title
+          __('Close Orders Date Format', 'woocommerce-shipping-event' ), // Title
           array( $this, 'type_close_orders_format_field_output' ), // Callback
           'shipping_event_settings_page', // Page
           'date_format_section' // Section
@@ -230,8 +230,8 @@ class SettingsController {
 
   public function date_format_intro_output() {
     echo __( 'Use the following expressions/codes to represent the way you want to show each date on your shipping event list. The date will appear as you set here each time you use it in the shipping event type. ','woocommerce_shipping_event' );
-    echo __( 'Example: <code>[DAY_OF_WEEK], [DAY]/[MONTH]</code> will become ', 'woocommerce_shipping_event' ) . '<code>' . ShippingEventType::translate_date_tags( DateController::now(),'[DAY_OF_WEEK], [DAY]/[MONTH]' ) . '</code><br /><br />';
-    echo __('Expressions available: ', 'woocommerce_shipping_event' ) . '<code>' . implode( ", ", ShippingEventType::DATE_TAGS ) . '</code>';
+    echo __( 'Example: <code>[DAY_OF_WEEK], [DAY]/[MONTH]</code> will become ', 'woocommerce-shipping-event' ) . '<code>' . ShippingEventType::translate_date_tags( DateController::now(),'[DAY_OF_WEEK], [DAY]/[MONTH]' ) . '</code><br /><br />';
+    echo __('Expressions available: ', 'woocommerce-shipping-event' ) . '<code>' . implode( ", ", ShippingEventType::DATE_TAGS ) . '</code>';
   }
 
   public function type_event_date_format_field_output() {
@@ -246,7 +246,7 @@ class SettingsController {
        value="<?php echo $format ?>"
       />
     <?php
-    echo '<strong>' . __('Simulation: ', 'woocommerce_shipping_event' ) . '</strong>' . ShippingEventType::translate_date_tags( DateController::now(), $format ? $format : '[DAY]/[MONTH] ([DAY_OF_WEEK])' );
+    echo '<strong>' . __('Simulation: ', 'woocommerce-shipping-event' ) . '</strong>' . ShippingEventType::translate_date_tags( DateController::now(), $format ? $format : '[DAY]/[MONTH] ([DAY_OF_WEEK])' );
   }
 
   public function shortcode_label_button_unavailable_field_output() {
@@ -260,7 +260,7 @@ class SettingsController {
        value="<?php echo get_option( 'wcse_shortcode_label_button_unavailable' ) ?>"
       />
       <p class="description">
-        <?php echo __( 'This label/text will be shown inside the button configured to select the delivery/pickup date (#SELECT_EVENT#) for the events which the orders and not opened yet.', 'woocommerce_shipping_event' ) ?>
+        <?php echo __( 'This label/text will be shown inside the button configured to select the delivery/pickup date (#SELECT_EVENT#) for the events which the orders and not opened yet.', 'woocommerce-shipping-event' ) ?>
       </p>
     <?php
   }
@@ -279,7 +279,7 @@ class SettingsController {
     );
     ?>
       <p class="description">
-      <?php echo __( 'Select the page you want the users to be redirect to when they click the button configured to select the delivery/pickup date (#SELECT_EVENT#) for the events which the orders and not opened yet. If not selected, the button will be disabled', 'woocommerce_shipping_event' ) ?>
+      <?php echo __( 'Select the page you want the users to be redirect to when they click the button configured to select the delivery/pickup date (#SELECT_EVENT#) for the events which the orders and not opened yet. If not selected, the button will be disabled', 'woocommerce-shipping-event' ) ?>
       </p>
     <?php
   }
@@ -296,7 +296,7 @@ class SettingsController {
        value="<?php echo $format ?>"
       />
     <?php
-    echo '<strong>' . __('Simulation: ', 'woocommerce_shipping_event' ) . '</strong>' . ShippingEventType::translate_date_tags( DateController::now(), $format ? $format : '[DAY]/[MONTH] ([DAY_OF_WEEK])' );
+    echo '<strong>' . __('Simulation: ', 'woocommerce-shipping-event' ) . '</strong>' . ShippingEventType::translate_date_tags( DateController::now(), $format ? $format : '[DAY]/[MONTH] ([DAY_OF_WEEK])' );
   }
 
   public function type_close_orders_format_field_output() {
@@ -311,7 +311,7 @@ class SettingsController {
        value="<?php echo $format ?>"
       />
     <?php
-    echo '<strong>' . __('Simulation: ', 'woocommerce_shipping_event' ) . '</strong>' . ShippingEventType::translate_date_tags( DateController::now(), $format ? $format : '[DAY]/[MONTH] ([DAY_OF_WEEK])' );
+    echo '<strong>' . __('Simulation: ', 'woocommerce-shipping-event' ) . '</strong>' . ShippingEventType::translate_date_tags( DateController::now(), $format ? $format : '[DAY]/[MONTH] ([DAY_OF_WEEK])' );
   }
 
   public function choose_shipping_event_page_field_output() {

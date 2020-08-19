@@ -1,0 +1,198 @@
+# Copyright (C) 2020 Filipe Xavier
+# This file is distributed under the same license as the Woocommerce Shipping Event plugin.
+msgid ""
+msgstr ""
+"Project-Id-Version: Woocommerce Shipping Event 0.0.1\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/woocommerce-shipping-event\n"
+"Last-Translator: Filipe Xavier <filipexts@gmail.com>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2020-08-19T01:03:37+00:00\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"X-Generator: WP-CLI 2.4.0\n"
+"X-Domain: woocommerce-shipping-event\n"
+
+#. Plugin Name of the plugin
+msgid "Woocommerce Shipping Event"
+msgstr ""
+
+#. Description of the plugin
+msgid "This plugin allows the customer to pick up the order themselves by selecting pickup location during order placement, and also select the date of delivery, from a list of preset dates set by the administrator."
+msgstr ""
+
+#. Author of the plugin
+msgid "Filipe Xavier"
+msgstr ""
+
+#: includes/base/SettingsController.php:44
+#: includes/base/SettingsController.php:45
+msgid "Settings"
+msgstr ""
+
+#: includes/base/SettingsController.php:64
+msgid "Shipping Event Plugin Settings"
+msgstr ""
+
+#: includes/base/SettingsController.php:66
+msgid "Instructions:"
+msgstr ""
+
+#: includes/base/SettingsController.php:67
+msgid "With this plugin the user will have to choose a delivery/pickup date before accessing the shop/store page."
+msgstr ""
+
+#: includes/base/SettingsController.php:68
+msgid "For this to work you will need to setup a few things:"
+msgstr ""
+
+#: includes/base/SettingsController.php:72
+msgid "Create a Shipping Event and setup the proper dates, products and shipping methods"
+msgstr ""
+
+#: includes/base/SettingsController.php:73
+msgid "Create a new page and a link for the user to select the date and start purchasing"
+msgstr ""
+
+#: includes/base/SettingsController.php:74
+msgid "Select that page in the setting bellow"
+msgstr ""
+
+#: includes/base/SettingsController.php:75
+msgid "Create a Shipping Event Type to define how the shipping event option will be shown in that page"
+msgstr ""
+
+#: includes/base/SettingsController.php:79
+msgid "You can use a few tags (exactly as described) in your Event Type to show information of the shipping event:"
+msgstr ""
+
+#: includes/base/SettingsController.php:87
+msgid "Fill out the rest of the settings bellow"
+msgstr ""
+
+#: includes/base/SettingsController.php:108
+msgid "General Settings"
+msgstr ""
+
+#: includes/base/SettingsController.php:115
+msgid "Choose Delivery/Pickup Page (Shortcode)"
+msgstr ""
+
+#: includes/base/SettingsController.php:122
+msgid "Date Format"
+msgstr ""
+
+#: includes/base/SettingsController.php:167
+msgid "Choose Shipping Event Page"
+msgstr ""
+
+#: includes/base/SettingsController.php:175
+msgid "Shipping Event Page"
+msgstr ""
+
+#: includes/base/SettingsController.php:183
+msgid "Label - orders unavailable"
+msgstr ""
+
+#: includes/base/SettingsController.php:191
+msgid "Target - orders unavailable"
+msgstr ""
+
+#: includes/base/SettingsController.php:199
+msgid "Event Date Format"
+msgstr ""
+
+#: includes/base/SettingsController.php:207
+msgid "Open Orders Date Format"
+msgstr ""
+
+#: includes/base/SettingsController.php:215
+msgid "Close Orders Date Format"
+msgstr ""
+
+#: includes/base/SettingsController.php:233
+msgid "Example: <code>[DAY_OF_WEEK], [DAY]/[MONTH]</code> will become "
+msgstr ""
+
+#: includes/base/SettingsController.php:234
+msgid "Expressions available: "
+msgstr ""
+
+#: includes/base/SettingsController.php:249
+#: includes/base/SettingsController.php:299
+#: includes/base/SettingsController.php:314
+msgid "Simulation: "
+msgstr ""
+
+#: includes/base/SettingsController.php:263
+msgid "This label/text will be shown inside the button configured to select the delivery/pickup date (#SELECT_EVENT#) for the events which the orders and not opened yet."
+msgstr ""
+
+#: includes/base/SettingsController.php:282
+msgid "Select the page you want the users to be redirect to when they click the button configured to select the delivery/pickup date (#SELECT_EVENT#) for the events which the orders and not opened yet. If not selected, the button will be disabled"
+msgstr ""
+
+#: includes/cpt/CustomPostTypeController.php:37
+msgid "Event Types"
+msgstr ""
+
+#: includes/cpt/CustomPostTypeController.php:38
+msgid "Shipping Event Types"
+msgstr ""
+
+#: includes/frontend/controller/CheckoutController.php:110
+msgid "Local Pickup Address"
+msgstr ""
+
+#: includes/frontend/controller/CheckoutController.php:121
+msgid "Lembre-se:"
+msgstr ""
+
+#: includes/frontend/controller/ShopController.php:95
+msgid "Please choose a date before shopping. If you already chosen, it's probably not available anymore."
+msgstr ""
+
+#: includes/frontend/view/shipping_event_list_shortcode.php:37
+msgid "Are you sure you want to change the date? If you continue, some items of your cart may be deleted."
+msgstr ""
+
+#: includes/meta/LocalPickupDetailsMetabox.php:55
+msgid "Local pickup"
+msgstr ""
+
+#: includes/meta/LocalPickupDetailsMetabox.php:81
+msgid "Address"
+msgstr ""
+
+#: includes/meta/ShippingEventMetabox.php:120
+msgid "Enabled"
+msgstr ""
+
+#: includes/meta/ShippingEventMetabox.php:131
+#: includes/meta/ShippingEventTypeMetabox.php:48
+msgid "Date of shipping/Delivery:"
+msgstr ""
+
+#: includes/meta/ShippingEventMetabox.php:141
+msgid "Start accepting orders:"
+msgstr ""
+
+#: includes/meta/ShippingEventMetabox.php:151
+msgid "Accepting orders until:"
+msgstr ""
+
+#: includes/meta/ShippingEventMetabox.php:161
+msgid "Disable Back Order for all products"
+msgstr ""
+
+#: includes/meta/ShippingEventMetabox.php:173
+msgid "Event Type:"
+msgstr ""
+
+#: includes/meta/ShippingEventMetabox.php:205
+msgid "Product Name"
+msgstr ""
+
+#: includes/meta/ShippingEventMetabox.php:208
+msgid "Stock"
+msgstr ""

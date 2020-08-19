@@ -1,7 +1,7 @@
 <div class="screen-fade <?php echo $active == "false" ? 'hidden' : '' ?>"></div>
 <div id="shipping_event_popup" class="overlay-shipping-event <?php echo $active == "false" ? 'hidden' : '' ?>">
 	<div class="popup">
-		<h3 class="<?php echo $close_btn == "false" ? 'center' : '' ?>"><?php echo $title ?></h3>
+		<h3 <?php echo $close_btn == "false" ? 'class="center"' : '' ?>><?php echo $title ?></h3>
 		<?php if( $close_btn != "false" ) { ?>
 			<a class="close-btn close" <?php if( $close_btn_target ) echo "href='" . $close_btn_target . "'"?>>&times;</a>
 		<?php } ?>

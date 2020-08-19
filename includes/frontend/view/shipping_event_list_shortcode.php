@@ -31,7 +31,7 @@
   }
 
   $cancel_btn = "true";
-  $close_btn = "true";
+  $close_btn = "false";
   $close_btn_target = "";
   $title = __( "Change date", 'woocommerce-shipping-event' ) . "?";
   $msg = __( "Are you sure you want to change the date? If you continue, some items of your cart may be deleted.", 'woocommerce-shipping-event' );

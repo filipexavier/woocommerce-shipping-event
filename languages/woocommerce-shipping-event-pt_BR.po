@@ -214,15 +214,15 @@ msgstr "Não temos nenhuma entrega disponível para pedido."
 
 #: includes/frontend/view/shipping_event_list_shortcode.php:36
 msgid "Change date"
-msgstr "Escolher uma data de entrega diferente"
+msgstr "Mudar a data de entrega"
 
 #: includes/frontend/view/shipping_event_list_shortcode.php:37
 msgid ""
 "Are you sure you want to change the date? If you continue, some items of "
 "your cart may be deleted."
 msgstr ""
-"Tem certeza que deseja mudar a data de entrega selecionada anteriormente? Se "
-"confirmar, alguns itens da sua cesta podem ser removidos."
+"Tem certeza que deseja mudar a data de entrega selecionada anteriormente? <br />"
+"Se confirmar, alguns itens da sua cesta podem ser removidos."
 
 #: includes/meta/LocalPickupDetailsMetabox.php:55
 msgid "Local pickup"

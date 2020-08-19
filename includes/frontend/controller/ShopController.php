@@ -89,7 +89,7 @@ class ShopController {
   public function block_access_when_no_event() {
     if( $this->has_chosen_valid_shipping_event() ) return;
     $ok_btn_target = $close_btn_target = SettingsController::get_instance()->get_choose_event_page_url();
-    $title = __("Choose date");
+    $title = __("Choose date", 'woocommerce-shipping-event' );
     $active = "true";
     $cancel_btn = "false";
     $msg = __( "Please choose a date before shopping. If you already chosen, it's probably not available anymore.", 'woocommerce-shipping-event' );

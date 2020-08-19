@@ -188,8 +188,16 @@ msgid "Local Pickup Address"
 msgstr "Endereço para retirada"
 
 #: includes/frontend/controller/CheckoutController.php:121
-msgid "Lembre-se:"
+msgid "Don't forget:"
 msgstr "Lembre-se:"
+
+#: includes/frontend/controller/CheckoutController.php:124
+msgid "Delivery/pickup date"
+msgstr "Data de entrega"
+
+#: includes/frontend/controller/ShopController.php:92
+msgid "Choose date"
+msgstr "Escolher a data de entrega"
 
 #: includes/frontend/controller/ShopController.php:95
 msgid ""
@@ -199,6 +207,14 @@ msgstr ""
 "Por favor, escolha a data de entrega antes de entrar na loja. Se já "
 "escolheu, provavelmente os pedidos para esta data foram encerrados. Confira "
 "as próximas entregas."
+
+#: includes/frontend/view/shipping_event_list_shortcode.php:28
+msgid "We dont have any delivery date available at the moment."
+msgstr "Não temos nenhuma entrega disponível para pedido."
+
+#: includes/frontend/view/shipping_event_list_shortcode.php:36
+msgid "Change date"
+msgstr "Escolher uma data de entrega diferente"
 
 #: includes/frontend/view/shipping_event_list_shortcode.php:37
 msgid ""
@@ -248,3 +264,23 @@ msgstr "Nome do produto"
 #: includes/meta/ShippingEventMetabox.php:208
 msgid "Stock"
 msgstr "Estoque"
+
+#: includes/meta/ShippingEventType.php:13
+msgid "Use this tag anywhere and the user will see the title of each Shipping Event"
+msgstr "Use esta expressão/tag em qualquer texto para exibir o título do Evento de entrega ao usuário"
+
+#: includes/meta/ShippingEventType.php:14
+msgid "Use this tag anywhere and the user will see the delivery/pickup date of each Shipping Event"
+msgstr "Use esta expressão/tag em qualquer texto para exibir a data de entrega ao usuário"
+
+#: includes/meta/ShippingEventType.php:15
+msgid "Use this tag anywhere and the user will see when the orders are opened for each Shipping Event"
+msgstr "Use esta expressão/tag em qualquer texto para exibir a data de abertura dos pedidos ao usuário"
+
+#: includes/meta/ShippingEventType.php:16
+msgid "Use this tag anywhere and the user will see the last day before orders are closed for each Shipping Event"
+msgstr "Use esta expressão/tag em qualquer texto para exibir o último dia para fazer pedidos ao usuário"
+
+#: includes/meta/ShippingEventType.php:17
+msgid "Put this tag in the link of a button where you want the user to select the Shipping Event and access the Store"
+msgstr "Coloque esta expressão/tag no link no botão no qual o usuário deverá clicar para selecionar a data de entrega e acessar a loja"

@@ -107,7 +107,7 @@ class CheckoutController {
   }
 
   function show_admin_order_local_pickup_details( $order ) {
-    echo '<p><strong>'.__('Local Pickup Address', 'woocommerce-shipping-event').':</strong> ' . get_post_meta( $order->get_id(), 'local_pickup_details_address', true ) . '</p>';
+    echo '<p><strong>'.__( 'Local Pickup Address', 'woocommerce-shipping-event' ).':</strong> ' . get_post_meta( $order->get_id(), 'local_pickup_details_address', true ) . '</p>';
   }
 
   function show_order_shipping_event( $order ) {
@@ -118,10 +118,10 @@ class CheckoutController {
     ?>
     <div class="large-12 col">
       <div class="is-well col-inner entry-content">
-        <h3 class="woocommerce-column__title"><?php echo __( 'Lembre-se:', 'woocommerce-shipping-event' )?></h3>
+        <h3 class="woocommerce-column__title"><?php echo __( 'Don\'t forget:', 'woocommerce-shipping-event' )?></h3>
         <?php
           do_action('woocommerce_shipping_event_before_order_details', $order );
-          echo '<p>' . __('Data de entrega') . ': <strong>' . DateController::format_date( $shipping_event->get_shipping_date() ) . '</strong></p>';
+          echo '<p>' . __( 'Delivery/pickup date', 'woocommerce-shipping-event' ) . ': <strong>' . DateController::format_date( $shipping_event->get_shipping_date() ) . '</strong></p>';
           do_action('woocommerce_shipping_event_after_order_details', $order );
         ?>
       </div>
@@ -136,7 +136,7 @@ class CheckoutController {
       if( empty( $shipping_address ) ) continue;
       ?>
       <p><?php echo $shipping_method->get_method_title() ?></p>
-      <address><?php echo __('Endereço') . ": <strong>" . $shipping_address ?></strong></address>
+      <address><?php echo __( 'Address' ) . ": <strong>" . $shipping_address ?></strong></address>
       <br />
       <?php
 		}

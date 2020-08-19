@@ -25,7 +25,7 @@
   if( $num_enabled == 0 ) {
     //TODO: pretty notice
     ?>
-    <h2><?php echo __('Não temos nenhuma entrega disponível para pedido.') ?></h2>
+    <h2><?php echo __('Não temos nenhuma entrega disponível para pedido.', 'woocommerce-shipping-event' ) ?></h2>
 
   <?php
   }
@@ -33,7 +33,7 @@
   $cancel_btn = "true";
   $close_btn = "true";
   $close_btn_target = "";
-  $title = __("Change date");
+  $title = __( "Change date", 'woocommerce-shipping-event' ) . "?";
   $msg = __( "Are you sure you want to change the date? If you continue, some items of your cart may be deleted.", 'woocommerce-shipping-event' );
   $active = "false";
   include 'shipping_event_popup.php';

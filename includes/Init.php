@@ -30,6 +30,7 @@ final class Init extends BaseController {
   public function register_services() {
       add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin' ) );
       add_action( 'wp_enqueue_scripts', array( $this, 'enqueue' ) );
+      add_action( 'init', array( $this, 'add_localize_files' ) );
       CustomPostTypeController::get_instance()->init();
       ShopController::get_instance()->init();
       ShortcodeController::get_instance()->init();
@@ -40,6 +41,13 @@ final class Init extends BaseController {
         MetaBoxesController::get_instance()->init();
       }
   }
+
+  function add_localize_files() {
+    $x = load_plugin_textdomain( 'woocommerce-shipping-event', FALSE, 'woocommerce-shipping-event/languages' );
+    error_log(dirname( plugin_basename( __FILE__ ) ) );
+    error_log("result: " . (is_null($x)? "null" : ($x == true ? "true" : "false")));
+}
+
 
   public function setup() {
     $this->disable_hold_stock();

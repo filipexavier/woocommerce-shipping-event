@@ -5,6 +5,7 @@
   Version: 0.0.1
   Author: Filipe Xavier
   Text Domain: woocommerce-shipping-event
+  Domain Path: /languages
   Copyright 2020 filipexts
  */
 

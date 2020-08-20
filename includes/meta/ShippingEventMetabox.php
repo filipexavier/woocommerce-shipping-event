@@ -192,7 +192,14 @@ class ShippingEventMetabox
   function shipping_event_products_settings_output( $post )
   {
     $post_id          = $post->ID;
-    $product_list     = wc_get_products('');
+
+    $args = array(
+      'orderby' => 'title',
+      'order' => 'ASC',
+      'status' => 'publish',
+      'limit' => -1
+    );
+    $product_list     = wc_get_products($args);
 
     ?>
     <div id="shipping_event_product_list" class="wc-metaboxes-wrapper panel">

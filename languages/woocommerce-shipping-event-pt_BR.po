@@ -265,22 +265,30 @@ msgstr "Nome do produto"
 msgid "Stock"
 msgstr "Estoque"
 
-#: includes/meta/ShippingEventType.php:13
+#: includes/cpt/ShippingEventType.php:13
 msgid "Use this tag anywhere and the user will see the title of each Shipping Event"
 msgstr "Use esta expressão/tag em qualquer texto para exibir o título do Evento de entrega ao usuário"
 
-#: includes/meta/ShippingEventType.php:14
+#: includes/cpt/ShippingEventType.php:14
 msgid "Use this tag anywhere and the user will see the delivery/pickup date of each Shipping Event"
 msgstr "Use esta expressão/tag em qualquer texto para exibir a data de entrega ao usuário"
 
-#: includes/meta/ShippingEventType.php:15
+#: includes/cpt/ShippingEventType.php:15
 msgid "Use this tag anywhere and the user will see when the orders are opened for each Shipping Event"
 msgstr "Use esta expressão/tag em qualquer texto para exibir a data de abertura dos pedidos ao usuário"
 
-#: includes/meta/ShippingEventType.php:16
+#: includes/cpt/ShippingEventType.php:16
 msgid "Use this tag anywhere and the user will see the last day before orders are closed for each Shipping Event"
 msgstr "Use esta expressão/tag em qualquer texto para exibir o último dia para fazer pedidos ao usuário"
 
-#: includes/meta/ShippingEventType.php:17
+#: includes/cpt/ShippingEventType.php:17
 msgid "Put this tag in the link of a button where you want the user to select the Shipping Event and access the Store"
 msgstr "Coloque esta expressão/tag no link no botão no qual o usuário deverá clicar para selecionar a data de entrega e acessar a loja"
+
+#: includes/cpt/ShippingEventType.php:18
+msgid "Put this tag as a class of an element you want the user to view only when orders for this Shipping Event are available"
+msgstr "Adicione esta expressão/tag como uma classe de um elemento para exibi-lo apenas quando for possível fazer pedidos para determinada data de entrega"
+
+#: includes/cpt/ShippingEventType.php:19
+msgid "Put this tag as a class of an element you want the user to view only when orders for this Shipping Event are NOT available"
+msgstr "Adicione esta expressão/tag como uma classe de um elemento para exibi-lo apenas quando NÃO for possível fazer pedidos para determinada data de entrega"

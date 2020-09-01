@@ -43,9 +43,7 @@ final class Init extends BaseController {
   }
 
   function add_localize_files() {
-    $x = load_plugin_textdomain( 'woocommerce-shipping-event', FALSE, 'woocommerce-shipping-event/languages' );
-    error_log(dirname( plugin_basename( __FILE__ ) ) );
-    error_log("result: " . (is_null($x)? "null" : ($x == true ? "true" : "false")));
+    load_plugin_textdomain( 'woocommerce-shipping-event', FALSE, 'woocommerce-shipping-event/languages' );
 }
 
 

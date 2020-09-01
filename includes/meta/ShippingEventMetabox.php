@@ -30,6 +30,7 @@ class ShippingEventMetabox
   public function init() {
     add_action( 'admin_menu', array( $this, 'add_shipping_event_meta_box' ) );
     add_action('save_post', array( $this, 'shipping_event_settings_save_postdata') );
+    add_filter( 'wp_insert_post_data' , array( $this, 'modify_post_title' ), '99', 1 );
   }
 
   function add_shipping_event_meta_box() {
@@ -337,6 +338,18 @@ class ShippingEventMetabox
         );
       }
 
+  }
+
+  function modify_post_title( $data ) {
+    if( $data['post_type'] == 'shipping_event' && isset( $_POST['shipping_event_type'] ) ) {
+      $data['post_title'] = sprintf( "%s [%s] (%s - %s)",
+        get_the_title( $_POST['shipping_event_type'] ),
+        DateController::str_to_date( $_POST['shipping_event_date'] )->format( 'd/m' ),
+        DateController::str_to_date( $_POST['shipping_event_start_orders_date'] )->format( 'd/m' ),
+        DateController::str_to_date( $_POST['shipping_event_end_orders_date'] )->format( 'd/m' )
+      );
+    }
+    return $data; // Returns the modified data.
   }
 
 }

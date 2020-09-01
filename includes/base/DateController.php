@@ -11,7 +11,12 @@ class DateController {
 
 
   public static function format_date( $date ) {
+    if( is_string( $date ) ) $date = date_create( $date, wp_timezone() );
     return $date->format( 'd/m/Y' ) . " (" . self::day_of_week( $date ) . ")";
+  }
+
+  public static function str_to_date( $date ) {
+    return date_create( $date, wp_timezone() );
   }
 
   public static function day_of_week( $date ) {

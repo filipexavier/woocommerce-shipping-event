@@ -141,7 +141,7 @@ class ShopController {
   		$item_stock_reduced = $item->get_meta( '_reduced_stock', true );
 
       //Ignore if the product is managing stock. Shipping Event overrides this setting
-  		if ( !$item_stock_reduced || ! $product ) {
+  		if ( !$item_stock_reduced || ! $product || ! $shipping_event->get_product_manage_stock( $product->get_id() ) ) {
   			continue;
   		}
 
@@ -198,7 +198,7 @@ class ShopController {
   		$item_stock_reduced = $item->get_meta( '_reduced_stock', true );
 
       //Ignore if the product is managing stock. Shipping Event overrides this setting
-  		if ( $item_stock_reduced || ! $product ) {
+  		if ( $item_stock_reduced || ! $product || ! $shipping_event->get_product_manage_stock( $product->get_id() ) ) {
   			continue;
   		}
 

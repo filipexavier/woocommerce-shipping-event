@@ -25,7 +25,7 @@ class CheckoutController {
   public function init() {
     if( !is_admin() ) {
       add_action( 'woocommerce_before_cart', array( $this, 'show_shipping_date_on_header' ), 1 );
-      add_action( 'woocommerce_checkout_before_customer_details', array( $this, 'show_shipping_date_on_header' ), 1 );
+      add_action( 'woocommerce_before_checkout_form', array( $this, 'show_shipping_date_on_header' ), 1 );
       add_filter( 'woocommerce_package_rates', array( $this, 'filter_shipping_methods' ) );
       add_action( 'woocommerce_after_shipping_rate' , array( $this, 'add_local_pickup_details_to_checkout_button' ), 10, 2 );
       add_action( 'woocommerce_order_details_before_order_table', array( $this, 'show_order_shipping_event' ) );
@@ -44,7 +44,7 @@ class CheckoutController {
   public function show_shipping_date_on_header() {
     if( is_null( ShopController::get_instance()->get_shipping_event() ) ) return;
     $shipping_event = ShopController::get_instance()->get_shipping_event();
-    wc_add_notice( __("Seu pedido será entregue no dia " .  DateController::format_date( $shipping_event->get_shipping_date() ) ), 'notice');
+    wc_add_notice( __( 'Seu pedido será entregue no dia ', 'woocommerce-shipping-event' ) .  DateController::format_date( $shipping_event->get_shipping_date() ), 'success' );
   }
 
   public function filter_shipping_methods( $package_rates ) {

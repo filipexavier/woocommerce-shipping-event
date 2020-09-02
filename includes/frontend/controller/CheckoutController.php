@@ -107,7 +107,7 @@ class CheckoutController {
   }
 
   function show_admin_order_local_pickup_details( $order ) {
-    echo '<p><strong>'.__( 'Local Pickup Address', 'woocommerce-shipping-event' ).':</strong> ' . get_post_meta( $order->get_id(), 'local_pickup_details_address', true ) . '</p>';
+    echo sprintf( '<p><strong>%s:</strong>%s</p>', __( 'Local Pickup Address', 'woocommerce-shipping-event' ), get_post_meta( $order->get_id(), 'local_pickup_details_address', true ) );
   }
 
   function show_order_shipping_event( $order ) {
@@ -136,7 +136,7 @@ class CheckoutController {
       if( empty( $shipping_address ) ) continue;
       ?>
       <p><?php echo $shipping_method->get_method_title() ?></p>
-      <address><?php echo __( 'Address' ) . ": <strong>" . $shipping_address ?></strong></address>
+      <address><?php echo __( 'Address:', 'woocommerce' ) . " <strong>" . $shipping_address ?></strong></address>
       <br />
       <?php
 		}

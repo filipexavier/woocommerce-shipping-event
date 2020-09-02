@@ -78,7 +78,7 @@ class LocalPickupDetailsMetabox
     </p>
 
     <p class="form-field">
-      <label><?php esc_html_e( 'Address', 'woocommerce-shipping-event' ); ?></label>
+      <label><?php echo __( 'Local Pickup Address', 'woocommerce-shipping-event' ) ?></label>
       <input
         type="text"
         id="local_pickup_details_address"

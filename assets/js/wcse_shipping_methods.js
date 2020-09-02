@@ -25,5 +25,6 @@ jQuery(document).ready(function($){
   }
   $(document.body).on('updated_shipping_method', addShippingDetails);
   $(document.body).on('updated_checkout', addShippingDetails);
+  $(document.body).on('updated_cart_totals', addShippingDetails);
   addShippingDetails();
 });

@@ -48,6 +48,11 @@ class ShippingEvent {
     'stock' => 'stock'
   );
 
+  private static $shipping_method_keys = array (
+    'enabled' => 'enabled',
+    'min_order_value' => 'min_order_value'
+  );
+
   public function __construct( $post ) {
     $shipping_event_post = null;
     if( is_a( $post, 'WP_Post' ) ) {
@@ -151,6 +156,20 @@ class ShippingEvent {
     return $this->shipping_methods;
   }
 
+  public function get_shipping_method_data( $method_id ) {
+    return ShippingEventController::get_instance()->safe_data_access(
+        $this->shipping_methods, $method_id );
+  }
+
+  public function is_shipping_method_selected( $method_id ) {
+    return array_key_exists( $method_id, $this->shipping_methods );
+  }
+
+  public function get_shipping_method_min_order_value( $method_id ) {
+    return ShippingEventController::get_instance()->safe_data_access(
+        $this->get_shipping_method_data( $method_id ), $this->get_shipping_method_key( 'min_order_value' ) );
+  }
+
   public static function get_meta_keys() {
     return $self::META_KEYS;
   }
@@ -163,6 +182,11 @@ class ShippingEvent {
   public static function get_product_key( $key ) {
     if( !array_key_exists( $key, self::$product_keys ) ) return '';
     return self::$product_keys[ $key ];
+  }
+
+  public static function get_shipping_method_key( $key ) {
+    if( !array_key_exists( $key, self::$shipping_method_keys ) ) return '';
+    return self::$shipping_method_keys[ $key ];
   }
 
   public function is_product_enabled( $product_id ) {

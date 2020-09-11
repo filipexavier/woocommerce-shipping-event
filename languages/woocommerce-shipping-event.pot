@@ -240,3 +240,43 @@ msgstr ""
 #: includes/cpt/ShippingEventType.php:19
 msgid "Put this tag as a class of an element you want the user to view only when orders for this Shipping Event are NOT available"
 msgstr ""
+
+#: includes/meta/ShippingEventMetabox.php:39
+msgid "Basic Settings"
+msgstr ""
+
+#: includes/cpt/CustomPostTypeController.php:109
+msgid "Shipping Events"
+msgstr ""
+
+#: includes/cpt/CustomPostTypeController.php:110
+msgid "Shipping Event"
+msgstr ""
+
+#: includes/cpt/CustomPostTypeController.php:116
+msgid "Event of a shipping as local pickup or delivery with a preset date"
+msgstr ""
+
+#: includes/cpt/CustomPostTypeController.php:79
+msgid "Local Pickup Details"
+msgstr ""
+
+#: includes/cpt/CustomPostTypeController.php:85
+msgid "Add address and pickup time to local pickup"
+msgstr ""
+
+#: includes/cpt/CustomPostTypeController.php:53
+msgid "General data type used by a group of shipping events"
+msgstr ""
+
+#: includes/meta/ShippingEventMetabox.php:86
+msgid "Minimum order value"
+msgstr ""
+
+#: includes/frontend/controller/CheckoutController.php:47
+msgid "Your order will be delivered on "
+msgstr ""
+
+#: includes/Init.php:65
+msgid "Available for purchases from"
+msgstr ""

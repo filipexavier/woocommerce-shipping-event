@@ -44,7 +44,7 @@ class CheckoutController {
   public function show_shipping_date_on_header() {
     if( is_null( ShopController::get_instance()->get_shipping_event() ) ) return;
     $shipping_event = ShopController::get_instance()->get_shipping_event();
-    wc_add_notice( __( 'Seu pedido será entregue no dia ', 'woocommerce-shipping-event' ) .  DateController::format_date( $shipping_event->get_shipping_date() ), 'success' );
+    wc_add_notice( __( 'Your order will be delivered on ', 'woocommerce-shipping-event' ) .  DateController::format_date( $shipping_event->get_shipping_date() ), 'success' );
   }
 
   public function filter_shipping_methods( $package_rates ) {

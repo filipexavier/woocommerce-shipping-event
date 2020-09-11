@@ -53,12 +53,20 @@ final class Init extends BaseController {
 
   public function enqueue_admin() {
     wp_enqueue_style( 'wcse_admin', $this->plugin_url . '/assets/css/wcse_admin.css', array(), rand(111,9999), 'all' );
+    wp_enqueue_script( 'wcse_admin', $this->plugin_url . '/assets/js/wcse_admin.js', array( 'jquery' ), rand(111,9999), 'all' );
   }
 
   public function enqueue() {
     if( is_checkout() || is_cart() ) {
       wp_enqueue_style( 'wcse_shipping_methods', $this->plugin_url . '/assets/css/wcse_shipping_methods.css', array(), rand(111,9999), 'all' );
       wp_enqueue_script( 'wcse_shipping_methods', $this->plugin_url . '/assets/js/wcse_shipping_methods.js', array( 'jquery' ), rand(111,9999), 'all' );
+      $data = array(
+        'blocked_shipping_methods' => ShippingEventController::get_instance()->shipping_methods_blocked(),
+        'blocked_shipping_alert' => __( 'Available for purchases from', 'woocommerce-shipping-event' ),
+        'currency_format' => get_woocommerce_currency(),
+        'locale' => get_user_locale()
+      );
+      wp_localize_script( 'wcse_shipping_methods', 'php_vars', $data );
     }
 
     if( is_checkout() || is_cart() || is_woocommerce() ) {

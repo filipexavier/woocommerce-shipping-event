@@ -36,7 +36,7 @@ class ShippingEventMetabox
   function add_shipping_event_meta_box() {
   	$meta_box = array(
   		'id' => 'shipping_event_basic_settings',
-  		'title' => 'Basic Settings',
+  		'title' => __( 'Basic Settings' ),
   		'page' => 'shipping_event',
   		'context' => 'normal',
   		'priority' => 'default',
@@ -47,7 +47,7 @@ class ShippingEventMetabox
 
   	$meta_box = array(
   		'id' => 'shipping_event_methods_settings',
-  		'title' => 'Shipping Methods',
+  		'title' => __( 'Shipping methods', 'woocommerce' ),
   		'page' => 'shipping_event',
   		'context' => 'normal',
   		'priority' => 'default',
@@ -58,7 +58,7 @@ class ShippingEventMetabox
 
   	$meta_box = array(
   		'id' => 'shipping_event_products_settings',
-  		'title' => 'Products',
+  		'title' => __( 'Products', 'woocommerce' ),
   		'page' => 'shipping_event',
   		'context' => 'normal',
   		'priority' => 'default',
@@ -72,40 +72,80 @@ class ShippingEventMetabox
 
   function shipping_event_methods_settings_output( $post )
   {
+    $shipping_event = ShippingEventController::get_instance()->get_shipping_event( $post );
+    $shipping_zones = WC_Shipping_Zones::get_zones();
+    var_dump($shipping_event->get_shipping_methods());
+    usort( $shipping_zones, array( ShippingEventController::get_instance(), 'shipping_zone_comparator' ) );
     ?>
-    <div id="shipping_event_method_list" class="wc-metaboxes-wrapper panel">
+    <div id="shipping_event_method_list" class="panel">
+    	<div class="woocommerce_attribute wc-metabox woocommerce_attribute_data wc-metabox-content">
+    		<table class="wp-list-table widefat fixed striped">
+          <thead>
+            <tr scope="row" class="iedit author-self level-0 hentry">
+              <td id="cb" class="manage-column column-cb check-column" scope="col">
+                <input id="cb-select-all" type="checkbox" title="<?php echo __('Select all') ?>">
+              </td>
+              <th id="shipping_method" scope="col" class="manage-column column-title column-primary sortable desc">
+                <h2><strong><?php esc_html_e( 'Shipping method', 'woocommerce' ); ?></strong></h2>
+              </th>
+              <th id="min_order_value" scope="col" class="manage-column column-title column-primary sortable desc">
+                <h2><strong><?php esc_html_e( 'Minimum order value', 'woocommerce-shipping-event' ); ?></strong></h2>
+              </th>
+            </tr>
+          </thead>
+    			<tbody>
+            <?php
+            foreach ( $shipping_zones as $zone ) {
+              $zone_obj = WC_Shipping_Zones::get_zone($zone['zone_id']);
+              ?>
+              <!-- <p><strong><?php //echo sprintf( '%s: %s', __( 'Zone', 'woocommerce' ), $zone['zone_name'] ) ?></strong></p> -->
+              <?php
 
-      <?php
-        $shipping_zones = WC_Shipping_Zones::get_zones();
-        $selected_shipping_methods= get_post_meta( $post->ID, 'selected_shipping_methods', true);
-
-        foreach ( $shipping_zones as $zone ) {
-          $zone_obj = WC_Shipping_Zones::get_zone($zone['zone_id']);
-          ?><p><?php echo $zone['zone_name'] ?></p><?php
-
-          $shipping_methods = $zone_obj->get_shipping_methods();
-          $method_label = '';
-          foreach ( $shipping_methods as $shipping_method ) {
-            $shipping_method_enabled = "no";
-            if( $shipping_method->method_title != $method_label ) {
-              $method_label = $shipping_method->method_title;
-              ?><p><?php echo $method_label ?></p><?php
-            }
-            if( !empty( $selected_shipping_methods ) && array_key_exists( $shipping_method->instance_id, $selected_shipping_methods ) ) {
-              $shipping_method_enabled = $selected_shipping_methods[$shipping_method->instance_id]['enabled'];
-            }
-            ?>
-            <p class="form-field">
-              <input type="checkbox"
-                name="<?php echo 'selected_shipping_methods[' . $shipping_method->instance_id . '][enabled]' ?>"
-                value="yes"
-                <?php checked( $shipping_method_enabled, "yes" ); ?>>
-              <label><?php echo $shipping_method->title ?></label>
-            </p><?php
-          }
-        }
-      ?>
-    </div><?php
+              $shipping_methods = $zone_obj->get_shipping_methods();
+              usort( $shipping_methods, array( ShippingEventController::get_instance(), 'shipping_method_comparator' ) );
+              $method_label = '';
+              foreach ( $shipping_methods as $shipping_method ) {
+                $shipping_method_enabled = "no";
+                if( $shipping_method->method_title != $method_label ) {
+                  $method_label = $shipping_method->method_title;
+                  ?>
+                  <tr scope="row">
+                    <td colspan="3" scope="col">
+                      <h3><strong class="attribute_name"><?php echo $method_label ?></strong></h3>
+                    </td>
+                  </tr>
+                  <?php
+                }
+                if( !empty( $selected_shipping_methods ) && array_key_exists( $shipping_method->instance_id, $selected_shipping_methods ) ) {
+                  $shipping_method_enabled = $selected_shipping_methods[$shipping_method->instance_id]['enabled'];
+                }
+                ?>
+                <tr scope="row">
+                  <th scope="row" class="column-cb align-middle">
+                    <input type="checkbox"
+                    name="<?php echo 'selected_shipping_methods[' . $shipping_method->instance_id . '][enabled]' ?>"
+                    value="yes"
+                    <?php checked( $shipping_event->is_shipping_method_selected( $shipping_method->instance_id ), true ); ?> />
+                  <td class="attribute_name align-middle">
+                    <?php echo $shipping_method->title ?>
+                  </td>
+                  <td class="attribute_name align-middle">
+                    <input
+                      type="number"
+                      id="shipping_event_shipping_method_min_order_value"
+                      name="<?php echo 'selected_shipping_methods[' . $shipping_method->instance_id . '][min_order_value]' ?>"
+                      value="<?php echo $shipping_event->get_shipping_method_min_order_value( $shipping_method->instance_id ) ?>"
+                      width="10px"
+                    />
+                  </td>
+                </tr>
+                <?php
+              }
+            } ?>
+          </tbody>
+        </table>
+      </div>
+    </div> <?php
   }
 
   function shipping_event_basic_settings_output( $post )
@@ -203,17 +243,19 @@ class ShippingEventMetabox
     $product_list     = wc_get_products($args);
 
     ?>
-    <div id="shipping_event_product_list" class="wc-metaboxes-wrapper panel">
+    <div id="shipping_event_product_list" class="panel">
       	<div class="woocommerce_attribute wc-metabox woocommerce_attribute_data wc-metabox-content">
       		<table class="wp-list-table widefat fixed striped">
             <thead>
               <tr>
-                <td id="cb" class="manage-column column-cb check-column">                  </td>
+                <td id="cb" class="manage-column column-cb check-column" scope="col">
+                  <input id="cb-select-all" type="checkbox" title="<?php echo __('Select all') ?>">
+                </td>
                 <th id="product_name" scope="column" class="manage-column column-title column-primary sortable desc">
-                  <label><?php esc_html_e( 'Product Name', 'woocommerce-shipping-event' ); ?></label>
+                  <h2><?php esc_html_e( 'Product Name', 'woocommerce-shipping-event' ); ?></h2>
                 </th>
                 <th id="stock" scope="column" class="manage-column column-title column-primary sortable desc">
-                  <label><?php esc_html_e( 'Stock', 'woocommerce-shipping-event' ); ?></label>
+                  <h2><?php esc_html_e( 'Stock', 'woocommerce-shipping-event' ); ?></h2>
                 </th>
               </tr>
             </thead>
@@ -250,7 +292,7 @@ class ShippingEventMetabox
                   </td>
                   <td>
                     <input
-                      type="text"
+                      type="number"
                       id="shipping_event_product_stock"
                       name="<?php echo 'products[' . $product_id . '][stock]' ?>"
                       value="<?php echo $product_stock ?>"

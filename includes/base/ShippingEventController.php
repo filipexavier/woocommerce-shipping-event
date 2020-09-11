@@ -8,6 +8,7 @@ namespace WCShippingEvent\Base;
 use DateTime;
 use WCShippingEvent\Base\DateController;
 use WCShippingEvent\Cpt\ShippingEvent;
+use WCShippingEvent\Frontend\Controller\ShopController;
 
 class ShippingEventController {
 
@@ -69,7 +70,7 @@ class ShippingEventController {
 
     $shipping_event_methods = get_post_meta( $shipping_event_id, 'selected_shipping_methods', true );
     if ( !isset( $shipping_event_methods ) ) return null;
-    return $shipping_event_methods;
+    return array_filter( $shipping_event_methods, array( $this, 'selected_method_filter' ) );
   }
 
   public function get_shipping_event_product_list( $shipping_event_id ) {
@@ -81,7 +82,11 @@ class ShippingEventController {
   }
 
   public function is_product_enabled( $product_data ) {
-    return ( array_key_exists( 'enabled', $product_data ) && $product_data['enabled'] == "yes" );
+    return $this->is_item_enabled( $product_data );
+  }
+
+  public function is_item_enabled( $data ) {
+    return ( array_key_exists( 'enabled', $data ) && $data['enabled'] == "yes" );
   }
 
   public function safe_data_access( $data_array, $data_key ) {
@@ -92,6 +97,22 @@ class ShippingEventController {
       return $data_array[$data_key];
 
     return null;
+  }
+
+  public function shipping_methods_blocked() {
+    $order_value = WC()->cart->total;
+    $shipping_event = ShopController::get_instance()->get_shipping_event();
+    if( !$shipping_event ) return '';
+
+    return array_filter( $shipping_event->get_shipping_methods(),
+      function( $method ) use( $order_value ) {
+        $min_value =
+          $this->safe_data_access(
+            $method, ShippingEvent::get_shipping_method_key( 'min_order_value' ) );
+        if( !$min_value ) return false;
+        return $order_value < $min_value;
+      }
+    );
   }
 
   public function posts_to_shipping_events( $posts ) {
@@ -132,6 +153,25 @@ class ShippingEventController {
   public function basic_comparator( $a, $b ) {
     if( $a == $b ) return 0;
     return ( $a < $b ) ? -1 : 1;
+  }
+
+  public function shipping_method_comparator( $method_a, $method_b ) {
+    $type_a = $method_a->method_title;
+    $type_b = $method_b->method_title;
+    $title_a = $method_a->title;
+    $title_b = $method_b->title;
+    if( $type_a == $type_b ) return $this->basic_comparator( $title_a, $title_b );
+    return $this->basic_comparator( $type_a, $type_b );
+  }
+
+  public function shipping_zone_comparator( $zone_a, $zone_b ) {
+    $name_a = $zone_a['zone_name'];
+    $name_b = $zone_b['zone_name'];
+    return $this->basic_comparator( $name_a, $name_b );
+  }
+
+  public function selected_method_filter( $method ) {
+    return $this->is_item_enabled( $method );
   }
 
 }

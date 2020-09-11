@@ -44,13 +44,13 @@ class CustomPostTypeController {
   public function install_shipping_event_type_post_type() {
 
     $labels = array(
-      'name'                  => _x( 'Shipping Event Type', 'Post Type General Name', 'text_domain' ),
-      'singular_name'         => _x( 'Shipping Event Type', 'Post Type Singular Name', 'text_domain' ),
-      'menu_name'             => __( 'Shipping Event Types', 'text_domain' ),
-      'name_admin_bar'        => __( 'Shipping Event Types', 'text_domain' ));
+      'name'                  => __( 'Shipping Event Type', 'woocommerce-shipping-event' ),
+      'singular_name'         => __( 'Shipping Event Type', 'woocommerce-shipping-event' ),
+      'menu_name'             => __( 'Shipping Event Types', 'woocommerce-shipping-event' ),
+      'name_admin_bar'        => __( 'Shipping Event Types', 'woocommerce-shipping-event' ));
     $args = array(
-      'label'                 => __( 'Shipping Event Types', 'text_domain' ),
-      'description'           => __( 'General data type used by a group of shipping events', 'text_domain' ),
+      'label'                 => __( 'Shipping Event Types', 'woocommerce-shipping-event' ),
+      'description'           => __( 'General data type used by a group of shipping events', 'woocommerce-shipping-event' ),
       'labels'                => $labels,
       'supports'              => array( 'title', 'editor', 'thumbnail' ),
       'hierarchical'          => true,
@@ -76,13 +76,13 @@ class CustomPostTypeController {
   public static function install_local_pickup_details_post_type() {
 
     $labels = array(
-  		'name'                  => _x( 'Local Pickup Details', 'Post Type General Name', 'text_domain' ),
-  		'singular_name'         => _x( 'Local Pickup Details', 'Post Type Singular Name', 'text_domain' ),
-  		'menu_name'             => __( 'Local Pickup Details', 'text_domain' ),
-  		'name_admin_bar'        => __( 'Local Pickup Details', 'text_domain' ));
+  		'name'                  => __( 'Local Pickup Details', 'woocommerce-shipping-event' ),
+  		'singular_name'         => __( 'Local Pickup Details', 'woocommerce-shipping-event' ),
+  		'menu_name'             => __( 'Local Pickup Details', 'woocommerce-shipping-event' ),
+  		'name_admin_bar'        => __( 'Local Pickup Details', 'woocommerce-shipping-event' ));
   	$args = array(
-  		'label'                 => __( 'Local Pickup Details', 'text_domain' ),
-  		'description'           => __( 'Add address and pickup time to local pickup', 'text_domain' ),
+  		'label'                 => __( 'Local Pickup Details', 'woocommerce-shipping-event' ),
+  		'description'           => __( 'Add address and pickup time to local pickup', 'woocommerce-shipping-event' ),
   		'labels'                => $labels,
   		'supports'              => array( 'title' ),
   		'hierarchical'          => false,
@@ -106,16 +106,16 @@ class CustomPostTypeController {
   public static function install_shipping_event_post_type() {
 
     $labels = array(
-      'name'                  => _x( 'Shipping Events', 'Post Type General Name', 'text_domain' ),
-      'singular_name'         => _x( 'Shipping Event', 'Post Type Singular Name', 'text_domain' ),
-      'menu_name'             => __( 'Shipping Events', 'text_domain' ),
-      'name_admin_bar'        => __( 'Shipping Event', 'text_domain' )
+      'name'                  => __( 'Shipping Events', 'woocommerce-shipping-event' ),
+      'singular_name'         => __( 'Shipping Event', 'woocommerce-shipping-event' ),
+      'menu_name'             => __( 'Shipping Events', 'woocommerce-shipping-event' ),
+      'name_admin_bar'        => __( 'Shipping Event', 'woocommerce-shipping-event' )
     );
     $args = array(
-      'label'                 => __( 'Shipping Event', 'text_domain' ),
-      'description'           => __( 'Event of a shipping as local pickup or delivery with a preset date', 'text_domain' ),
+      'label'                 => __( 'Shipping Event', 'woocommerce-shipping-event' ),
+      'description'           => __( 'Event of a shipping as local pickup or delivery with a preset date', 'woocommerce-shipping-event' ),
       'labels'                => $labels,
-      'supports'              => array( 'title', 'thumbnail', 'revisions' ),
+      'supports'              => array( 'title', 'thumbnail' ),
       // 'taxonomies'            => array( 'category', 'post_tag' ),
       'hierarchical'          => false,
       'public'                => true,

@@ -51,6 +51,17 @@
   color: red !important;
 }
 
+.shipping_method_disabled {
+  pointer-events: none;
+  /* opacity: 0.5; */
+}
+
+.minimum_alert {
+  color: red;
+  font-style: italic;
+  /* opacity: 0.5; */
+}
+
 /* .wc_payment_method {
   margin-bottom: 10px !important;
   border-top: none !important;

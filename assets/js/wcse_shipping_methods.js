@@ -28,8 +28,8 @@ jQuery(document).ready(function($){
         $min_value = $shipping_method_data["min_order_value"];
         $(this).addClass('shipping_method_disabled');
         $address_span = $details_div_node.children('span.shipping_method_address');
-        $address_span.append("* " + php_vars.blocked_shipping_alert + " " + convert_currency($min_value));
-        $address_span.addClass("minimum_alert");
+        $address_span.after("<div class='woocommerce-info minimum_alert'>* " + php_vars.blocked_shipping_alert + " " + convert_currency($min_value) + "</div>");
+        $address_span.addClass("");
       }
       $label_title = $details_div.firstElementChild;
       $label_title.append($radio_label.firstChild);

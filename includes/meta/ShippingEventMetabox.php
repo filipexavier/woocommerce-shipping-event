@@ -74,7 +74,6 @@ class ShippingEventMetabox
   {
     $shipping_event = ShippingEventController::get_instance()->get_shipping_event( $post );
     $shipping_zones = WC_Shipping_Zones::get_zones();
-    var_dump($shipping_event->get_shipping_methods());
     usort( $shipping_zones, array( ShippingEventController::get_instance(), 'shipping_zone_comparator' ) );
     ?>
     <div id="shipping_event_method_list" class="panel">
@@ -209,6 +208,16 @@ class ShippingEventMetabox
       />
     </p>
 
+    <p class="form-field">
+      <label><?php esc_html_e( 'Delivery time window', 'woocommerce-shipping-event' ); ?>:</label>
+      <input
+        type="text"
+        id="shipping_event_delivery_time_window"
+        name="shipping_event_delivery_time_window"
+        style="width: 200px;"
+        value="<?php echo $shipping_event->get_delivery_time_window() ?>"
+      />
+    </p>
 
     <p class="form-field">
       <label><?php esc_html_e( 'Event Type:', 'woocommerce-shipping-event' ); ?></label>
@@ -380,6 +389,13 @@ class ShippingEventMetabox
         );
       }
 
+      if (array_key_exists( 'shipping_event_delivery_time_window', $_POST ) ) {
+        update_post_meta(
+          $post_id,
+          'shipping_event_delivery_time_window',
+          $_POST['shipping_event_delivery_time_window']
+        );
+      }
   }
 
   function modify_post_title( $data ) {

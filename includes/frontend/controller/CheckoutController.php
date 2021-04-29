@@ -36,7 +36,6 @@ class CheckoutController {
       add_filter( 'woocommerce_email_subject_customer_processing_order', array( $this, 'add_shipping_event_to_email_subject' ), 1, 2 );
       // add_filter( 'woocommerce_email_subject_customer_completed_order', array( $this, 'add_shipping_event_to_email_subject' ), 1, 2 );
     } else {
-      add_action( 'woocommerce_admin_order_data_after_shipping_address', array( $this, 'show_admin_order_shipping_event' ), 10, 1 );
       add_action( 'woocommerce_admin_order_data_after_shipping_address', array( $this, 'show_admin_order_local_pickup_details' ), 11, 1 );
     }
   }
@@ -98,16 +97,22 @@ class CheckoutController {
     update_post_meta( $order_id, 'shipping_event', ShopController::get_instance()->get_shipping_event()->get_id() );
   }
 
-  function show_admin_order_shipping_event( $order ) {
+  // Show pickup address and time details on admin order page
+  function show_admin_order_local_pickup_details( $order ) {
     $shipping_event_id = get_post_meta( $order->get_id(), 'shipping_event', true );
     if( empty( $shipping_event_id ) ) return;
-
     $shipping_event = new ShippingEvent( $shipping_event_id );
-    echo '<p><strong>'.__('Date').':</strong> ' .  DateController::format_date( $shipping_event->get_shipping_date() ) . '</p>';
-  }
 
-  function show_admin_order_local_pickup_details( $order ) {
-    echo sprintf( '<p><strong>%s:</strong>%s</p>', __( 'Local Pickup Address', 'woocommerce-shipping-event' ), get_post_meta( $order->get_id(), 'local_pickup_details_address', true ) );
+    //Show name of shipping method
+    $this->show_order_local_pickup_details( $order );
+
+    //Show Date of shipping
+    echo '<p><strong>'.__('Date').':</strong> ' .  DateController::format_date( $shipping_event->get_shipping_date() ) . '</p>';
+
+    //Show pickup address if local pickup
+    if( !ShopController::get_instance()->is_delivery_order( $order ) ) {
+      echo sprintf( '<p><strong>%s:</strong>%s</p> ', __( 'Local Pickup Address', 'woocommerce-shipping-event' ), get_post_meta( $order->get_id(), 'local_pickup_details_address', true ) );
+    }
   }
 
   function show_order_shipping_event( $order ) {
@@ -131,14 +136,16 @@ class CheckoutController {
 
   function show_order_local_pickup_details( $order ) {
 		foreach ( $order->get_shipping_methods() as $shipping_method ) {
-      if( $shipping_method->get_method_id() != 'local_pickup') continue;
-			$shipping_address = get_post_meta( $shipping_method->get_instance_id(), 'local_pickup_details_address', true );
-      if( empty( $shipping_address ) ) continue;
       ?>
       <p><?php echo $shipping_method->get_method_title() ?></p>
-      <address><?php echo __( 'Address:', 'woocommerce' ) . " <strong>" . $shipping_address ?></strong></address>
-      <br />
       <?php
+      if( !ShopController::get_instance()->is_delivery_order( $order ) ) {
+        $shipping_address = get_post_meta( $shipping_method->get_instance_id(), 'local_pickup_details_address', true );
+        ?>
+        <address><?php echo __( 'Address:', 'woocommerce' ) . " <strong>" . $shipping_address ?></strong></address>
+        <br />
+        <?php
+      }
 		}
   }
 
@@ -148,17 +155,27 @@ class CheckoutController {
     if( empty( $shipping_event_id ) ) return;
 
     $shipping_event = new ShippingEvent( $shipping_event_id );
+    $shipping_method_name = "";
+    foreach ( $order->get_shipping_methods() as $shipping_method ) {
+      $shipping_method_name = $shipping_method->get_method_title();
+    }
 
     if( $plain_text ) {
       echo __('Lembre-se') . "!";
       echo __('Data de entrega') . ":" . DateController::format_date( $shipping_event->get_shipping_date() );
-      echo __('Endereço') . ":" . $address;
+      echo $shipping_method_name;
+      if( !ShopController::get_instance()->is_delivery_order( $order ) )
+        echo __('Endereço') . ":" . $address;
     } else { ?>
       <p><strong><?php echo __('Lembre-se') . "!"?></strong></p>
       <p><?php echo __('Data de entrega') . ": " ?>
         <strong><?php echo DateController::format_date( $shipping_event->get_shipping_date() )?></strong>
       </p>
-      <p><?php echo __('Endereço') . ": " . $address ?></p>
+      <p><strong><?php echo $shipping_method_name ?></strong></p>
+      <?php
+      if( !ShopController::get_instance()->is_delivery_order( $order ) ) { ?>
+        <p><?php echo __('Endereço') . ": " . $address ?></p>
+      <?php } ?>
       <br /><br />
       <?php
     }

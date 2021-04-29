@@ -30,6 +30,8 @@ class ShippingEvent {
 
   private $shipping_methods;
 
+  private $delivery_time_window;
+
   private $products;
 
   private const META_KEYS = array (
@@ -40,7 +42,8 @@ class ShippingEvent {
     'enabled' => 'shipping_event_enabled',
     'shipping_methods' => 'selected_shipping_methods',
     'products' => 'products',
-    'event_type' => 'shipping_event_type'
+    'event_type' => 'shipping_event_type',
+    'delivery_time_window' => 'shipping_event_delivery_time_window'
   );
 
   private static $product_keys = array (
@@ -72,6 +75,7 @@ class ShippingEvent {
     $this->end_order_date = DateController::get_post_date( $shipping_event_id, ShippingEvent::get_meta_key( 'end_order_date' ) );
     $this->products = ShippingEventController::get_instance()->get_shipping_event_product_list( $shipping_event_id );
     $this->shipping_methods = ShippingEventController::get_instance()->get_shipping_event_shipping_methods_list( $shipping_event_id );
+    $this->delivery_time_window = get_post_meta( $shipping_event_id, ShippingEvent::get_meta_key( 'delivery_time_window' ), true );
   }
 
   /**
@@ -154,6 +158,10 @@ class ShippingEvent {
 
   public function get_shipping_methods() {
     return $this->shipping_methods;
+  }
+
+  public function get_delivery_time_window() {
+    return $this->delivery_time_window;
   }
 
   public function get_shipping_method_data( $method_id ) {

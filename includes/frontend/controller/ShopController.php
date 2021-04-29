@@ -273,6 +273,12 @@ class ShopController {
     return $manage_stock;
   }
 
+  public function is_delivery_order( $order ) {
+    $address = get_post_meta( $order->get_id(), 'local_pickup_details_address', true );
+    if ( empty( $address ) ) return true;
+    return false;
+  }
+
   public function get_shipping_event_id() {
     if( $this->get_shipping_event() ) return $this->shipping_event->get_id();
     return null;

@@ -88,6 +88,7 @@ class ShopController {
 
   public function block_access_when_no_event() {
     if( $this->has_chosen_valid_shipping_event() ) return;
+    if( is_product_category() ) return;
     $ok_btn_target = $close_btn_target = SettingsController::get_instance()->get_choose_event_page_url();
     $title = __("Choose date", 'woocommerce-shipping-event' );
     $active = "true";

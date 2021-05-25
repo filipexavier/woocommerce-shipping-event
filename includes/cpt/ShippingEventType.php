@@ -77,4 +77,8 @@ class ShippingEventType {
     return str_replace( self::DATE_TAGS, $new_str_keys, $user_format );
   }
 
+  public function get_title() {
+    $this->title;
+  }
+
 }

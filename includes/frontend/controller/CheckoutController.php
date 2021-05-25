@@ -103,16 +103,17 @@ class CheckoutController {
     if( empty( $shipping_event_id ) ) return;
     $shipping_event = new ShippingEvent( $shipping_event_id );
 
-    //Show name of shipping method
+    //Show Date of shipping and event type name
+    echo '<p><strong>' . __('Date').':</strong> ' . DateController::format_date( $shipping_event->get_shipping_date() ) . '</p>';
+    echo '<p><strong>' . __( 'Event Type:', 'woocommerce-shipping-event' ) . '</strong> ' . $shipping_event->get_event_type()->post_title . '</p>';
+
+    //Show name of shipping method and pickup address
     $this->show_order_local_pickup_details( $order );
 
-    //Show Date of shipping
-    echo '<p><strong>'.__('Date').':</strong> ' .  DateController::format_date( $shipping_event->get_shipping_date() ) . '</p>';
-
     //Show pickup address if local pickup
-    if( !ShopController::get_instance()->is_delivery_order( $order ) ) {
-      echo sprintf( '<p><strong>%s:</strong>%s</p> ', __( 'Local Pickup Address', 'woocommerce-shipping-event' ), get_post_meta( $order->get_id(), 'local_pickup_details_address', true ) );
-    }
+    // if( !ShopController::get_instance()->is_delivery_order( $order ) ) {
+    //   echo sprintf( '<p><strong>%s:</strong>%s</p> ', __( 'Local Pickup Address', 'woocommerce-shipping-event' ), get_post_meta( $order->get_id(), 'local_pickup_details_address', true ) );
+    // }
   }
 
   function show_order_shipping_event( $order ) {
@@ -142,7 +143,7 @@ class CheckoutController {
       if( !ShopController::get_instance()->is_delivery_order( $order ) ) {
         $shipping_address = get_post_meta( $shipping_method->get_instance_id(), 'local_pickup_details_address', true );
         ?>
-        <address><?php echo __( 'Address:', 'woocommerce' ) . " <strong>" . $shipping_address ?></strong></address>
+        <address><?php echo __( 'Local Pickup Address', 'woocommerce-shipping-event' ) . "<strong>: " . $shipping_address ?></strong></address>
         <br />
         <?php
       }
@@ -161,20 +162,20 @@ class CheckoutController {
     }
 
     if( $plain_text ) {
-      echo __('Lembre-se') . "!";
-      echo __('Data de entrega') . ":" . DateController::format_date( $shipping_event->get_shipping_date() );
+      echo __( 'Don\'t forget:', 'woocommerce-shipping-event' ) . "!";
+      echo __( 'Delivery/pickup date', 'woocommerce-shipping-event' ) . ": " . DateController::format_date( $shipping_event->get_shipping_date() );
       echo $shipping_method_name;
       if( !ShopController::get_instance()->is_delivery_order( $order ) )
-        echo __('Endereço') . ":" . $address;
+        echo __( 'Local Pickup Address', 'woocommerce-shipping-event' ) . ": " . $address;
     } else { ?>
-      <p><strong><?php echo __('Lembre-se') . "!"?></strong></p>
-      <p><?php echo __('Data de entrega') . ": " ?>
+      <p><strong><?php echo __( 'Don\'t forget:', 'woocommerce-shipping-event' ) . "!"?></strong></p>
+      <p><?php echo __( 'Delivery/pickup date', 'woocommerce-shipping-event' ) . ": " ?>
         <strong><?php echo DateController::format_date( $shipping_event->get_shipping_date() )?></strong>
       </p>
-      <p><strong><?php echo $shipping_method_name ?></strong></p>
+      <p><?php echo $shipping_method_name ?></p>
       <?php
       if( !ShopController::get_instance()->is_delivery_order( $order ) ) { ?>
-        <p><?php echo __('Endereço') . ": " . $address ?></p>
+        <p><?php echo __( 'Local Pickup Address', 'woocommerce-shipping-event' ) . ": " . $address ?></p>
       <?php } ?>
       <br /><br />
       <?php

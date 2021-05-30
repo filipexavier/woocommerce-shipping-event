@@ -137,6 +137,10 @@ class SettingsController {
       );
       register_setting(
           'shipping_event_settings_group', // Option group
+          'wcse_ignore_popup_choose_event_page'  // Option name
+      );
+      register_setting(
+          'shipping_event_settings_group', // Option group
           'wcse_shipping_event_page'  // Option name
       );
       register_setting(
@@ -170,6 +174,21 @@ class SettingsController {
           'general_settings_section' // Section
           );
 
+      add_settings_field(
+          'ignore_popup_choose_event_page_id', // ID
+          __('Block Popup on these taxonomy pages', 'woocommerce-shipping-event' ), // Title
+          array( $this, 'ignore_popup_choose_event_page_field_output' ), // Callback
+          'shipping_event_settings_page', // Page
+          'general_settings_section' // Section
+          );
+
+      add_settings_field(
+        'shipping_event_page_id', // ID
+        __('Shipping Event Page', 'woocommerce-shipping-event' ), // Title
+        array( $this, 'shipping_event_page_field_output' ), // Callback
+        'shipping_event_settings_page', // Page
+        'shortcode_settings_section' // Section
+      );
       add_settings_field(
         'shipping_event_page_id', // ID
         __('Shipping Event Page', 'woocommerce-shipping-event' ), // Title
@@ -328,6 +347,22 @@ class SettingsController {
     );
   }
 
+  public function ignore_popup_choose_event_page_field_output() {
+    $text = get_option( 'wcse_ignore_popup_choose_event_page' );
+    ?>
+      <input
+       type="text"
+       id="wcse_ignore_popup_choose_event_page"
+       name="wcse_ignore_popup_choose_event_page"
+       size="50"
+       value="<?php echo $text ?>"
+      />
+      <p class="description">
+        <?php echo __( 'Code of default or custom categories/tags/taxonomies separated by commas (no spaces between).', 'woocommerce-shipping-event' ) ?>
+      </p>
+    <?php
+  }
+
   public function shipping_event_page_field_output() {
     echo(
       wp_dropdown_pages(
@@ -348,6 +383,17 @@ class SettingsController {
   */
   public function get_shipping_event_page() {
     return get_post( get_option('wcse_shipping_event_page') );
+  }
+
+  public function get_ignore_popup_choose_event_page() {
+    return explode(',', get_option('wcse_ignore_popup_choose_event_page') );
+  }
+
+  public function check_tax_page() {
+    foreach ( $this->get_ignore_popup_choose_event_page() as $tax_id ) {
+      if( is_tax($tax_id) ) return true;
+    }
+    return false;
   }
 
   public function get_shipping_event_page_url() {

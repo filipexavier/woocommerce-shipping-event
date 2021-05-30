@@ -115,6 +115,14 @@ msgstr "Formato da data"
 msgid "Choose Shipping Event Page"
 msgstr "Página de escolha da data/evento de entrega"
 
+#: includes/base/SettingsController.php:179
+msgid "Block Popup on these taxonomy pages"
+msgstr "Não mostrar popup nestas páginas de taxonomias"
+
+#: includes/base/SettingsController.php:361
+msgid "Code of default or custom categories/tags/taxonomies separated by commas (no spaces between)."
+msgstr "Códigos das categorias/tags/taxonomias padrão ou customizadas separados por vírgula (sem espaço)."
+
 #: includes/base/SettingsController.php:175
 msgid "Shipping Event Page"
 msgstr "Página da entrega (loja)"
@@ -125,7 +133,7 @@ msgstr "Texto do botão - encomendas fechadas"
 
 #: includes/base/SettingsController.php:191
 msgid "Target - orders unavailable"
-msgstr "Destino do botão - ncomendas fechadas"
+msgstr "Destino do botão - encomendas fechadas"
 
 #: includes/base/SettingsController.php:199
 msgid "Event Date Format"

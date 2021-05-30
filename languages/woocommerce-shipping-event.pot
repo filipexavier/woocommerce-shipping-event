@@ -86,6 +86,14 @@ msgstr ""
 msgid "Choose Shipping Event Page"
 msgstr ""
 
+#: includes/base/SettingsController.php:361
+msgid "Code of default or custom categories/tags/taxonomies separated by commas (no spaces between)."
+msgstr ""
+
+#: includes/base/SettingsController.php:179
+msgid "Block Popup on these taxonomy pages"
+msgstr ""
+
 #: includes/base/SettingsController.php:175
 msgid "Shipping Event Page"
 msgstr ""

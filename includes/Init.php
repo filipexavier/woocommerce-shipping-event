@@ -14,6 +14,7 @@ use \WCShippingEvent\Meta\MetaBoxesController;
 use \WCShippingEvent\Frontend\Controller\ShopController;
 use \WCShippingEvent\Frontend\Controller\ShortcodeController;
 use \WCShippingEvent\Frontend\Controller\CheckoutController;
+use \WCShippingEvent\Admin\Controller\OrderManagementController;
 
 final class Init extends BaseController {
 
@@ -36,6 +37,7 @@ final class Init extends BaseController {
       ShortcodeController::get_instance()->init();
       CheckoutController::get_instance()->init();
       SettingsController::get_instance()->init();
+      OrderManagementController::get_instance()->init();
 
       if( is_admin() ) {
         MetaBoxesController::get_instance()->init();

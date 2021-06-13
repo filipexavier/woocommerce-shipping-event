@@ -7,20 +7,21 @@ namespace Composer\Autoload;
 class ComposerStaticInit85e8cde181b9ff7ae33d1a22bbc37486
 {
     public static $prefixLengthsPsr4 = array (
-        'W' => 
+        'W' =>
         array (
             'WCShippingEvent\\' => 16,
         ),
     );
 
     public static $prefixDirsPsr4 = array (
-        'WCShippingEvent\\' => 
+        'WCShippingEvent\\' =>
         array (
             0 => __DIR__ . '/../..' . '/includes',
         ),
     );
 
     public static $classMap = array (
+        'WCShippingEvent\\Admin\\Controller\\OrderManagementController' => __DIR__ . '/../..' . '/includes/admin/controller/OrderManagementController.php',
         'WCShippingEvent\\Base\\Activate' => __DIR__ . '/../..' . '/includes/base/Activate.php',
         'WCShippingEvent\\Base\\BaseController' => __DIR__ . '/../..' . '/includes/base/BaseController.php',
         'WCShippingEvent\\Base\\DateController' => __DIR__ . '/../..' . '/includes/base/DateController.php',

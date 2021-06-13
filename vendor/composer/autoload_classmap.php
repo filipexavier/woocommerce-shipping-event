@@ -6,6 +6,7 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
+    'WCShippingEvent\\Admin\\Controller\\OrderManagementController' => $baseDir . '/includes/admin/controller/OrderManagementController.php',
     'WCShippingEvent\\Base\\Activate' => $baseDir . '/includes/base/Activate.php',
     'WCShippingEvent\\Base\\BaseController' => $baseDir . '/includes/base/BaseController.php',
     'WCShippingEvent\\Base\\DateController' => $baseDir . '/includes/base/DateController.php',

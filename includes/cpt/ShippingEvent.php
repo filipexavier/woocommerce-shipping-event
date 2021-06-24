@@ -95,7 +95,7 @@ class ShippingEvent {
     if( !$this->get_enabled() ) return false;
     if( $this->get_shipping_date() < DateController::now() ) return false;
     if( $this->get_begin_order_date() > DateController::now() ) return false;
-    if( $this->get_end_order_date() < DateController::now() ) return false;
+    if( DateController::add_days( $this->get_end_order_date(), 1 ) < DateController::now() ) return false;
 
     return true;
   }

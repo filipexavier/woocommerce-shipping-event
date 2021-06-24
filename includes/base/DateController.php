@@ -32,6 +32,10 @@ class DateController {
     return $date->format('Y-m-d');
   }
 
+  public static function add_days( $date, $days ) {
+    return self::str_to_date( self::date_to_str( $date ) . ' + ' . $days . ' day' );
+  }
+
   public static function get_post_date( $post_id, $post_meta_key ) {
     //Get date in UTC
     $strdate = get_post_meta( $post_id, $post_meta_key, true );

@@ -29,6 +29,7 @@ class OrderManagementController {
   public function filter_orders_by_shipping_event_query( $query ) {
     global $pagenow;
 
+    if ( !isset( $_GET['_shipping_event'] ) ) return;
     $selected_shipping_event = $_GET['_shipping_event'];
 
     if ( is_admin() && $pagenow=='edit.php' && $query->query_vars['post_type'] == 'shop_order' && !empty($selected_shipping_event) ) {
@@ -50,29 +51,27 @@ class OrderManagementController {
   // Add selectbox for filtering ORDERS by shipping event
   public function filter_orders_by_shipping_event() {
 
-    if (!empty($_GET['post_type']) && $_GET['post_type'] == 'shop_order') {
+    if ( !isset( $_GET['post_type'] ) || $_GET['post_type'] != 'shop_order' ) return;
 
-      $exp_types = array();
-      $shipping_event_list = ShippingEventController::get_instance()->order_by_date( get_posts( array( 'post_type' => 'shipping_event' ) ) );
+    $exp_types = array();
+    $shipping_event_list = ShippingEventController::get_instance()->order_by_date( get_posts( array( 'post_type' => 'shipping_event' ) ) );
 
-      ?>
-      <select name="_shipping_event">
-          <option value=""><?php _e('Shipping Events', 'woocommerce-shipping-event'); ?></option>
-          <?php
-          $current_v = isset($_GET['_shipping_event']) ? $_GET['_shipping_event'] : '';
-          foreach ($shipping_event_list as $shipping_event) {
-              printf
-              (
-                  '<option value="%s"%s>%s</option>',
-                  $shipping_event->get_id(),
-                  $shipping_event->get_id() == $current_v? ' selected="selected"':'',
-                  $shipping_event->get_title()
-              );
-          }
-          ?>
-      </select>
-      <?php
-    }
+    ?>
+    <select name="_shipping_event">
+        <option value=""><?php _e('Shipping Events', 'woocommerce-shipping-event'); ?></option>
+        <?php
+        $current_v = isset($_GET['_shipping_event']) ? $_GET['_shipping_event'] : '';
+        foreach ($shipping_event_list as $shipping_event) {
+            printf
+            (
+                '<option value="%s"%s>%s</option>',
+                $shipping_event->get_id(),
+                $shipping_event->get_id() == $current_v? ' selected="selected"':'',
+                $shipping_event->get_title()
+            );
+        }
+        ?>
+    </select>
+    <?php
   }
-
 }

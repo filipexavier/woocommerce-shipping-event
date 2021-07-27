@@ -100,7 +100,7 @@ class ShippingEventController {
   }
 
   public function shipping_methods_blocked() {
-    $order_value = WC()->cart->total;
+    $order_value = WC()->cart->subtotal;
     $shipping_event = ShopController::get_instance()->get_shipping_event();
     if( !$shipping_event ) return '';
 

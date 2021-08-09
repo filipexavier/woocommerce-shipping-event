@@ -174,4 +174,21 @@ class ShippingEventController {
     return $this->is_item_enabled( $method );
   }
 
+  public function get_orders_num( $shipping_event ) {
+    global  $woocommerce , $wpdb;
+    $ordersnum = $wpdb->get_results(
+      "Select COUNT(orders.ID) as num
+      from wp_posts as orders
+      INNER JOIN wp_postmeta AS shipping_events
+        ON shipping_events.meta_key = 'shipping_event'
+        AND orders.ID = shipping_events.post_id
+      INNER JOIN wp_posts AS shipping_event
+        ON shipping_event.ID = shipping_events.meta_value
+      where orders.post_type = 'shop_order'
+        AND orders.post_status NOT IN ( 'wc-cancelled', 'wc-completed', 'wc-failed', 'wc-refunded' )
+        AND shipping_event.ID = " . $shipping_event->get_id()
+    );
+    return $ordersnum[0]->num;
+  }
+
 }

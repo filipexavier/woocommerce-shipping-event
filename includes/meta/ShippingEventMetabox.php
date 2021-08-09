@@ -31,6 +31,9 @@ class ShippingEventMetabox
     add_action( 'admin_menu', array( $this, 'add_shipping_event_meta_box' ) );
     add_action('save_post', array( $this, 'shipping_event_settings_save_postdata') );
     add_filter( 'wp_insert_post_data' , array( $this, 'modify_post_title' ), '99', 1 );
+    // add_filter('manage_shipping_event_posts_columns', array( $this, 'prepare_fields_to_quick_edit' ) );
+    // add_action('manage_shipping_event_posts_custom_column', array( $this, 'add_custom_columns' ), 10, 2 );
+    // add_action('quick_edit_custom_box', array( $this, 'quick_edit' ), 10, 2 );
   }
 
   function add_shipping_event_meta_box() {
@@ -220,6 +223,17 @@ class ShippingEventMetabox
     </p>
 
     <p class="form-field">
+      <label><?php esc_html_e( 'Maximum Orders number', 'woocommerce-shipping-event' ); ?>:</label>
+      <input
+        type="number"
+        id="shipping_event_max_order_num"
+        name="shipping_event_max_order_num"
+        style="width: 200px;"
+        value="<?php echo $shipping_event->get_max_order_num() ?>"
+      />
+    </p>
+
+    <p class="form-field">
       <label><?php esc_html_e( 'Event Type:', 'woocommerce-shipping-event' ); ?></label>
       <?php
       echo(
@@ -396,6 +410,14 @@ class ShippingEventMetabox
           $_POST['shipping_event_delivery_time_window']
         );
       }
+
+      if (array_key_exists( 'shipping_event_max_order_num', $_POST ) ) {
+        update_post_meta(
+          $post_id,
+          'shipping_event_max_order_num',
+          $_POST['shipping_event_max_order_num']
+        );
+      }
   }
 
   function modify_post_title( $data ) {
@@ -408,6 +430,48 @@ class ShippingEventMetabox
       );
     }
     return $data; // Returns the modified data.
+  }
+
+  //QUICK EDIT
+
+  public function prepare_fields_to_quick_edit( $columns ) {
+    $new_columns = array(
+        'shipping_event_max_order_num' => esc_html__('Image', 'your-textdomain'),
+    );
+    // return the columns array back
+    return array_merge($columns, $new_columns);
+  }
+
+  function add_custom_columns( $column, $post_id ) {
+     switch ($column) {
+       case 'shipping_event_max_order_num':
+           $max_order_num = get_post_meta($post_id, 'shipping_event_max_order_num', true);
+           echo '<img src="' . esc_html__($max_order_num) . '" alt="" style="width: 200px;">';
+           break;
+       default:
+           break;
+     }
+  }
+
+  public function quick_edit( $column_name, $post_type ) {
+    if (!($column_name === 'shipping_event_max_order_num')) return;
+    switch ($column_name) {
+      case 'shipping_event_max_order_num':
+        echo '<fieldset class="inline-edit-col-right" style="border: 1px solid #dddddd;">
+                <legend style="font-weight: bold; margin-left: 10px;">Project Custom Fields:</legend>
+                <div class="inline-edit-col">';
+        wp_nonce_field('shipping_event_q_edit_nonce', 'shipping_event_nonce');
+        echo '<label class="alignleft" style="width: 100%;">
+                <span class="title">' . __('Website', 'your-textdomain') . '</span>
+                <span class="input-text-wrap"><input type="url" name="' . $column_name . '" value="" style="width: 100%;"></span>
+                <span style="font-style: italic;color:#999999; text-align:right; display: inherit;">Enter the website URL</span>
+              </label>';
+        echo '<br><br>';
+        echo '</div></fieldset>';
+        break;
+      default:
+        break;
+    }
   }
 
 }

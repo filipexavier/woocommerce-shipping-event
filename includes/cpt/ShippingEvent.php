@@ -34,6 +34,8 @@ class ShippingEvent {
 
   private $products;
 
+  private $max_order_num;
+
   private const META_KEYS = array (
     'begin_order_date' => 'shipping_event_start_orders_date',
     'shipping_date' => 'shipping_event_date',
@@ -43,7 +45,8 @@ class ShippingEvent {
     'shipping_methods' => 'selected_shipping_methods',
     'products' => 'products',
     'event_type' => 'shipping_event_type',
-    'delivery_time_window' => 'shipping_event_delivery_time_window'
+    'delivery_time_window' => 'shipping_event_delivery_time_window',
+    'max_order_num' => 'shipping_event_max_order_num'
   );
 
   private static $product_keys = array (
@@ -76,6 +79,7 @@ class ShippingEvent {
     $this->products = ShippingEventController::get_instance()->get_shipping_event_product_list( $shipping_event_id );
     $this->shipping_methods = ShippingEventController::get_instance()->get_shipping_event_shipping_methods_list( $shipping_event_id );
     $this->delivery_time_window = get_post_meta( $shipping_event_id, ShippingEvent::get_meta_key( 'delivery_time_window' ), true );
+    $this->max_order_num = get_post_meta( $shipping_event_id, ShippingEvent::get_meta_key( 'max_order_num' ), true );
   }
 
   /**
@@ -87,6 +91,17 @@ class ShippingEvent {
     if( $this->get_shipping_date() < DateController::now() ) return false;
     if( $this->get_end_order_date() < DateController::now() ) return false;
     if( $this->get_begin_order_date() <= DateController::now() ) return false;
+
+    return true;
+  }
+
+  /**
+   * Returns true if the shipping event should be shown in the shortcode list; Show orders ended but as closed
+   * @return boolean
+  */
+  public function show_to_client() {
+    if( !$this->get_enabled() ) return false;
+    if( $this->get_shipping_date() < DateController::now() ) return false;
 
     return true;
   }
@@ -162,6 +177,10 @@ class ShippingEvent {
 
   public function get_delivery_time_window() {
     return $this->delivery_time_window;
+  }
+
+  public function get_max_order_num() {
+    return $this->max_order_num;
   }
 
   public function get_shipping_method_data( $method_id ) {
@@ -270,5 +289,15 @@ class ShippingEvent {
     return $new_qty;
   }
 
+  public function get_orders_num() {
+    return ShippingEventController::get_instance()->get_orders_num( $this );
+  }
 
+  public function get_orders_limit_left() {
+    return $this->get_max_order_num() - $this->get_orders_num();
+  }
+
+  public function max_orders_reached() {
+    return $this->get_max_order_num() <= $this->get_orders_num();
+  }
 }

@@ -6,15 +6,19 @@
   use \WCShippingEvent\Frontend\Controller\ShopController;
 
   ?>
+
   <input id="chosen_shipping_event_id" type="hidden"
     value="<?php echo ShopController::get_instance()->get_shipping_event_id() ?>">
   </input>
   <?php
+
+  global $wpdb;
+
   $shipping_event_list = ShippingEventController::get_instance()->order_by_date( get_posts( array( 'post_type' => 'shipping_event' ) ) );
   $num_enabled = 0;
   foreach( $shipping_event_list as $shipping_event ) {
-    $order_pending = $shipping_event->open_order_pending();
-    if( !$order_pending && !$shipping_event->orders_enabled() ) continue;
+
+    if( !$shipping_event->show_to_client() ) continue;
     $num_enabled++;
     if( $shipping_event->get_event_type() ) {
       $html_event = $shipping_event->get_event_type()->post_content;

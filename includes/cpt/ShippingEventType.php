@@ -16,7 +16,10 @@ class ShippingEventType {
     '#END_ORDERS_DATE#' => 'Use this tag anywhere and the user will see the last day before orders are closed for each Shipping Event',
     '#SELECT_EVENT#' => 'Put this tag in the link of a button where you want the user to select the Shipping Event and access the Store',
     '#ONLY_AVAILABLE#' => 'Put this tag as a class of an element you want the user to view only when orders for this Shipping Event are available',
-    '#ONLY_UNAVAILABLE#' => 'Put this tag as a class of an element you want the user to view only when orders for this Shipping Event are NOT available'
+    '#ONLY_UNAVAILABLE#' => 'Put this tag as a class of an element you want the user to view only when orders for this Shipping Event are not yet available',
+    '#ONLY_LIMIT_REACHED#' => 'Put this tag as a class of an element you want the user to view only when this Shipping Event has reached the limit of orders',
+    '#ONLY_WITHIN_LIMIT#' => 'Put this tag as a class of an element you want the user to view only when this Shipping Event has NOT reached the limit of orders',
+    '#NUM_ORDERS_AVAILABLE#' => 'Use this tag anywhere and the user will see the number of orders left on the maximum limit of this Shipping Event',
   );
 
   public const DATE_TAGS = array(
@@ -43,7 +46,10 @@ class ShippingEventType {
       self::customize_date_format( $shipping_event->get_end_order_date(), 'wcse_event_type_close_orders_format' ),
       self::handle_select_event_button_behavior( $shipping_event ),
       self::handle_availability_class( $shipping_event->orders_enabled() ),
-      self::handle_availability_class( !$shipping_event->orders_enabled() )
+      self::handle_availability_class( !$shipping_event->orders_enabled() ),
+      self::handle_availability_class( $shipping_event->max_orders_reached() ),
+      self::handle_availability_class( !$shipping_event->max_orders_reached() ),
+      $shipping_event->get_orders_limit_left()
     );
 
     return str_replace( self::get_event_tags(), $new_str_keys, $original_text );

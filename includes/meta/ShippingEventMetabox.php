@@ -250,6 +250,26 @@ class ShippingEventMetabox
       );
       ?>
     </p>
+
+    <p class="form-field">
+      <label><?php esc_html_e( 'Previous Shipping Event:', 'woocommerce-shipping-event' ); ?></label>
+      <?php
+      echo(
+        wp_dropdown_pages(
+          array(
+            'post_type'         => 'shipping_event',
+            'name'              => 'shipping_event_previous_shipping_event',
+            'sort_column'       => 'date',
+            'sort_order'        => 'DESC',
+            'echo'              => 0,
+            'show_option_none'  => __( '&mdash; Select &mdash;' ),
+            'option_none_value' => '0',
+            'selected'          => $shipping_event->get_previous_shipping_event_id(),
+          )
+        )
+      );
+      ?>
+    </p>
     <?php
   }
 
@@ -362,6 +382,14 @@ class ShippingEventMetabox
               $post_id,
               'shipping_event_type',
               $_POST['shipping_event_type']
+          );
+      }
+
+      if (array_key_exists( 'shipping_event_previous_shipping_event', $_POST ) ) {
+          update_post_meta(
+              $post_id,
+              'shipping_event_previous_shipping_event',
+              $_POST['shipping_event_previous_shipping_event']
           );
       }
 

@@ -36,6 +36,8 @@ class ShippingEvent {
 
   private $max_order_num;
 
+  private $previous_shipping_event;
+
   private const META_KEYS = array (
     'begin_order_date' => 'shipping_event_start_orders_date',
     'shipping_date' => 'shipping_event_date',
@@ -46,7 +48,8 @@ class ShippingEvent {
     'products' => 'products',
     'event_type' => 'shipping_event_type',
     'delivery_time_window' => 'shipping_event_delivery_time_window',
-    'max_order_num' => 'shipping_event_max_order_num'
+    'max_order_num' => 'shipping_event_max_order_num',
+    'previous_shipping_event' => 'shipping_event_previous_shipping_event'
   );
 
   private static $product_keys = array (
@@ -80,6 +83,13 @@ class ShippingEvent {
     $this->shipping_methods = ShippingEventController::get_instance()->get_shipping_event_shipping_methods_list( $shipping_event_id );
     $this->delivery_time_window = get_post_meta( $shipping_event_id, ShippingEvent::get_meta_key( 'delivery_time_window' ), true );
     $this->max_order_num = get_post_meta( $shipping_event_id, ShippingEvent::get_meta_key( 'max_order_num' ), true );
+    $this->previous_shipping_event_id = ShippingEventController::get_instance()->safe_post_meta_access(
+      $shipping_event_id,
+      ShippingEvent::get_meta_key( 'previous_shipping_event' )
+    );
+    $this->previous_shipping_event = ShippingEventController::get_instance()->get_shipping_event(
+      $this->previous_shipping_event_id
+    );
   }
 
   /**
@@ -194,6 +204,14 @@ class ShippingEvent {
     return $this->max_order_num;
   }
 
+  public function get_previous_shipping_event() {
+    return $this->previous_shipping_event;
+  }
+
+  public function get_previous_shipping_event_id() {
+    return $this->previous_shipping_event_id;
+  }
+
   public function get_shipping_method_data( $method_id ) {
     return ShippingEventController::get_instance()->safe_data_access(
         $this->shipping_methods, $method_id );
@@ -305,7 +323,7 @@ class ShippingEvent {
   }
 
   public function get_orders_limit_left() {
-    return $this->get_max_order_num() - $this->get_orders_num();
+    return is_null( $this->get_max_order_num() ) ? 0 : $this->get_max_order_num() - $this->get_orders_num();
   }
 
   public function max_orders_reached() {

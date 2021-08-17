@@ -42,6 +42,7 @@ class ShippingEventController {
    * @return ShippingEvent
   */
   public function get_shipping_event( $shipping_event_id ) {
+    if( is_null( $shipping_event_id ) ) return null;
     if( $this->is_a_shipping_event( $shipping_event_id ) ) return $shipping_event_id;
     $shipping_event_post = null;
     if( is_a( $shipping_event_id, 'WP_Post' ) ) {
@@ -97,6 +98,13 @@ class ShippingEventController {
       return $data_array[$data_key];
 
     return null;
+  }
+
+  public function safe_post_meta_access( $id, $data_key ) {
+    if ( empty( $id ) ) return null;
+    $meta_value = get_post_meta( $id, $data_key, true );
+    if ( empty( $meta_value ) ) return null;
+    return $meta_value;
   }
 
   public function shipping_methods_blocked() {

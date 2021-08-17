@@ -20,6 +20,8 @@ class ShippingEventType {
     '#ONLY_LIMIT_REACHED#' => 'Put this tag as a class of an element you want the user to view only when this Shipping Event has reached the limit of orders',
     '#ONLY_WITHIN_LIMIT#' => 'Put this tag as a class of an element you want the user to view only when this Shipping Event has NOT reached the limit of orders',
     '#NUM_ORDERS_AVAILABLE#' => 'Use this tag anywhere and the user will see the number of orders left on the maximum limit of this Shipping Event',
+    '#ONLY_AFTER_ORDER_PERIOD#' => 'Put this tag as a class of an element you want the user to view only when this Shipping Event in NOT available for orders anymore',
+    '#HIDE_IF_AFTER_ORDER_PERIOD#' => 'Put this tag as a class of an element you want to hide when this Shipping Event ins NOT available for orders anymore'
   );
 
   public const DATE_TAGS = array(
@@ -49,7 +51,9 @@ class ShippingEventType {
       self::handle_availability_class( !$shipping_event->orders_enabled() ),
       self::handle_availability_class( $shipping_event->max_orders_reached() ),
       self::handle_availability_class( !$shipping_event->max_orders_reached() ),
-      $shipping_event->get_orders_limit_left()
+      $shipping_event->get_orders_limit_left(),
+      self::handle_availability_class( $shipping_event->after_order_period() ),
+      self::handle_availability_class( !$shipping_event->after_order_period() )
     );
 
     return str_replace( self::get_event_tags(), $new_str_keys, $original_text );
@@ -57,6 +61,7 @@ class ShippingEventType {
 
   public static function handle_select_event_button_behavior( $shipping_event ) {
     if( $shipping_event->open_order_pending() ) return self::ORDERS_CLOSED_CODE;
+    if( $shipping_event->after_order_period() ) return "";
     return self::SHIPPING_ID_CODE . $shipping_event->get_id();
   }
 

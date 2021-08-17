@@ -96,6 +96,17 @@ class ShippingEvent {
   }
 
   /**
+   * Returns true if the shipping event has closed for orders; false if is opened or before order period
+   * @return boolean
+  */
+  public function after_order_period() {
+    if( !$this->get_enabled() ) return false;
+    if( $this->get_end_order_date() < DateController::now() ) return true;
+
+    return false;
+  }
+
+  /**
    * Returns true if the shipping event should be shown in the shortcode list; Show orders ended but as closed
    * @return boolean
   */

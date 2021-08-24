@@ -159,6 +159,12 @@ class ShippingEventMetabox
     //DEFAULT VALUES
     if( $pagenow == 'post-new.php' ) $shipping_event->set_disable_backorder(true);
     ?>
+    
+    <p>
+      <label style="font-size:20px;font-weight:bold;"><?php esc_html_e( 'Number of orders', 'woocommerce-shipping-event' ); ?>:
+        <?php echo $shipping_event->get_orders_num(); ?>
+      </label>
+    </p>
 
     <p class="form-field">
       <label><?php esc_html_e( 'Enabled', 'woocommerce-shipping-event' ); ?></label>
@@ -231,7 +237,7 @@ class ShippingEventMetabox
         name="shipping_event_max_order_num"
         style="width: 200px;"
         value="<?php echo $shipping_event->get_max_order_num() ?>"
-        <?php disabled( SettingsController::get_instance()->orders_limit_control_enabled(), false ); ?> 
+        <?php disabled( SettingsController::get_instance()->orders_limit_control_enabled(), false ); ?>
       />
     </p>
 

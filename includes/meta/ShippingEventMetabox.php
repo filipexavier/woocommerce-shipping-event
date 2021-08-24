@@ -159,10 +159,15 @@ class ShippingEventMetabox
     //DEFAULT VALUES
     if( $pagenow == 'post-new.php' ) $shipping_event->set_disable_backorder(true);
     ?>
-    
+
     <p>
       <label style="font-size:20px;font-weight:bold;"><?php esc_html_e( 'Number of orders', 'woocommerce-shipping-event' ); ?>:
         <?php echo $shipping_event->get_orders_num(); ?>
+      </label>
+    </p>
+    <p>
+      <label style="font-size:20px;font-weight:bold;"><?php esc_html_e( 'Orders enabled', 'woocommerce-shipping-event' ); ?>:
+        <?php echo $shipping_event->orders_enabled() ? esc_html_e( 'Yes', 'woocommerce' ) : esc_html_e( 'No', 'woocommerce' ); ?>
       </label>
     </p>
 

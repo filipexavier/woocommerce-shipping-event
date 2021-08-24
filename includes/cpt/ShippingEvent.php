@@ -99,6 +99,7 @@ class ShippingEvent {
   */
   public function open_order_pending() {
     if( !$this->get_enabled() ) return false;
+    if( $this->previous_shipping_event_enabled() ) return true;
     if( $this->get_shipping_date() < DateController::now() ) return false;
     if( $this->get_end_order_date() < DateController::now() ) return false;
     if( $this->get_begin_order_date() <= DateController::now() ) return false;
@@ -133,6 +134,7 @@ class ShippingEvent {
     if( $this->get_shipping_date() < DateController::now() ) return false;
     if( $this->get_begin_order_date() > DateController::now() ) return false;
     if( DateController::add_days( $this->get_end_order_date(), 1 ) < DateController::now() ) return false;
+    if( $this->previous_shipping_event_enabled() ) return false;
 
     return true;
   }
@@ -211,6 +213,12 @@ class ShippingEvent {
 
   public function get_previous_shipping_event_id() {
     return $this->previous_shipping_event_id;
+  }
+
+  public function previous_shipping_event_enabled() {
+    if( !empty( $this->get_previous_shipping_event() ) )
+      return $this->get_previous_shipping_event()->orders_enabled();
+    return false;
   }
 
   public function get_shipping_method_data( $method_id ) {

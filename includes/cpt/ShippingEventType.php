@@ -64,7 +64,7 @@ class ShippingEventType {
 
   public static function handle_select_event_button_behavior( $shipping_event ) {
     if( $shipping_event->open_order_pending() ) return self::ORDERS_CLOSED_CODE;
-    if( $shipping_event->after_order_period() ) return "";
+    // if( $shipping_event->after_order_period() ) return "";
     return self::SHIPPING_ID_CODE . $shipping_event->get_id();
   }
 

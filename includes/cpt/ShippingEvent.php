@@ -8,6 +8,7 @@ namespace WCShippingEvent\Cpt;
 use DateTime;
 use WCShippingEvent\Base\DateController;
 use WCShippingEvent\Base\ShippingEventController;
+use WCShippingEvent\Base\SettingsController;
 
 class ShippingEvent {
 
@@ -327,6 +328,10 @@ class ShippingEvent {
   }
 
   public function max_orders_reached() {
-    return $this->get_max_order_num() <= $this->get_orders_num();
+    return SettingsController::get_instance()->orders_limit_control_enabled() && $this->get_max_order_num() <= $this->get_orders_num();
+  }
+
+  public function near_limit_num() {
+    return !$this->max_orders_reached() && $this->get_orders_limit_left() <= SettingsController::get_instance()->get_near_orders_limit_num();
   }
 }

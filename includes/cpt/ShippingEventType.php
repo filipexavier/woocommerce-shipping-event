@@ -21,7 +21,9 @@ class ShippingEventType {
     '#ONLY_WITHIN_LIMIT#' => 'Put this tag as a class of an element you want the user to view only when this Shipping Event has NOT reached the limit of orders',
     '#NUM_ORDERS_AVAILABLE#' => 'Use this tag anywhere and the user will see the number of orders left on the maximum limit of this Shipping Event',
     '#ONLY_AFTER_ORDER_PERIOD#' => 'Put this tag as a class of an element you want the user to view only when this Shipping Event in NOT available for orders anymore',
-    '#HIDE_IF_AFTER_ORDER_PERIOD#' => 'Put this tag as a class of an element you want to hide when this Shipping Event ins NOT available for orders anymore'
+    '#HIDE_IF_AFTER_ORDER_PERIOD#' => 'Put this tag as a class of an element you want to hide when this Shipping Event ins NOT available for orders anymore',
+    '#ONLY_WHEN_NEAR_LIMIT#' => 'Put this tag as a class of an element you want the user to view only when this Shipping Event is close to reach the limit of orders'
+
   );
 
   public const DATE_TAGS = array(
@@ -53,7 +55,8 @@ class ShippingEventType {
       self::handle_availability_class( !$shipping_event->max_orders_reached() ),
       $shipping_event->get_orders_limit_left(),
       self::handle_availability_class( $shipping_event->after_order_period() ),
-      self::handle_availability_class( !$shipping_event->after_order_period() )
+      self::handle_availability_class( !$shipping_event->after_order_period() ),
+      self::handle_availability_class( $shipping_event->near_limit_num() )
     );
 
     return str_replace( self::get_event_tags(), $new_str_keys, $original_text );

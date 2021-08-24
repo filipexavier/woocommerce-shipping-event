@@ -21,7 +21,9 @@ class SettingsController {
     'wcse_shortcode_target_button_unavailable',
     'wcse_event_type_event_date_format',
     'wcse_event_type_open_orders_format',
-    'wcse_event_type_close_orders_format'
+    'wcse_event_type_close_orders_format',
+    'wcse_orders_limit_control',
+    'wcse_near_limit_num'
   );
 
   public static function get_instance() {
@@ -163,6 +165,16 @@ class SettingsController {
           'shipping_event_settings_group', // Option group
           'wcse_event_type_close_orders_format'  // Option name
       );
+
+      register_setting(
+          'shipping_event_settings_group', // Option group
+          'wcse_orders_limit_control'  // Option name
+      );
+
+      register_setting(
+          'shipping_event_settings_group', // Option group
+          'wcse_near_limit_num'  // Option name
+      );
   }
 
   public function register_fields() {
@@ -237,6 +249,21 @@ class SettingsController {
           'date_format_section' // Section
           );
 
+      add_settings_field(
+          'orders_limit_control', // ID
+          __('Enable orders limit control', 'woocommerce-shipping-event' ), // Title
+          array( $this, 'orders_limit_control_output' ), // Callback
+          'shipping_event_settings_page', // Page
+          'general_settings_section' // Section
+          );
+
+      add_settings_field(
+          'near_limit_num', // ID
+          __('Near limit reached number', 'woocommerce-shipping-event' ), // Title
+          array( $this, 'near_limit_num_output' ), // Callback
+          'shipping_event_settings_page', // Page
+          'general_settings_section' // Section
+          );
   }
 
   public function general_settings_intro_output() {
@@ -251,6 +278,30 @@ class SettingsController {
     echo __( 'Use the following expressions/codes to represent the way you want to show each date on your shipping event list. The date will appear as you set here each time you use it in the shipping event type. ','woocommerce_shipping_event' );
     echo __( 'Example: <code>[DAY_OF_WEEK], [DAY]/[MONTH]</code> will become ', 'woocommerce-shipping-event' ) . '<code>' . ShippingEventType::translate_date_tags( DateController::now(),'[DAY_OF_WEEK], [DAY]/[MONTH]' ) . '</code><br /><br />';
     echo __('Expressions available: ', 'woocommerce-shipping-event' ) . '<code>' . implode( ", ", ShippingEventType::DATE_TAGS ) . '</code>';
+  }
+
+  public function orders_limit_control_output() {
+    $format = get_option( 'wcse_orders_limit_control' );
+    ?>
+      <input
+       type="checkbox"
+       id="near_orders_limit_control"
+       name="wcse_orders_limit_control"
+       <?php checked( $format, 'on' ); ?>
+      />
+    <?php
+  }
+
+  public function near_limit_num_output() {
+    $format = get_option( 'wcse_near_limit_num' );
+    ?>
+      <input
+       type="number"
+       id="near_limit_num"
+       name="wcse_near_limit_num"
+       value="<?php echo $format ?>"
+      />
+    <?php
   }
 
   public function type_event_date_format_field_output() {
@@ -394,6 +445,14 @@ class SettingsController {
       if( is_tax($tax_id) ) return true;
     }
     return false;
+  }
+
+  public function get_near_orders_limit_num() {
+    return get_option( 'wcse_near_limit_num' );
+  }
+
+  public function orders_limit_control_enabled() {
+    return get_option( 'wcse_orders_limit_control' ) == 'on';
   }
 
   public function get_shipping_event_page_url() {

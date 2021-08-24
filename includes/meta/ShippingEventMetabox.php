@@ -10,6 +10,7 @@ use \WCShippingEvent\Meta\LocalPickupDetailsMetabox;
 use \WCShippingEvent\Cpt\ShippingEvent;
 use \WCShippingEvent\Base\DateController;
 use \WCShippingEvent\Base\ShippingEventController;
+use WCShippingEvent\Base\SettingsController;
 
 /**
  *
@@ -230,6 +231,7 @@ class ShippingEventMetabox
         name="shipping_event_max_order_num"
         style="width: 200px;"
         value="<?php echo $shipping_event->get_max_order_num() ?>"
+        <?php disabled( SettingsController::get_instance()->orders_limit_control_enabled(), false ); ?> 
       />
     </p>
 

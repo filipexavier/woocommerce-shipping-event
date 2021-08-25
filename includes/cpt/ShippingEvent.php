@@ -113,7 +113,7 @@ class ShippingEvent {
   */
   public function after_order_period() {
     if( !$this->get_enabled() ) return false;
-    if( $this->get_end_order_date() < DateController::now() ) return true;
+    if( DateController::add_days( $this->get_end_order_date(), 1 ) < DateController::now() ) return true;
 
     return false;
   }

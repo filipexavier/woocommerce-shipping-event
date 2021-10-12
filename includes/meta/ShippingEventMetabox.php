@@ -71,6 +71,17 @@ class ShippingEventMetabox
 
     add_meta_box($meta_box['id'], $meta_box['title'], array( $this, 'shipping_event_products_settings_output' ), $meta_box['page'], $meta_box['context'], $meta_box['priority']);
 
+  	$meta_box = array(
+  		'id' => 'shipping_event_product_list_whatsapp',
+  		'title' => __( 'Products', 'woocommerce' ),
+  		'page' => 'shipping_event',
+  		'context' => 'normal',
+  		'priority' => 'default',
+  		'autosave' => 'false'
+  	);
+
+    add_meta_box($meta_box['id'], $meta_box['title'], array( $this, 'shipping_event_product_list_whatsapp_output' ), $meta_box['page'], $meta_box['context'], $meta_box['priority']);
+
 
   }
 
@@ -362,6 +373,72 @@ class ShippingEventMetabox
           </table>
         </div>
     </div> <?php
+
+  }
+
+  function shipping_event_product_list_whatsapp_output( $post ) {
+
+    $shipping_event = ShippingEventController::get_instance()->get_shipping_event( $post );
+
+    echo "*ITENS DA SEMANA* - " . $shipping_event->get_shipping_date()->format("d/m") . "</br></br>";
+    echo "Você pode encontrar todos estes itens com fotos no link cooperativaterra.com.br/pedidos</br>";
+
+    //list categories
+    $taxonomy     = 'product_cat';
+    $orderby      = 'name';
+    $show_count   = 0;      // 1 for yes, 0 for no
+    $pad_counts   = 0;      // 1 for yes, 0 for no
+    $hierarchical = 1;      // 1 for yes, 0 for no
+    $title        = '';
+    $empty        = 0;
+
+    $args = array(
+           'taxonomy'     => $taxonomy,
+           'orderby'      => $orderby,
+           'show_count'   => $show_count,
+           'pad_counts'   => $pad_counts,
+           'hierarchical' => $hierarchical,
+           'title_li'     => $title,
+           'hide_empty'   => $empty
+    );
+     $all_categories = get_categories( $args );
+     foreach ($all_categories as $cat) {
+        if($cat->category_parent == 0) {
+            $category_id = $cat->term_id;
+
+            echo '<br /><a href="'. get_term_link($cat->slug, 'product_cat') .'">*'. $cat->name .'*</a></br>';
+
+            $args2 = array(
+                    'taxonomy'     => $taxonomy,
+                    'child_of'     => 0,
+                    'parent'       => $category_id,
+                    'orderby'      => $orderby,
+                    'show_count'   => $show_count,
+                    'pad_counts'   => $pad_counts,
+                    'hierarchical' => $hierarchical,
+                    'title_li'     => $title,
+                    'hide_empty'   => $empty
+            );
+            $slugs = array($cat->slug);
+            $sub_cats = get_categories( $args2 );
+            if($sub_cats) {
+                foreach($sub_cats as $sub_category) {
+                    array_push($slugs, $sub_category->slug);
+                }
+            }
+
+            $products = wc_get_products(array(
+              'category' => $slugs, 'status' => 'publish', 'limit' => -1 
+            ));
+
+            if( sizeof($products) == 0 ) continue;
+
+            foreach ( $products as $product ) {
+              if( $shipping_event->is_product_enabled($product->get_id()) )
+                echo $product->get_name() . " - " . wc_price( wc_get_price_to_display( $product, array( 'price' => $product->get_regular_price() ) ) ) . " </br>";
+            }
+        }
+    }
   }
 
   function shipping_event_settings_save_postdata($post_id)

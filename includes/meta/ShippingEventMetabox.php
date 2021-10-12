@@ -113,8 +113,12 @@ class ShippingEventMetabox
               $zone_obj = WC_Shipping_Zones::get_zone($zone['zone_id']);
               ?>
               <!-- <p><strong><?php //echo sprintf( '%s: %s', __( 'Zone', 'woocommerce' ), $zone['zone_name'] ) ?></strong></p> -->
+              <tr scope="row">
+                <td colspan="3" scope="col">
+                  <h3><strong class="attribute_name"><?php echo $zone_obj->get_zone_name() ?></strong></h3>
+                </td>
+              </tr>
               <?php
-
               $shipping_methods = $zone_obj->get_shipping_methods();
               usort( $shipping_methods, array( ShippingEventController::get_instance(), 'shipping_method_comparator' ) );
               $method_label = '';
@@ -428,7 +432,7 @@ class ShippingEventMetabox
             }
 
             $products = wc_get_products(array(
-              'category' => $slugs, 'status' => 'publish', 'limit' => -1 
+              'category' => $slugs, 'status' => 'publish', 'limit' => -1
             ));
 
             if( sizeof($products) == 0 ) continue;

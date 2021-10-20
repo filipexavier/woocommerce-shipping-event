@@ -29,7 +29,7 @@ class ShortcodeController {
     ob_start();
     include(  Init::get_instance()->plugin_path . '/includes/frontend/view/' . 'shipping_event_list_shortcode.php' );
     $content = ob_get_clean();
-    return $content;
+    return do_shortcode( $content);
   }
 
 }

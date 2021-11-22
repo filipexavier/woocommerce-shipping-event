@@ -22,12 +22,20 @@ class ShortcodeController {
 
 	public function init() {
     add_shortcode( 'shipping_event_list', array( $this, 'shipping_event_list_shortcode' ) );
+    add_shortcode( 'shipping_event_details', array( $this, 'shipping_event_details_shortcode' ) );
   }
 
   // Add Shortcode
   public function shipping_event_list_shortcode() {
     ob_start();
     include(  Init::get_instance()->plugin_path . '/includes/frontend/view/' . 'shipping_event_list_shortcode.php' );
+    $content = ob_get_clean();
+    return do_shortcode( $content);
+  }
+
+  public function shipping_event_details_shortcode() {
+    ob_start();
+    include(  Init::get_instance()->plugin_path . '/includes/frontend/view/' . 'shipping_event_details_shortcode.php' );
     $content = ob_get_clean();
     return do_shortcode( $content);
   }

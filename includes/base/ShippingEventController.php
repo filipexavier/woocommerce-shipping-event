@@ -201,4 +201,15 @@ class ShippingEventController {
     return $ordersnum[0]->num;
   }
 
+  public function single_opened_event() {
+    $shipping_event_list = $this->order_by_date( get_posts( array( 'post_type' => 'shipping_event' ) ) );
+    foreach( $shipping_event_list as $shipping_event ) {
+      //var_dump( $shipping_event->get_shipping_date());
+      if( !$shipping_event->orders_enabled() ) continue;
+      //echo "achei";
+      return $shipping_event;
+    }
+    return null;
+  }
+
 }

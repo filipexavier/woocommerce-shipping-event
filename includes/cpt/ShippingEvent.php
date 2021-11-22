@@ -48,6 +48,7 @@ class ShippingEvent {
     'shipping_methods' => 'selected_shipping_methods',
     'products' => 'products',
     'event_type' => 'shipping_event_type',
+    'event_details' => 'shipping_event_details',
     'delivery_time_window' => 'shipping_event_delivery_time_window',
     'max_order_num' => 'shipping_event_max_order_num',
     'previous_shipping_event' => 'shipping_event_previous_shipping_event'
@@ -75,6 +76,7 @@ class ShippingEvent {
     $this->id = $shipping_event_id;
     $this->enabled = ShippingEventController::get_instance()->is_post_meta_enabled( $shipping_event_id, ShippingEvent::get_meta_key( 'enabled' ) );
     $this->event_type = get_post( get_post_meta( $shipping_event_id, ShippingEvent::get_meta_key( 'event_type' ), true ) );
+    $this->event_details = get_post( get_post_meta( $shipping_event_id, ShippingEvent::get_meta_key( 'event_details' ), true ) );
     $this->disable_backorder = ShippingEventController::get_instance()->is_post_meta_enabled( $shipping_event_id, ShippingEvent::get_meta_key( 'disable_backorder' ) );
     $this->shipping_date = DateController::get_post_date( $shipping_event_id, ShippingEvent::get_meta_key( 'shipping_date' ) );
     $this->title = $shipping_event_post->post_title;
@@ -155,6 +157,15 @@ class ShippingEvent {
   public function get_event_type_id() {
     if( is_null( $this->event_type ) ) return 0;
     return $this->event_type->ID;
+  }
+
+  public function get_event_details() {
+    return $this->event_details;
+  }
+
+  public function get_event_details_id() {
+    if( is_null( $this->event_details ) ) return 0;
+    return $this->event_details->ID;
   }
 
   public function get_title() {

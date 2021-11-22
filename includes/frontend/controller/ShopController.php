@@ -76,20 +76,40 @@ class ShopController {
 
     //Check shipping_event valid
     if ( empty( $this->shipping_event ) || !$this->shipping_event->orders_enabled() ) {
-      $this->shipping_event = null;
-      WC()->session->__unset('shipping_event');
+      $this->shipping_event = ShippingEventController::get_instance()->single_opened_event();
+      if( is_null( $this->shipping_event ) ) WC()->session->__unset('shipping_event');
+      else WC()->session->set('shipping_event', $this->shipping_event->get_id());
     }
   }
 
   public function has_chosen_valid_shipping_event() {
     //Check shipping_event valid
+    if (!($this->shipping_event && $this->shipping_event->orders_enabled())) {
+      $this->set_session_shipping_event();
+    }
     return $this->shipping_event && $this->shipping_event->orders_enabled();
+  }
+
+  public function redirect($url, $permanent = false)
+  {
+      if (headers_sent() === false)
+      {
+          header('Location: ' . $url, true, ($permanent === true) ? 301 : 302);
+      }
+
+      exit();
   }
 
   public function block_access_when_no_event() {
     if( $this->has_chosen_valid_shipping_event() ) return;
     //Don't show pop up on thess taxonomies pages
     if( SettingsController::get_instance()->check_tax_page() ) return;
+
+    //Redirect to list of events
+    $this->redirect( SettingsController::get_instance()->get_shipping_event_page_url(), false);
+  }
+
+  public function choose_event_popup() {
     $ok_btn_target = $close_btn_target = SettingsController::get_instance()->get_choose_event_page_url();
     $title = __("Choose date", 'woocommerce-shipping-event' );
     $active = "true";

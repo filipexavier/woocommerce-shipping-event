@@ -106,7 +106,7 @@ class ShopController {
     if( SettingsController::get_instance()->check_tax_page() ) return;
 
     //Redirect to list of events
-    $this->redirect( SettingsController::get_instance()->get_shipping_event_page_url(), false);
+    $this->redirect( SettingsController::get_instance()->get_choose_event_page_url(), false);
   }
 
   public function choose_event_popup() {
